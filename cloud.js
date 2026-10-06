@@ -77,11 +77,11 @@
       $('aUp').addEventListener('click', () => go(true));
       return;
     }
-    const rows = (board || []).map((p, i) => `<tr class="${p.user_id === user.id ? 'me' : ''}"><td>${i + 1}</td><td>${esc(p.pseudo)}</td><td>${p.cards}</td><td>${p.wins}</td></tr>`).join('');
+    const rows = (board || []).map((p, i) => `<tr class="${p.user_id === user.id ? 'me' : ''}"><td>${i + 1}</td><td>${esc(p.pseudo)}</td><td>${p.cards}</td></tr>`).join('');
     box.innerHTML = `<p class="amsg ok">Connecté : ${esc(user.email || '')}</p><p class="amsg">${esc(state)}</p>
       <label>Pseudo<input id="aPs" maxlength="20" value="${esc(getPseudo())}"></label>
       <h2 style="font-size:18px;margin:8px 0 0">Classement des amis</h2>
-      ${board ? `<table class="lb"><thead><tr><th>#</th><th>Joueur</th><th>Cartes</th><th>Victoires</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="amsg">Chargement…</p>'}
+      ${board ? `<table class="lb"><thead><tr><th>#</th><th>Joueur</th><th>Cartes</th></tr></thead><tbody>${rows}</tbody></table>` : '<p class="amsg">Chargement…</p>'}
       <div class="row"><button class="btn ghost" id="aOut">Se déconnecter</button></div>`;
     $('aPs').addEventListener('change', e => { const v = e.target.value.trim(); if (v.length >= 2) { setPseudo(v); push() } });
     $('aOut').addEventListener('click', async () => { await sb.auth.signOut() });
