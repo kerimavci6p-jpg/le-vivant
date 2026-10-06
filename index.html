@@ -54,7 +54,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:10px 0 2px
 .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 
 /* ---------- la carte ---------- */
-.card{--rc:var(--r-bronze);position:relative;aspect-ratio:5/7.3;width:100%;max-width:100%;border-radius:12px;padding:4px;container-type:inline-size;
+.card{--rc:#cfc6b2;position:relative;aspect-ratio:5/7.3;width:100%;max-width:100%;border-radius:12px;padding:4px;container-type:inline-size;
   background:linear-gradient(150deg,color-mix(in srgb,var(--rc) 85%,#fff),var(--rc) 45%,color-mix(in srgb,var(--rc) 55%,#000));
   box-shadow:0 10px 22px rgba(0,0,0,.45)}
 .card.r-argent{--rc:var(--r-argent)} .card.r-or{--rc:var(--r-or)} .card.r-noire{--rc:var(--r-noire)}
@@ -183,7 +183,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:10px 0 2px
 .card.fa .txt{padding-top:24cqw;background:linear-gradient(transparent,rgba(7,10,22,.55) 25%,rgba(7,10,22,.9) 60%)}
 .holo,.glare{position:absolute;inset:0;pointer-events:none;z-index:3;font-style:normal}
 .holo{mix-blend-mode:color-dodge;opacity:0;background:repeating-linear-gradient(115deg,#ff5d8f 0%,#ffd76b 8%,#6bffb0 16%,#6bd0ff 24%,#b98bff 32%,#ff5d8f 40%);background-size:300% 300%;background-position:var(--mx,50%) var(--my,50%)}
-.r-argent .holo{opacity:.12}.r-or .holo{opacity:.18}.r-noire .holo{opacity:.28}.r-legende .holo{opacity:.42}
+.card .holo{opacity:.16}
 .glare{mix-blend-mode:overlay;opacity:.5;background:radial-gradient(circle at var(--mx,35%) var(--my,25%),rgba(255,255,255,.75),transparent 45%)}
 .mini .holo,.mini .glare{display:none}
 /* ---------- la scène d'ouverture (reprise de ClubDeck) ---------- */
@@ -342,7 +342,7 @@ const CARDS=[
  {id:'kangourou',art:'art/kangourou.webp',fa:1,n:'Kangourou roux',f:'Fait des bonds de près de 9 m.',p:'Savane',r:'argent',s:[75,60,55,20,0,50],pw:'Coup de pattes',t:'+15 en Force et en Défense.',fx:{stat:[1,5],n:15}},
  {id:'paresseux',art:'art/paresseux.webp',fa:1,n:'Paresseux',f:'Descend de son arbre environ une fois par semaine.',p:'Forêts',r:'argent',s:[1,30,30,30,0,40],pw:'Patience',t:'+25 si vous avez perdu la manche précédente.',fx:{revenge:25}},
  {id:'herisson',art:'art/herisson.webp',fa:1,n:'Hérisson',f:'Résiste en partie au venin de vipère.',p:'Forêts',r:'bronze',s:[10,10,8,5,0,80],pw:'Boule de piquants',t:'+15 en Défense ; ignore les pouvoirs qui affaiblissent.',fx:{stat:[5],n:15,immune:1}},
- {id:'renard',art:'art/renard.webp',fa:1,n:'Renard roux',f:'Entend une souris sous la neige.',p:'Forêts',r:'bronze',s:[60,30,20,5,0,30],pw:'Opportuniste',t:'+20 contre les cartes Noire et Légende.',fx:{vsRare:['noire','legende'],n:20}},
+ {id:'renard',art:'art/renard.webp',fa:1,n:'Renard roux',f:'Entend une souris sous la neige.',p:'Forêts',r:'bronze',s:[60,30,20,5,0,30],pw:'Opportuniste',t:'+20 contre les animaux les plus rares.',fx:{vsRare:['noire','legende'],n:20}},
  {id:'abeille',art:'art/abeille.webp',fa:1,n:'Abeille',f:'Indique les fleurs aux autres en dansant.',p:'Petites bêtes',r:'bronze',s:[30,10,1,2,40,30],pw:'Piqûre',t:'−8 pour l\'animal adverse.',fx:{foe:8}},
  {id:'grenouille',n:'Grenouille verte',f:'Saute environ vingt fois sa longueur.',p:'Rivières',r:'bronze',s:[30,10,5,10,0,15],pw:'Saut',t:'+30 en Vitesse.',fx:{stat:[0],n:30}}
 ];
@@ -363,8 +363,8 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 let toastT=0;function toast(t){const e=$('toast');e.textContent=t;e.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>e.hidden=true,2600)}
 function card(c,mini){
   const art=c.art?`<img src="${c.art}" alt="" loading="lazy" draggable="false">`:`<div class="ph"><b>${esc(c.n.replace(/^(Le |La |Les |L'|Docteur |Capitaine )/,'')[0])}</b><span>illustration à venir</span></div>`;
-  return `<div class="card r-${c.r}${c.fa?' fa':''}${mini?' mini':''}"><div class="in">
-    <div class="art" style="--pk:${PACK[c.p]}">${art}<span class="pack">${esc(c.p)}</span><span class="rare">${RAR[c.r].n}</span></div>
+  return `<div class="card${c.fa?' fa':''}${mini?' mini':''}"><div class="in">
+    <div class="art" style="--pk:${PACK[c.p]}">${art}<span class="pack">${esc(c.p)}</span></div>
     <div class="txt"><div class="nm">${esc(c.n)}</div><div class="wk">${esc(c.f)}</div>
     <div class="st">${STATS.map((s,k)=>`<div><span>${s[0]}</span><b>${c.s[k]}</b></div>`).join('')}</div>
     <div class="pw"><b>${esc(c.pw)}</b> · ${esc(c.t)}</div></div><i class="holo"></i><i class="glare"></i></div></div>`}
@@ -387,14 +387,13 @@ function render(){
 function rSachets(){
   const m=$('main');
   const left=stock.n>=MAXS?0:REFILL-((Date.now()-stock.t)%REFILL),mm=Math.ceil(left/60000);
-  m.innerHTML=`<h2>Ouvrir un sachet</h2><p class="lead">Cinq animaux par sachet, dont au moins une carte Argent. Plus une espèce est rare dans la nature, plus sa carte est rare.</p>
+  m.innerHTML=`<h2>Ouvrir un sachet</h2><p class="lead">Cinq animaux par sachet.</p>
     <button class="sachet" id="open" aria-label="Ouvrir un sachet"${stock.n?'':' disabled'}><img src="art/leopardneiges.webp" alt=""><div class="t">Le<br>Vivant<small>Première expédition</small></div><div class="five">5 cartes</div></button>
     <p class="timer">${stock.n?`${stock.n} sachet${stock.n>1?'s':''} disponible${stock.n>1?'s':''}. `:'Plus de sachet pour l\'instant. '}${stock.n>=MAXS?'Réserve pleine.':`Prochain sachet gratuit dans ${mm} min.`}</p>
-    <div class="odds">${Object.entries(RAR).reverse().map(([k,r])=>`<div><b style="color:var(--r-${k})">${r.n}</b>${r.w} %</div>`).join('')}</div>
     <p class="lead" style="margin-top:14px;text-align:center">Un sachet gratuit toutes les 10 minutes, jusqu'à 5 en réserve. Gagner un duel en rapporte un.</p>`;
   $('open').addEventListener('click',()=>{if(!stock.n){toast('Plus de sachet : revenez dans quelques minutes, ou gagnez un duel');return}
     if(stock.n>=MAXS)stock.t=Date.now();stock.n--;sv('stock',stock);
-    const got=[0,1,2,3].map(()=>drawCard(1)).concat([drawCard(2)]).sort((a,b)=>RAR[a.r].o-RAR[b.r].o);
+    const got=[0,1,2,3].map(()=>drawCard(1)).concat([drawCard(2)]);shuffle(got);
     const P=got.map(c=>{const isNew=!col[c.id];col[c.id]=(col[c.id]||0)+1;return{c,isNew}});sv('col',col);
     openStage(P)});
 }
@@ -416,13 +415,13 @@ for(let k=0;k<28;k++){const i=document.createElement('i');i.style.cssText=`left:
 function openStage(P){
   SP=P;cur=0;busy=false;tx=null;timers.forEach(clearTimeout);timers=[];
   ST.className='';ST.hidden=false;$('res').hidden=true;$('tint').style.backgroundColor='';PK.querySelector('.ptop').style.transform='';
-  DK.innerHTML=P.map((x,i)=>`<div class="sc${RAR[x.c.r].o>=3?' hl':''}" style="--k:${i};--glow:${x.c.r==='legende'?'#f3d58c':x.c.r==='noire'?'#ff5d6e':'#e3b653'}"><div class="tilt"><div class="sback"></div><div class="sfront">${card(x.c)}</div></div></div>`).join('');
+  DK.innerHTML=P.map((x,i)=>`<div class="sc" style="--k:${i};--glow:#e3b653"><div class="tilt"><div class="sback"></div><div class="sfront">${card(x.c)}</div></div></div>`).join('');
   $('dots').innerHTML=P.map(()=>'<span></span>').join('');layout();
 }
 function layout(){[...DK.children].forEach((el,i)=>{el.classList.toggle('cur',i===cur);el.classList.toggle('wait',i>cur);el.classList.toggle('gone',i<cur);el.style.setProperty('--d',i-cur);el.style.zIndex=i===cur?50:i>cur?40-(i-cur):1});
   [...$('dots').children].forEach((d,i)=>d.classList.toggle('a',i===cur))}
-function reveal(){const x=SP[cur];if(!x)return;$('tint').style.backgroundColor=PACK[x.c.p];audio();(CH[x.c.r]||[]).forEach(n=>note(...n));
-  if(RAR[x.c.r].o>=4)buzz([40,40,80]);else buzz(20);
+function reveal(){const x=SP[cur];if(!x)return;$('tint').style.backgroundColor=PACK[x.c.p];audio();CH.or.forEach(n=>note(...n));
+  buzz(20);
   const el=DK.children[cur];el.classList.add('reveal');if(x.isNew)el.insertAdjacentHTML('beforeend','<span class="new">Nouvelle</span>')}
 function openPack(){if(busy)return;busy=true;tx=null;const t=PK.querySelector('.ptop');t.style.transition='';t.style.transform='';
   audio();tearSnd();noise(.3,.75,350,2400,.2);ST.classList.remove('tearing');ST.classList.add('opening','torn');
@@ -454,8 +453,8 @@ window.addEventListener('deviceorientation',e=>{if(e.gamma==null||ST.hidden||!ST
 function toss(dir){const el=DK.children[cur];if(!el)return;el.style.setProperty('--dir',dir);el.classList.remove('hand');$('hint').style.opacity=0;noise(0,.25,600,1800,.08);
   cur++;layout();if(cur>=SP.length)later(showRes,450);else later(reveal,350)}
 function showRes(){timers.forEach(clearTimeout);timers=[];ST.classList.add('result');$('tint').style.backgroundColor='';
-  const news=SP.filter(x=>x.isNew).length,best=SP[SP.length-1].c;
-  $('sum').innerHTML=`${news} nouvelle${news>1?'s':''} sur 5 · meilleure carte <b>${esc(best.n)}</b> (${RAR[best.r].n})<br>${owned().length} animaux sur ${CARDS.length} dans votre album`;
+  const news=SP.filter(x=>x.isNew).length;
+  $('sum').innerHTML=`${news} nouvelle${news>1?'s':''} sur 5<br>${owned().length} animaux sur ${CARDS.length} dans votre album`;
   $('rgrid').innerHTML=SP.map((x,i)=>`<button style="--i:${i}" data-id="${x.c.id}">${card(x.c,true)}<span class="new${x.isNew?'':' dup'}">${x.isNew?'Nouvelle':'Doublon'}</span></button>`).join('');
   $('rgrid').querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.id])));
   $('resMore').hidden=!stock.n;$('res').hidden=false}
@@ -464,12 +463,12 @@ $('resOk').addEventListener('click',()=>{ST.hidden=true;render()});
 $('resMore').addEventListener('click',()=>{ST.hidden=true;render();$('open')&&$('open').click()});
 /* ---------------- album ---------------- */
 function rAlbum(){
-  const m=$('main'),n=owned().length,list=CARDS.filter(c=>alb==='Tous'||c.p===alb).sort((a,b)=>RAR[b.r].o-RAR[a.r].o);
+  const m=$('main'),n=owned().length,list=CARDS.filter(c=>alb==='Tous'||c.p===alb);
   m.innerHTML=`<h2>Album</h2><p class="lead">${n} animaux sur ${CARDS.length}. Les doubles ne servent pas encore : la fusion viendra plus tard.</p>
     <div class="prog"><i style="width:${Math.round(n/CARDS.length*100)}%"></i></div>
     <div class="packs">${['Tous',...Object.keys(PACK)].map(p=>`<button class="chip" data-p="${p}" aria-pressed="${p===alb}">${p}</button>`).join('')}</div>
     <div class="grid">${list.map(c=>col[c.id]?`<button data-id="${c.id}" aria-label="${esc(c.n)}">${card(c,true)}${col[c.id]>1?`<span class="cnt">×${col[c.id]}</span>`:''}</button>`
-      :`<button disabled aria-label="Carte manquante"><div class="miss"><b>?</b>${RAR[c.r].n}<br>${esc(c.p)}</div></button>`).join('')}</div>`;
+      :`<button disabled aria-label="Carte manquante"><div class="miss"><b>?</b>${esc(c.p)}</div></button>`).join('')}</div>`;
   m.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{alb=b.dataset.p;rAlbum()}));
   m.querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.id])));
 }
@@ -523,8 +522,8 @@ function play(x){
   me.hand.splice(me.hand.indexOf(x),1);op.hand.splice(op.hand.indexOf(y),1);
   const back=(s,z)=>{if(z.c.fx.revive&&!s.revived[z.c.id]){s.revived[z.c.id]=1;s.hand.push(z);return true}return false};
   let gain=0,rev='';
-  if(res>0){gain=RAR[y.c.r].pts;me.pts+=gain;if(back(op,y))rev=y.c.n+' revient dans la main adverse.'}
-  else if(res<0){gain=RAR[x.c.r].pts;op.pts+=gain;if(back(me,x))rev=x.c.n+' revient dans votre main.'}
+  if(res>0){gain=1;me.pts+=gain;if(back(op,y))rev=y.c.n+' revient dans la main adverse.'}
+  else if(res<0){gain=1;op.pts+=gain;if(back(me,x))rev=x.c.n+' revient dans votre main.'}
   me.lost=res<0;op.lost=res>0;D.n++;
   D.last={x,y,k,a,b,res,gain,rev};
   if(res>0)D.chooser='op';else if(res<0)D.chooser='me';
@@ -545,7 +544,7 @@ function rDuel(){
       <p class="lead" style="margin-top:12px">${n>=DECK?'Vos 10 meilleures cartes forment votre paquet.':`Vous avez ${n} animaux : la Naturaliste vous prête ${DECK-n} carte${DECK-n>1?'s':''} pour compléter le paquet. Ouvrez des sachets pour jouer avec les vôtres.`}</p></div>
       <details class="rules" open><summary>Comment jouer</summary>
       <p>À chaque manche, une stat est choisie (Vitesse, Force, Taille, Longévité, Venin ou Défense). Chacun pose un animal, le plus fort dans cette stat gagne.</p>
-      <p>Une manche gagnée rapporte 1 point, ou 2 si vous battez une Noire ou une Légende. Le premier à 5 points gagne.</p>
+      <p>Une manche gagnée rapporte 1 point. Le premier à 5 points gagne.</p>
       <p>Celui qui perd la manche choisit la stat suivante et pioche une carte de plus : on peut toujours revenir.</p>
       <p>Chaque animal a une capacité tirée de la réalité. Lisez-la sur la carte : c'est là que se gagnent les matchs, même avec un petit animal.</p></details>`;
     $('go').addEventListener('click',()=>{newDuel();D.phase='play';rDuel()});return}
