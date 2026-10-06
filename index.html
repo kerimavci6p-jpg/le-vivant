@@ -42,7 +42,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
 .stock{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--paper-dim);text-align:right;line-height:1.25}
 .stock b{color:var(--paper);font-size:18px;font-variant-numeric:tabular-nums}
 main{flex:1;overflow-y:auto;padding:4px 16px 20px;min-height:0}
-nav{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);background:var(--ink-2);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:var(--ink-2);padding-bottom:env(safe-area-inset-bottom,0px)}
 nav button{background:none;border:0;padding:12px 4px 13px;font-family:var(--f-display);font-size:16px;color:var(--paper-dim);cursor:pointer}
 nav button[aria-current="true"]{color:var(--gold-hi);box-shadow:inset 0 2px 0 var(--gold)}
 h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:10px 0 2px;text-wrap:balance;color:var(--paper)}
@@ -297,6 +297,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:10px 0 2px
     <button data-t="sachets" aria-current="true">Sachets</button>
     <button data-t="album">Album</button>
     <button data-t="duel">Duel</button>
+    <button data-t="demo">Démo</button>
   </nav>
 </div>
 <div id="view" hidden><div class="box"><div id="viewCard"></div><p>Touchez n'importe où pour fermer</p></div></div>
@@ -366,7 +367,6 @@ function card(c,mini){
   return `<div class="card${c.fa?' fa':''}${mini?' mini':''}"><div class="in">
     <div class="art" style="--pk:${PACK[c.p]}">${art}<span class="pack">${esc(c.p)}</span></div>
     <div class="txt"><div class="nm">${esc(c.n)}</div><div class="wk">${esc(c.f)}</div>
-    <div class="st">${STATS.map((s,k)=>`<div><span>${s[0]}</span><b>${c.s[k]}</b></div>`).join('')}</div>
     <div class="pw"><b>${esc(c.pw)}</b> · ${esc(c.t)}</div></div><i class="holo"></i><i class="glare"></i></div></div>`}
 function show(c){$('viewCard').innerHTML=card(c);$('view').hidden=false}
 $('view').addEventListener('click',()=>$('view').hidden=true);
@@ -380,7 +380,7 @@ document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()
 function render(){
   refill();$('stockN').textContent=stock.n;
   document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.t===tab));
-  ({sachets:rSachets,album:rAlbum,duel:rDuel})[tab]();
+  ({sachets:rSachets,album:rAlbum,duel:rDuel,demo:rDemo})[tab]();
 }
 
 /* ---------------- sachets ---------------- */
@@ -395,7 +395,7 @@ function rSachets(){
     if(stock.n>=MAXS)stock.t=Date.now();stock.n--;sv('stock',stock);
     const got=[0,1,2,3].map(()=>drawCard(1)).concat([drawCard(2)]);shuffle(got);
     const P=got.map(c=>{const isNew=!col[c.id];col[c.id]=(col[c.id]||0)+1;return{c,isNew}});sv('col',col);
-    openStage(P)});
+    TEST=false;openStage(P)});
 }
 
 /* ---------------- ouverture façon ClubDeck : déchirer, étincelles, cartes à retourner une à une ---------------- */
@@ -454,13 +454,33 @@ function toss(dir){const el=DK.children[cur];if(!el)return;el.style.setProperty(
   cur++;layout();if(cur>=SP.length)later(showRes,450);else later(reveal,350)}
 function showRes(){timers.forEach(clearTimeout);timers=[];ST.classList.add('result');$('tint').style.backgroundColor='';
   const news=SP.filter(x=>x.isNew).length;
-  $('sum').innerHTML=`${news} nouvelle${news>1?'s':''} sur 5<br>${owned().length} animaux sur ${CARDS.length} dans votre album`;
-  $('rgrid').innerHTML=SP.map((x,i)=>`<button style="--i:${i}" data-id="${x.c.id}">${card(x.c,true)}<span class="new${x.isNew?'':' dup'}">${x.isNew?'Nouvelle':'Doublon'}</span></button>`).join('');
+  $('sum').innerHTML=TEST?'Sachet test : rien n\'a été ajouté à votre album.':`${news} nouvelle${news>1?'s':''} sur 5<br>${owned().length} animaux sur ${CARDS.length} dans votre album`;
+  $('rgrid').innerHTML=SP.map((x,i)=>`<button style="--i:${i}" data-id="${x.c.id}">${card(x.c,true)}${TEST?'':`<span class="new${x.isNew?'':' dup'}">${x.isNew?'Nouvelle':'Doublon'}</span>`}</button>`).join('');
   $('rgrid').querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.id])));
-  $('resMore').hidden=!stock.n;$('res').hidden=false}
+  $('resMore').hidden=TEST||!stock.n;$('res').hidden=false}
 $('skip').addEventListener('click',()=>{if(!ST.classList.contains('torn')&&!ST.classList.contains('done'))return;showRes()});
 $('resOk').addEventListener('click',()=>{ST.hidden=true;render()});
 $('resMore').addEventListener('click',()=>{ST.hidden=true;render();$('open')&&$('open').click()});
+/* ---------------- mode démo : tester les cartes sans toucher à la collection ---------------- */
+let TEST=false,pickD=[];
+function rDemo(){
+  const m=$('main');
+  m.innerHTML=`<h2>Mode démo</h2><p class="lead">Pour tester les cartes et l'ouverture des sachets. Rien ici ne compte : ni dans votre album, ni dans vos sachets, ni dans le classement.</p>
+    <div class="row"><button class="btn" id="dOpen">${pickD.length?`Ouvrir avec ces ${pickD.length} carte${pickD.length>1?'s':''}`:'Ouvrir un sachet test'}</button>${pickD.length?'<button class="btn ghost" id="dClr">Vider le choix</button>':''}</div>
+    <p class="lead" style="margin-top:12px">Touchez des cartes pour les choisir (5 au plus) : le sachet test contiendra celles-là. Sans choix, il est tiré au hasard. Appui long pour voir une carte en grand.</p>
+    <div class="grid">${CARDS.map(c=>{const k=pickD.indexOf(c.id);return `<button data-id="${c.id}" aria-label="${esc(c.n)}" aria-pressed="${k>=0}"${k>=0?' style="outline:3px solid var(--gold);outline-offset:2px;border-radius:12px"':''}>${card(c,true)}${k>=0?`<span class="cnt">${k+1}</span>`:''}</button>`}).join('')}</div>`;
+  $('dOpen').addEventListener('click',()=>{
+    const got=pickD.length?pickD.map(id=>BY[id]):shuffle([0,1,2,3].map(()=>drawCard(1)).concat([drawCard(2)]));
+    TEST=true;openStage(got.map(c=>({c,isNew:false})))});
+  if($('dClr'))$('dClr').addEventListener('click',()=>{pickD=[];rDemo()});
+  m.querySelectorAll('[data-id]').forEach(b=>{let lp=0,t=0;
+    b.addEventListener('pointerdown',()=>{lp=0;t=setTimeout(()=>{lp=1;show(BY[b.dataset.id])},450)});
+    ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>clearTimeout(t)));
+    b.addEventListener('contextmenu',e=>e.preventDefault());
+    b.addEventListener('click',()=>{if(lp)return;const id=b.dataset.id,k=pickD.indexOf(id);
+      if(k>=0)pickD.splice(k,1);else if(pickD.length<5)pickD.push(id);else{toast('5 cartes au plus');return}
+      const y=$('main').scrollTop;rDemo();$('main').scrollTop=y})});
+}
 /* ---------------- album ---------------- */
 function rAlbum(){
   const m=$('main'),n=owned().length,list=CARDS.filter(c=>alb==='Tous'||c.p===alb);
