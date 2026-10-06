@@ -1,0 +1,16 @@
+{
+  "name": "Le Vivant",
+  "short_name": "Le Vivant",
+  "description": "Collectionnez les animaux du monde entier en sachets de cartes, et affrontez vos amis.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#11152b",
+  "theme_color": "#11152b",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
