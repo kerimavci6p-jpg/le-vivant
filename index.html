@@ -289,7 +289,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:10px 0 2px
 <body>
 <div class="app">
   <header>
-    <div class="logo">Le Vivant<small>démo · 20 animaux</small></div>
+    <div class="logo">Le Vivant<small id="nbA">démo</small></div>
     <div class="hr"><div class="stock"><span>Sachets<br>gratuits</span><b id="stockN">0</b></div><button class="acb" id="acctB" aria-label="Compte et amis">Compte</button></div>
   </header>
   <main id="main"></main>
@@ -324,28 +324,28 @@ h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:10px 0 2px
 /* ---------------- données ---------------- */
 const STATS=[['VIT','Vitesse'],['FOR','Force'],['TAI','Taille'],['LON','Longévité'],['VEN','Venin'],['DÉF','Défense']];
 const RAR={legende:{n:'Légende',w:2,pts:2,o:5},noire:{n:'Noire',w:8,pts:2,o:4},or:{n:'Or',w:18,pts:1,o:3},argent:{n:'Argent',w:30,pts:1,o:2},bronze:{n:'Bronze',w:42,pts:1,o:1}};
-const PACK={'Océans':'#1f5f8b','Forêts':'#2f6a46','Savane':'#9a6a2c','Montagnes':'#56718f','Petites bêtes':'#6b4f92','Ciel':'#3f79a8','Reptiles':'#56702c','Rivières':'#24727a'};
+const PACK={'Océans':'#1f5f8b','Forêts':'#2f6a46','Savane':'#9a6a2c','Montagnes':'#56718f','Petites bêtes':'#6b4f92','Ciel':'#3f79a8','Reptiles':'#56702c','Rivières':'#24727a','Chiens':'#8a5a3c','Chats':'#7a4f6e','Disparus':'#5b5f66','Préhistoire':'#7a5b2a'};
 const CARDS=[
  {id:'vaquita',art:'art/vaquita.webp',fa:1,n:'Vaquita',f:'Il en resterait une dizaine : le mammifère marin le plus menacé.',p:'Océans',r:'legende',s:[50,20,25,30,0,15],pw:'Fantôme du Pacifique',t:'+30 dans toutes les stats. Presque personne ne l\'a jamais vu.',fx:{self:30}},
  {id:'calamar',art:'art/calamar.webp',fa:1,n:'Calamar géant',f:'Photographié vivant dans son milieu pour la première fois en 2004.',p:'Océans',r:'legende',s:[40,85,92,10,0,50],pw:'Abysses',t:'+20 en Force et en Taille, −5 pour l\'animal adverse.',fx:{stat:[1,2],n:20,foe:5}},
- {id:'axolotl',n:'Axolotl',f:'Repousse ses pattes et même une partie de son cœur.',p:'Rivières',r:'noire',s:[15,10,10,15,0,10],art:'art/axolotl.webp',pw:'Régénération',t:'+40 dans toutes les stats, et revient dans votre main la première fois qu\'il perd.',fx:{self:40,revive:1}},
+ {id:'axolotl',art:'art/axolotl.webp',fa:1,n:'Axolotl',f:'Repousse ses pattes et même une partie de son cœur.',p:'Rivières',r:'noire',s:[15,10,10,15,0,10],pw:'Régénération',t:'+40 dans toutes les stats, et revient dans votre main la première fois qu\'il perd.',fx:{self:40,revive:1}},
  {id:'leopardneiges',art:'art/leopardneiges.webp',fa:1,n:'Léopard des neiges',f:'Peut sauter jusqu\'à six fois la longueur de son corps.',p:'Montagnes',r:'noire',s:[75,75,50,20,0,50],pw:'Bond',t:'+15 en Vitesse et en Force.',fx:{stat:[0,1],n:15}},
  {id:'ornithorynque',art:'art/ornithorynque.webp',fa:1,n:'Ornithorynque',f:'Mammifère qui pond des œufs ; le mâle est venimeux.',p:'Rivières',r:'noire',s:[25,20,15,20,60,30],pw:'Ergot venimeux',t:'+30 en Venin, gagne les égalités.',fx:{stat:[4],n:30,tie:1}},
  {id:'komodo',art:'art/komodo.webp',fa:1,n:'Dragon de Komodo',f:'Le plus grand lézard du monde.',p:'Reptiles',r:'noire',s:[30,80,50,40,75,70],pw:'Morsure toxique',t:'−10 pour l\'animal adverse.',fx:{foe:10}},
- {id:'guepard',n:'Guépard',f:'Le plus rapide sur terre : plus de 100 km/h.',p:'Savane',r:'or',s:[99,60,45,15,0,35],art:'art/guepard.webp',pw:'Sprint',t:'+15 en Vitesse.',fx:{stat:[0],n:15}},
- {id:'faucon',n:'Faucon pèlerin',f:'Plus de 300 km/h en piqué.',p:'Ciel',r:'or',s:[99,40,20,20,0,30],art:'art/faucon.webp',pw:'Piqué',t:'Gagne les égalités ; +15 contre les animaux du Ciel.',fx:{tie:1,vsPack:'Ciel',n:15}},
+ {id:'guepard',art:'art/guepard.webp',fa:1,n:'Guépard',f:'Le plus rapide sur terre : plus de 100 km/h.',p:'Savane',r:'or',s:[99,60,45,15,0,35],pw:'Sprint',t:'+15 en Vitesse.',fx:{stat:[0],n:15}},
+ {id:'faucon',art:'art/faucon.webp',fa:1,n:'Faucon pèlerin',f:'Plus de 300 km/h en piqué.',p:'Ciel',r:'or',s:[99,40,20,20,0,30],pw:'Piqué',t:'Gagne les égalités ; +15 contre les animaux du Ciel.',fx:{tie:1,vsPack:'Ciel',n:15}},
  {id:'baleine',n:'Baleine à bosse',f:'Les mâles chantent des chants qui changent d\'année en année.',p:'Océans',r:'or',s:[45,95,92,80,0,85],art:'art/baleine.webp',pw:'Chant',t:'+6 par autre animal des Océans dans votre main.',fx:{allyPack:'Océans',per:6}},
  {id:'orque',art:'art/orque.webp',fa:1,n:'Orque',f:'Chasse en groupe avec des techniques apprises.',p:'Océans',r:'or',s:[75,90,80,60,0,70],pw:'Chasse en groupe',t:'+6 par autre animal des Océans dans votre main.',fx:{allyPack:'Océans',per:6}},
  {id:'cobra',art:'art/cobra.webp',fa:1,n:'Cobra royal',f:'Le plus long serpent venimeux du monde.',p:'Reptiles',r:'or',s:[40,50,50,25,92,50],pw:'Capuchon',t:'−8 pour l\'animal adverse.',fx:{foe:8}},
  {id:'mante',art:'art/mante.webp',fa:1,n:'Mante-crevette',f:'Frappe si vite qu\'elle peut fêler une vitre d\'aquarium.',p:'Océans',r:'argent',s:[95,70,10,10,0,70],pw:'Frappe éclair',t:'+20 en Force.',fx:{stat:[1],n:20}},
- {id:'tardigrade',n:'Tardigrade',f:'Survit au vide spatial.',p:'Petites bêtes',r:'argent',s:[5,5,1,5,0,99],pw:'Indestructible',t:'+60 en Longévité, gagne les égalités.',fx:{stat:[3],n:60,tie:1}},
+ {id:'tardigrade',art:'art/tardigrade.webp',fa:1,n:'Tardigrade',f:'Survit au vide spatial.',p:'Petites bêtes',r:'argent',s:[5,5,1,5,0,99],pw:'Indestructible',t:'+60 en Longévité, gagne les égalités.',fx:{stat:[3],n:60,tie:1}},
  {id:'meduse',art:'art/meduse.webp',fa:1,n:'Méduse immortelle',f:'Peut revenir à son stade de jeunesse.',p:'Océans',r:'argent',s:[10,5,2,99,30,10],pw:'Jeunesse éternelle',t:'Revient dans votre main la première fois qu\'elle perd.',fx:{revive:1}},
  {id:'kangourou',art:'art/kangourou.webp',fa:1,n:'Kangourou roux',f:'Fait des bonds de près de 9 m.',p:'Savane',r:'argent',s:[75,60,55,20,0,50],pw:'Coup de pattes',t:'+15 en Force et en Défense.',fx:{stat:[1,5],n:15}},
  {id:'paresseux',art:'art/paresseux.webp',fa:1,n:'Paresseux',f:'Descend de son arbre environ une fois par semaine.',p:'Forêts',r:'argent',s:[1,30,30,30,0,40],pw:'Patience',t:'+25 si vous avez perdu la manche précédente.',fx:{revenge:25}},
  {id:'herisson',art:'art/herisson.webp',fa:1,n:'Hérisson',f:'Résiste en partie au venin de vipère.',p:'Forêts',r:'bronze',s:[10,10,8,5,0,80],pw:'Boule de piquants',t:'+15 en Défense ; ignore les pouvoirs qui affaiblissent.',fx:{stat:[5],n:15,immune:1}},
  {id:'renard',art:'art/renard.webp',fa:1,n:'Renard roux',f:'Entend une souris sous la neige.',p:'Forêts',r:'bronze',s:[60,30,20,5,0,30],pw:'Opportuniste',t:'+20 contre les animaux les plus rares.',fx:{vsRare:['noire','legende'],n:20}},
  {id:'abeille',art:'art/abeille.webp',fa:1,n:'Abeille',f:'Indique les fleurs aux autres en dansant.',p:'Petites bêtes',r:'bronze',s:[30,10,1,2,40,30],pw:'Piqûre',t:'−8 pour l\'animal adverse.',fx:{foe:8}},
- {id:'grenouille',n:'Grenouille verte',f:'Saute environ vingt fois sa longueur.',p:'Rivières',r:'bronze',s:[30,10,5,10,0,15],pw:'Saut',t:'+30 en Vitesse.',fx:{stat:[0],n:30}}
+ {id:'grenouille',art:'art/grenouille.webp',fa:1,n:'Grenouille verte',f:'Saute environ vingt fois sa longueur.',p:'Rivières',r:'bronze',s:[30,10,5,10,0,15],pw:'Saut',t:'+30 en Vitesse.',fx:{stat:[0],n:30}}
 ];
 const BY=Object.fromEntries(CARDS.map(c=>[c.id,c]));
 
@@ -378,6 +378,7 @@ function drawCard(minO){let r;do{r=pick()}while(RAR[r].o<(minO||1));const pool=C
 let tab='sachets',opened=null,alb='Tous';
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.t;opened=null;render()}));
 function render(){
+  $('nbA').textContent=`démo · ${CARDS.length} animaux`;
   refill();$('stockN').textContent=stock.n;
   document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.t===tab));
   ({sachets:rSachets,album:rAlbum,duel:rDuel,demo:rDemo})[tab]();
