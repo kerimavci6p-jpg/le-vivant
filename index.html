@@ -13,7 +13,7 @@
 <title>Le Vivant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,600;0,700;1,400&display=swap">
 <style>
 body{margin:0}[hidden]{display:none!important}img{max-width:100%}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -132,7 +132,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:10px 0 2px
 #view[hidden]{display:none}
 #view .box{width:min(320px,82vw);display:grid;gap:12px}
 #view p{margin:0;text-align:center;color:var(--paper-dim);font-size:13px}
-#viewInfo{display:grid;gap:6px}#view .vf{font-style:italic;font-size:14px;color:var(--paper)}#view .vp{font-size:14px;color:var(--paper)}#view .vp b{color:var(--gold-hi)}
+
 
 /* ---------- duel ---------- */
 .score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:6px 0 10px}
@@ -282,6 +282,16 @@ h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:10px 0 2px
 .lb tr.me td{color:var(--gold-hi);font-weight:700}
 .toast{position:fixed;left:50%;bottom:calc(76px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--paper);color:var(--ink);padding:9px 16px;border-radius:99px;font-size:14px;font-weight:600;z-index:30;max-width:calc(100% - 32px);text-align:center}
 .toast[hidden]{display:none}
+/* ---------- contour fin et lumineux, nom en belle écriture ---------- */
+.card{padding:0;border-radius:4.5cqw;background:#0b0e1c;
+  box-shadow:0 -1.4cqw 0 -.6cqw rgba(235,230,220,.55),0 -2.6cqw 0 -1.3cqw rgba(235,230,220,.25),0 3cqw 7cqw rgba(0,0,0,.55),0 1cqw 2cqw rgba(0,0,0,.35)}
+.card .in{border-radius:4.5cqw}
+.card:after{content:"";position:absolute;inset:0;z-index:4;border-radius:4.5cqw;pointer-events:none;
+  border:max(1px,.5cqw) solid rgba(255,255,255,.78);box-shadow:inset 0 0 3cqw rgba(255,255,255,.22)}
+.nm{font-family:"Cinzel",var(--f-title);font-weight:700;font-size:8.6cqw;letter-spacing:.04em;line-height:1.12;text-align:center;
+  color:#fff7e6;text-shadow:0 .5cqw 2.5cqw rgba(0,0,0,.85),0 0 5cqw rgba(0,0,0,.5)}
+.card.mini .nm{font-size:10.5cqw;letter-spacing:.02em}
+.card.fa .txt{padding:22cqw 5cqw 6cqw;background:linear-gradient(transparent,rgba(7,10,22,.45) 40%,rgba(7,10,22,.8))}
 </style>
 
 </head>
@@ -299,7 +309,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:10px 0 2px
     <button data-t="demo">Démo</button>
   </nav>
 </div>
-<div id="view" hidden><div class="box"><div id="viewCard"></div><div id="viewInfo"></div><p>Touchez n'importe où pour fermer</p></div></div>
+<div id="view" hidden><div class="box"><div id="viewCard"></div><p>Touchez n'importe où pour fermer</p></div></div>
 <div id="stage" hidden>
   <div id="tint"></div>
   <button class="skip" id="skip">Tout révéler</button>
@@ -550,7 +560,7 @@ function card(c,mini){
   return `<div class="card${c.fa?' fa':''}${mini?' mini':''}"><div class="in">
     <div class="art" style="--pk:${PACK[c.p]}">${art}</div>
     <div class="txt"><div class="nm">${esc(c.n)}</div></div><i class="glare"></i></div></div>`}
-function show(c){$('viewCard').innerHTML=card(c);$('viewInfo').innerHTML=`<p class="vf">${esc(c.f)}</p><p class="vp"><b>${esc(c.pw)}</b> · ${esc(c.t)}</p>`;$('view').hidden=false}
+function show(c){$('viewCard').innerHTML=card(c);$('view').hidden=false}
 $('view').addEventListener('click',()=>$('view').hidden=true);
 const owned=()=>CARDS.filter(c=>col[c.id]);
 function pick(){let t=Math.random()*100;for(const r in RAR){t-=RAR[r].w;if(t<=0)return r}return 'bronze'}
