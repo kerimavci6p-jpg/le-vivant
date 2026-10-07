@@ -13,7 +13,7 @@
 <title>Le Vivant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Fira+Sans+Condensed:ital,wght@0,500;0,700;0,800;1,500&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Fira+Sans+Condensed:ital,wght@0,500;0,700;0,800;1,500&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,600;0,700;1,400&display=swap">
 <style>
 body{margin:0}[hidden]{display:none!important}img{max-width:100%}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -512,6 +512,46 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
 .pk-in:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(transparent 45%,rgba(0,0,0,.35) 62%,rgba(0,0,0,.85))}
 @container (max-width:150px){.pk-bot{display:none}.pk-atk{margin-top:auto!important}.pk-top{padding-bottom:6cqw}.pk-n{font-size:10cqw}.pk-hp{font-size:11cqw}.pk-atk{margin:0 2cqw 2cqw}.pk-atk b{font-size:7.4cqw}.pk-d{font-size:11cqw}}
 @container (max-width:100px){.pk-art{flex:none}.pk-n{font-size:12cqw}.pk-hp{font-size:13cqw}}
+/* ---------- carte de duel « Orque Boréale » : full art nuit, liseré doré, écriture classique ---------- */
+.lv{container-type:inline-size;position:relative;width:100%;aspect-ratio:63/88;border-radius:4cqw;overflow:hidden;background:#0b1430;
+  box-shadow:0 3cqw 7cqw rgba(0,0,0,.55);font-family:"Cormorant Garamond",Georgia,serif;color:#f4ead2;text-align:left}
+.lv-in{position:absolute;inset:0}
+.lv-art{position:absolute;inset:0}.lv-art img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
+.lv-in:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(rgba(8,14,40,.75),rgba(8,14,40,.15) 22%,transparent 38%,transparent 50%,rgba(8,14,40,.75) 64%,#081028 80%)}
+.lv-frame{position:absolute;inset:2.4cqw;z-index:3;pointer-events:none;border:.45cqw solid #d9b664;border-radius:2.4cqw;box-shadow:inset 0 0 0 .2cqw rgba(0,0,0,.3)}
+.lv-star{position:absolute;font-style:normal;color:#f3d58c;font-size:4.5cqw;line-height:1;text-shadow:0 0 2cqw #f3d58c}
+.lv-star.s1{left:-2.3cqw;top:26%}.lv-star.s2{right:-2.3cqw;bottom:24%}
+.lv-top{position:absolute;z-index:2;left:6cqw;right:5cqw;top:5cqw;display:flex;align-items:flex-start;gap:2cqw}
+.lv-tt{flex:1;min-width:0}
+.lv-n{display:block;font-weight:600;font-size:11cqw;line-height:1;color:#f3d58c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  background:linear-gradient(180deg,#fff3cf,#e2bd68);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 .4cqw .8cqw rgba(0,0,0,.6))}
+.lv-sub{display:block;margin-top:1.6cqw;padding-top:1.2cqw;border-top:.3cqw solid rgba(217,182,100,.7);font-family:"Cinzel",serif;font-size:3.1cqw;letter-spacing:.28em;text-transform:uppercase;color:#e8dcc0;white-space:nowrap;overflow:hidden}
+.lv-hp{font-weight:700;font-size:9.5cqw;line-height:1;color:#f3d58c;white-space:nowrap;margin-top:1cqw}.lv-hp small{font-family:"Cinzel",serif;font-size:3.6cqw;margin-right:1cqw;letter-spacing:.08em}
+.lv-hp.hurt{color:#ff8a8a}
+.lv-ty{flex:none;display:grid;place-items:center;width:11cqw;height:11cqw;border-radius:50%;font-size:6cqw;
+  background:radial-gradient(circle at 40% 35%,color-mix(in srgb,var(--tc) 60%,#fff),color-mix(in srgb,var(--tc) 70%,#06102a));box-shadow:0 0 0 .7cqw #d9b664,0 0 3cqw rgba(0,0,0,.6)}
+.lv-low{position:absolute;z-index:2;left:6cqw;right:6cqw;bottom:5cqw;display:flex;flex-direction:column;gap:2.4cqw}
+.lv-tal{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:.6cqw 2.4cqw}
+.lv-tag{font-family:"Cinzel",serif;font-size:3cqw;letter-spacing:.3em;text-transform:uppercase;padding:.6cqw 2.4cqw;border:.35cqw solid #d9b664;border-radius:99px;color:#f3d58c}
+.lv-tal b{font-weight:600;font-size:6.6cqw;color:#f3d58c}
+.lv-tal p{grid-column:1/-1;margin:0 0 0 2cqw;font-size:4.2cqw;line-height:1.2;color:#efe4cc}
+.lv-atk{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:.4cqw 2.4cqw;padding-top:2.4cqw;border-top:.3cqw solid rgba(217,182,100,.5)}
+.lv-atk b{font-weight:600;font-size:7cqw;color:#f3d58c;line-height:1}
+.lv-d{font-weight:700;font-size:8.5cqw;color:#f3d58c}
+.lv-atk p{grid-column:2/-1;margin:0;font-size:3.8cqw;line-height:1.2;font-style:italic;color:#e3d6b8}
+.lv-c{display:flex;gap:.8cqw}
+.lv-e{display:inline-grid;place-items:center;width:6.2cqw;height:6.2cqw;border-radius:50%;font-style:normal;font-size:3.4cqw;
+  background:radial-gradient(circle at 40% 35%,color-mix(in srgb,var(--tc) 55%,#fff),color-mix(in srgb,var(--tc) 75%,#06102a));box-shadow:0 0 0 .45cqw #cfe0ff}
+.lv-bot{display:grid;grid-template-columns:repeat(3,1fr);align-items:center;padding-top:2cqw;border-top:.3cqw solid rgba(217,182,100,.5);font-size:4.4cqw}
+.lv-bot span{display:flex;align-items:center;gap:1.2cqw;justify-content:center}.lv-bot span:first-child{justify-content:flex-start}.lv-bot span:last-child{justify-content:flex-end}
+.lv-bot small{font-family:"Cinzel",serif;font-size:2.7cqw;letter-spacing:.18em;text-transform:uppercase;color:#cdbf9e}
+.lv-bot .lv-e{width:5cqw;height:5cqw;font-size:2.8cqw}
+.lv-r{font-style:normal;display:inline-grid;place-items:center;width:4.6cqw;height:4.6cqw;border-radius:50%;background:#e9e4d6;color:#1b1b1b;font-size:3cqw}
+@container (max-width:170px){.lv-tal,.lv-bot,.lv-atk p,.lv-sub{display:none}.lv-n{font-size:13cqw}.lv-hp{font-size:12cqw}.lv-hp small{display:none}.lv-ty{width:14cqw;height:14cqw;font-size:8cqw}
+  .lv-atk{border-top:0;padding-top:0}.lv-atk b{font-size:9cqw}.lv-d{font-size:11cqw}.lv-e{width:8cqw;height:8cqw;font-size:4.5cqw}.lv-star{display:none}}
+@container (max-width:100px){.lv-low{display:none}.lv-top{left:5cqw;right:4cqw;top:5cqw}.lv-n{font-size:15cqw}.lv-hp{font-size:15cqw}.lv-ty{display:none}.lv-frame{inset:3cqw}}
+#view .lv{width:min(360px,88vw)}
 </style>
 
 </head>

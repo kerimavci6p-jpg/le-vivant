@@ -44,16 +44,20 @@ function monHTML(m,cls,attr){
 /* ---------- carte de duel façon TCG : nom et PV en haut, illustration, attaque, faiblesse et retraite ---------- */
 const TCOL={eau:'#3c8fd6',foret:'#4f9a4c',savane:'#d39a35',glace:'#7cc8de',ciel:'#8f9fdc',venin:'#8c52ad',insecte:'#9db53a',domestique:'#c39a74',ancien:'#8a785e'};
 const nrg=n=>'<i class="pe"></i>'.repeat(n);
+const TAL={poison:'Venin',meute:'Meute',armure:'Carapace',revanche:'Revanche',vif:'Fulgurance'};
+const ico=(t,n)=>`<i class="lv-e" title="${TYPES[t].n}">${TYPES[t].e}</i>`.repeat(n||1);
 function pkCard(c,o){
   o=o||{};const f=fiche(c),w=TYPES[f.type].weak,hp=o.left!=null?o.left:f.hp,hurt=o.left!=null&&o.left<f.hp;
-  return `<div class="pk" style="--tc:${TCOL[f.type]}"><div class="pk-in">
-    <div class="pk-top"><b class="pk-n">${esc(c.n)}</b><span class="pk-hp${hurt?' hurt':''}"><small>PV</small>${hp}</span><span class="pk-ty">${TYPES[f.type].e}</span></div>
-    <div class="pk-art"><img src="${c.art}" alt="" loading="lazy" draggable="false"></div>
-    <div class="pk-sub">${esc(c.p)} · ${TYPES[f.type].n}${f.pts>1?' · géant':''}</div>
-    <div class="pk-atk"><span class="pk-c">${nrg(f.cost)}</span><b>${esc(f.atk)}</b><span class="pk-d">${f.dmg}</span></div>
-    ${f.eff?`<div class="pk-eff">${esc(f.eff.t)}</div>`:'<div class="pk-eff"></div>'}
-    <div class="pk-bot"><span>Faiblesse<br>${TYPES[w].e} +20</span><span>Retraite<br>${f.retreat?nrg(f.retreat):'—'}</span><span>KO<br>${f.pts} pt${f.pts>1?'s':''}</span></div>
-    <div class="pk-fl">${esc(c.f)}</div></div></div>`;
+  return `<div class="lv" style="--tc:${TCOL[f.type]}"><div class="lv-in">
+    <div class="lv-art"><img src="${c.art}" alt="" loading="lazy" draggable="false"></div>
+    <div class="lv-frame"><i class="lv-star s1">✦</i><i class="lv-star s2">✦</i></div>
+    <div class="lv-top"><div class="lv-tt"><b class="lv-n">${esc(c.n)}</b><span class="lv-sub">${esc(c.p)} · ${TYPES[f.type].n}${f.pts>1?' · géant':''}</span></div>
+      <span class="lv-hp${hurt?' hurt':''}"><small>PV</small>${hp}</span><span class="lv-ty">${TYPES[f.type].e}</span></div>
+    <div class="lv-low">
+      ${f.eff?`<div class="lv-tal"><span class="lv-tag">Talent</span><b>${TAL[f.eff.k]||'Talent'}</b><p>${esc(f.eff.t)}</p></div>`:''}
+      <div class="lv-atk"><span class="lv-c">${ico(f.type,f.cost)}</span><b>${esc(f.atk)}</b><span class="lv-d">${f.dmg}</span><p>${esc(c.f)}</p></div>
+      <div class="lv-bot"><span><small>Faiblesse</small>${ico(w)} +20</span><span><small>Résistance</small>—</span><span><small>Retraite</small>${f.retreat?'<i class="lv-r">✦</i>'.repeat(f.retreat):'—'}</span></div>
+    </div></div></div>`;
 }
 function showPk(c,left){$('viewCard').innerHTML=pkCard(c,{left});$('viewAct').innerHTML='';$('view').hidden=false}
 const sideOf=()=>DU.G.s[0],oppOf=()=>DU.G.s[1];
