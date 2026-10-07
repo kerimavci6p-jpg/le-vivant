@@ -705,6 +705,34 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
 @container (max-width:230px){.tc-desc,.tc-sep,.tc-c{display:none}.tc-n{font-size:calc(10.5cqw * var(--nf,1))}.tc-sub{font-size:5.4cqw}.tc-sub:before{width:3cqw}
   .tc-cost{width:13cqw;height:13cqw;font-size:7.5cqw}.tc-grad{height:28%}.tc-st{top:82%;bottom:3%}.tc-st b{font-size:9cqw}.tc-st em{font-size:3.4cqw;letter-spacing:.2cqw}}
 #view .card.tc{width:min(380px,90vw)}
+/* template : réglages pour coller au rendu de référence */
+.tc-top{height:24%;background:linear-gradient(rgba(5,18,29,.45),rgba(5,18,29,.15) 60%,rgba(5,18,29,0))}
+.tc-grad{height:40%;background:linear-gradient(180deg,rgba(5,18,29,0) 0%,rgba(5,18,29,.35) 22%,rgba(7,22,40,.85) 50%,rgba(7,22,40,.97) 70%,#071B2B 100%)}
+.tc-b1{inset:2.3%;border-radius:1.2cqw;border-color:rgba(221,187,114,.9)}
+.tc-b2{display:none}
+.tc-s{position:absolute;font-style:normal;color:#E9C77F;line-height:1;font-size:4.2cqw;transform:translate(-50%,-50%);text-shadow:0 0 1.2cqw rgba(233,199,127,.6)}
+.tc-s.s1{left:2.3%;top:1.55%}.tc-s.s2{left:97.7%;top:1.55%}.tc-s.s3{left:2.3%;top:98.45%}.tc-s.s4{left:97.7%;top:98.45%}
+.tc-s.s5{left:50%;top:1.55%;font-size:3.6cqw}.tc-s.s6{left:50%;top:98.45%;font-size:3.6cqw}
+.tc-head{left:7%;top:4%;right:22%}
+.tc-n{font-weight:700;text-transform:none;font-variant:small-caps;letter-spacing:0;font-size:calc(15.5cqw * var(--nf,1));line-height:.95;overflow:visible;
+  background:linear-gradient(180deg,#FFF6DA 0%,#F0D49A 45%,#C99A47 100%);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 .3cqw 1.2cqw rgba(0,0,0,.45))}
+.tc-line{display:block;position:relative;width:min(100%,46cqw);height:max(1px,.15cqw);margin:1.2cqw 0 0;background:linear-gradient(90deg,rgba(221,187,114,.9),rgba(221,187,114,.9) 40%,rgba(221,187,114,.9) 60%,rgba(221,187,114,0))}
+.tc-line b{position:absolute;left:44%;top:50%;transform:translate(-50%,-52%);font-size:2.4cqw;color:#F3D99D;line-height:1}
+.tc-sub{margin-top:2cqw;font-size:3.9cqw;letter-spacing:.15cqw}
+.tc-sub:before{display:none}
+.tc-cost{right:4.6%;top:3%;width:12.4cqw;height:12.4cqw;font-size:7cqw;background:rgba(7,27,43,.55);border:max(1px,.25cqw) solid #DDBB72;box-shadow:inset 0 0 0 .7cqw rgba(7,27,43,.35),inset 0 0 0 .9cqw #F3D99D,0 0 2cqw rgba(0,0,0,.35)}
+#view .tc-desc,.tc-desc{left:10%;right:10%;top:76%;height:10.5%;font-size:3.75cqw;line-height:1.2}
+.tc-sep{left:12%;right:12%;top:87.2%;background:linear-gradient(90deg,rgba(221,187,114,0),rgba(221,187,114,.8) 15%,rgba(221,187,114,.8) 85%,rgba(221,187,114,0))}
+.tc-sep b{font-size:3cqw;color:#F3D99D}
+.tc-st{left:7%;right:7%;top:88.2%;bottom:3.8%;grid-template-columns:1fr auto 1fr auto 1fr}
+.tc-st b{font-size:10cqw;font-weight:700;background:linear-gradient(180deg,#FFF6DA,#E9C77F 55%,#C99A47);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tc-st span+span{border:0}
+.tc-st em{display:flex;align-items:center;gap:1.6cqw;font-family:"Cinzel",serif;font-size:max(7px,2.5cqw);letter-spacing:.4cqw;margin-top:.4cqw;padding:0}
+.tc-st em:before,.tc-st em:after{content:"";width:5cqw;height:max(1px,.12cqw);background:rgba(221,187,114,.75)}
+.tc-vd{position:relative;width:max(1px,.12cqw);height:58%;background:linear-gradient(transparent,rgba(221,187,114,.7) 30%,rgba(221,187,114,.7) 70%,transparent)}
+.tc-vd:after{content:"";position:absolute;left:50%;top:50%;width:1.2cqw;height:1.2cqw;background:#E9C77F;transform:translate(-50%,-50%) rotate(45deg)}
+@container (max-width:230px){.tc-n{font-size:calc(16cqw * var(--nf,1))}.tc-line{display:none}.tc-sub{font-size:5.6cqw;margin-top:1cqw}.tc-s{display:none}
+  .tc-cost{width:15cqw;height:15cqw;font-size:8.5cqw}.tc-st{top:80%;bottom:3%}.tc-st b{font-size:12cqw}.tc-st em{font-size:3.6cqw;letter-spacing:.2cqw}.tc-st em:before,.tc-st em:after{display:none}.tc-grad{height:32%}}
 </style>
 
 </head>
@@ -1001,12 +1029,12 @@ function card3(c,mini){
   return `<div class="card tc${mini?' mini':''}"><div class="tc-in">
     <img class="tc-art" src="${c.art}" alt="" loading="lazy" draggable="false">
     <i class="tc-top"></i><i class="tc-grad"></i><i class="tc-b1"></i><i class="tc-b2"></i>
-    <i class="tc-c c1"></i><i class="tc-c c2"></i><i class="tc-c c3"></i><i class="tc-c c4"></i>
-    <div class="tc-head"><b class="tc-n" style="--nf:${c.n.length>18?.6:c.n.length>14?.7:c.n.length>10?.84:1}">${esc(c.n)}</b><span class="tc-sub">${esc(c.sub||c.p)}</span></div>
+    <i class="tc-s s1">✦</i><i class="tc-s s2">✦</i><i class="tc-s s3">✦</i><i class="tc-s s4">✦</i><i class="tc-s s5">✦</i><i class="tc-s s6">✦</i>
+    <div class="tc-head"><b class="tc-n" style="--nf:${c.n.length>18?.5:c.n.length>14?.6:c.n.length>10?.74:c.n.length>7?.88:1}">${esc(c.n)}</b><i class="tc-line"><b>✦</b></i><span class="tc-sub">${esc(c.sub||c.p)}</span></div>
     <span class="tc-cost">${c.k||1}</span>
     <p class="tc-desc">${esc(shortD(c.d||c.f))}</p>
-    <i class="tc-sep"><b>◆</b></i>
-    <div class="tc-st">${[['PUI',0],['VIT',1],['INT',2]].map(([l,i])=>`<span><b>${st[i]}</b><em>${l}</em></span>`).join('')}</div>
+    <i class="tc-sep"><b>✦</b></i>
+    <div class="tc-st">${[['PUI',0],['VIT',1],['INT',2]].map(([l,i])=>`<span><b>${st[i]}</b><em>${l}</em></span>${i<2?'<i class="tc-vd"></i>':''}`).join('')}</div>
   </div></div>`}
 function card2(c,mini){
   const st=c.st||[5,5,5];
