@@ -662,6 +662,15 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
 @container (max-width:230px){.vg-desc,.vg-num,.b-desc,.b-num{display:none}.vg-n{font-size:calc(10cqw * var(--nf,1))}.vg-sub{font-size:5.6cqw}.vg-cost{font-size:10cqw}
   .vg-st{left:6%;right:6%;top:84.5%;height:9%}.b-st{left:5%;right:5%;top:84%;height:10%;border-radius:2cqw}.vg-st svg{width:6.5cqw;height:6.5cqw}.vg-st b{font-size:8.5cqw}}
 #view .card.vg{width:min(380px,90vw)}
+ /* l'animal occupe toute la carte : cases légères, lisibilité par l'ombre du texte */
+.vg-art:after{background:linear-gradient(transparent 70%,rgba(6,10,24,.35))}
+.vg-box{background:rgba(7,12,30,.32);-webkit-backdrop-filter:none;backdrop-filter:none}
+.b-desc{background:rgba(7,12,30,.42)}
+.b-cost{background:radial-gradient(circle at 35% 30%,rgba(63,111,208,.85),rgba(20,48,111,.85) 60%,rgba(10,22,56,.85))}
+.vg-n{filter:drop-shadow(0 .3cqw .5cqw #000) drop-shadow(0 0 1.5cqw rgba(0,0,0,.8))}
+.vg-sub,.vg-num,.vg-desc,.vg-st b{text-shadow:0 .3cqw .6cqw #000,0 0 1.6cqw rgba(0,0,0,.95),0 0 3cqw rgba(0,0,0,.7)}
+.vg-st svg{filter:drop-shadow(0 0 1cqw #000)}
+.vg-art img{object-position:50% 45%}
 </style>
 
 </head>
