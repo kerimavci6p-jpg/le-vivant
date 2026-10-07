@@ -42,7 +42,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;pa
 .stock{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--paper-dim);text-align:right;line-height:1.25}
 .stock b{color:var(--paper);font-size:18px;font-variant-numeric:tabular-nums}
 main{flex:1;overflow-y:auto;padding:4px 16px 20px;min-height:0}
-nav{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);background:var(--ink-2);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--ink-2);padding-bottom:env(safe-area-inset-bottom,0px)}
 nav button{background:none;border:0;padding:12px 4px 13px;font-family:var(--f-display);font-size:16px;color:var(--paper-dim);cursor:pointer}
 nav button[aria-current="true"]{color:var(--gold-hi);box-shadow:inset 0 2px 0 var(--gold)}
 h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:10px 0 2px;text-wrap:balance;color:var(--paper)}
@@ -308,7 +308,7 @@ nav button{min-height:54px}
   header{padding:18px 28px 10px}
   .logo{font-size:30px}
   main{order:2}
-  nav{order:1;grid-template-columns:repeat(3,minmax(0,160px));justify-content:center;border-top:0;border-bottom:1px solid var(--line);background:none;padding:0}
+  nav{order:1;grid-template-columns:repeat(5,minmax(0,150px));justify-content:center;border-top:0;border-bottom:1px solid var(--line);background:none;padding:0}
   nav button[aria-current="true"]{box-shadow:inset 0 -2px 0 var(--gold)}
   main{padding:16px 28px 40px}
   .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px 18px}
@@ -316,6 +316,34 @@ nav button{min-height:54px}
   .lead{font-size:15px;max-width:70ch}
   .toast{bottom:32px}
 }
+/* ---------- duel chaîne alimentaire et marché ---------- */
+.dgrid>button{padding-bottom:22px}
+.dbadge{position:absolute;left:50%;bottom:0;transform:translateX(-50%);display:flex;align-items:center;gap:5px;white-space:nowrap;background:var(--ink-2);border:1px solid var(--line);border-radius:99px;padding:2px 9px;font-size:13px;line-height:1.3}
+.dbadge b{font-family:var(--f-display);font-weight:400;font-size:16px;color:var(--gold-hi)}
+.dbadge i{font-style:normal;font-size:12px;color:var(--paper-dim)}
+.dgrid>button:disabled{opacity:.45;cursor:not-allowed}
+.dgrid>button.sel .card,.grid>button.pick .card{box-shadow:0 0 0 3px var(--gold-hi),0 12px 24px rgba(0,0,0,.6);transform:translateY(-6px)}
+.cyc{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:4px 6px;margin:6px 0 10px;font-size:13px}
+.cyc span{background:var(--ink-2);border:1px solid var(--line);border-radius:99px;padding:3px 9px;white-space:nowrap}
+.cyc i{font-style:normal;color:var(--gold)}
+.h3{font-family:var(--f-display);font-weight:400;font-size:18px;margin:14px 0 8px}
+.nrg{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--paper-dim);margin:0 0 10px}
+.nrg b{color:var(--gold-hi);font-size:16px}
+.slot .dbadge{position:static;transform:none}
+.slot{position:relative}
+.ls{display:grid;grid-template-columns:72px 1fr;gap:6px 12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.lsc{background:none;border:0;padding:0;cursor:pointer;grid-row:span 2}
+.inf{display:grid;gap:2px;font-size:13px;color:var(--paper-dim);min-width:0}
+.inf b{color:var(--paper)}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.buy{border:1px solid var(--gold);background:color-mix(in srgb,var(--gold) 18%,var(--ink-2));color:var(--paper);border-radius:99px;padding:8px 14px;font:inherit;font-size:13px;cursor:pointer;min-height:38px}
+.buy:disabled{opacity:.5;cursor:default}
+.sellbox{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:start;padding:12px;border:1px solid var(--line);border-radius:16px;background:var(--ink-2);margin:0 0 16px}
+.sbr{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:4px 0}
+.sbr span{width:52px;font-size:13px;color:var(--paper-dim)}
+.tr{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.tr small{display:block;color:var(--paper-dim);font-size:13px;margin-top:2px}
+@media (min-width:900px){.ls{grid-template-columns:90px 1fr auto}.lsc{grid-row:auto}}
 </style>
 
 </head>
@@ -323,12 +351,14 @@ nav button{min-height:54px}
 <div class="app">
   <header>
     <div class="logo">Le Vivant<small id="nbA">démo</small></div>
-    <div class="hr"><div class="stock"><span>Sachets<br>gratuits</span><b id="stockN">0</b></div><button class="acb" id="acctB" aria-label="Compte et amis">Compte</button></div>
+    <div class="hr"><div class="stock"><span>Sachets</span><b id="stockN">0</b></div><div class="stock" title="Points du Marché"><span>Points</span><b id="ptsN">0</b></div><button class="acb" id="acctB" aria-label="Compte et amis">Compte</button></div>
   </header>
   <main id="main"></main>
   <nav>
     <button data-t="sachets" aria-current="true">Sachets</button>
     <button data-t="album">Album</button>
+    <button data-t="duel">Duel</button>
+    <button data-t="marche">Marché</button>
     <button data-t="demo">Démo</button>
   </nav>
 </div>
@@ -603,7 +633,7 @@ function render(){
   $('nbA').textContent=`démo · ${CARDS.length} animaux`;
   refill();$('stockN').textContent=stock.n;
   document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.t===tab));
-  ({sachets:rSachets,album:rAlbum,duel:rDuel,demo:rDemo})[tab]();
+  ({sachets:()=>rSachets(),album:()=>rAlbum(),duel:()=>rDuel(),marche:()=>rMarche(),demo:()=>rDemo()})[tab]();
 }
 
 /* ---------------- sachets ---------------- */
@@ -729,117 +759,14 @@ function rAlbum(){
   m.querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.id])));
 }
 
-/* ---------------- duel ---------------- */
-const GOAL=5,DECK=10,HAND=4,HMAX=6;
-let D=null;
+/* ---------------- outils de tirage ---------------- */
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
-function power(c){return c.s.reduce((a,b)=>a+b,0)+RAR[c.r].o*25}
-function newDuel(){
-  let mine=owned().sort((a,b)=>power(b)-power(a)).slice(0,DECK).map(c=>({c,loan:false}));
-  const spare=shuffle(CARDS.filter(c=>(c.r==='bronze'||c.r==='argent')&&!mine.some(x=>x.c===c)));
-  while(mine.length<DECK)mine.push({c:spare.pop()||CARDS[19],loan:true});
-  const used=new Set(),opp=mine.map(x=>{let pool=CARDS.filter(c=>c.r===x.c.r&&!used.has(c.id));if(!pool.length)pool=CARDS.filter(c=>c.r===x.c.r);const c=pool[Math.random()*pool.length|0];used.add(c.id);return{c,loan:false}});
-  const side=d=>({deck:shuffle(d.slice()),hand:[],pts:0,lost:false,revived:{}});
-  D={me:side(mine),op:side(opp),chooser:Math.random()<.5?'me':'op',k:null,opCard:null,sel:null,last:null,over:false,n:0};
-  for(let i=0;i<HAND;i++){draw(D.me);draw(D.op)}
-  startRound();
-}
-function draw(s,n){for(let i=0;i<(n||1);i++)if(s.deck.length&&s.hand.length<HMAX)s.hand.push(s.deck.pop())}
-const ids=s=>s.hand.map(x=>x.c.id);
-/* valeur d'une carte dans la stat k, avec ses pouvoirs ; foe = la carte d'en face (pour les pouvoirs qui en dépendent) */
-function value(s,x,k,foe,foeSide){
-  const c=x.c,f=c.fx,parts=[];let v=c.s[k];
-  const add=(n,t)=>{if(n){v+=n;parts.push((n>0?'+':'')+n+' '+t)}};
-  if(f.stat&&f.stat.includes(k))add(f.n,c.pw);
-  if(f.self)add(f.self,c.pw);
-  if(f.allies)add(f.per*s.hand.filter(y=>y!==x&&f.allies.includes(y.c.id)).length,c.pw);
-  if(f.ally&&s.hand.some(y=>y!==x&&y.c.id===f.ally))add(f.n,c.pw);
-  if(f.allyPack)add(f.per*s.hand.filter(y=>y!==x&&y.c.p===f.allyPack).length,c.pw);
-  if(f.revenge&&s.lost)add(f.revenge,c.pw);
-  if(foe){const g=foe.c;
-    if(f.vsPack&&g.p===f.vsPack)add(f.n,c.pw);
-    if(f.vsRare&&f.vsRare.includes(g.r))add(f.n,c.pw);
-    if(f.vsName&&g.id===f.vsName)add(f.n,c.pw);
-    if(g.fx.foe&&!f.immune)add(-g.fx.foe,g.pw+' adverse');}
-  return{v,parts}}
-const best=(s,k)=>s.hand.reduce((m,x)=>{const v=value(s,x,k).v;return v>m.v?{x,v}:m},{x:null,v:-1});
-function aiStat(){let bk=0,bv=-1;for(let k=0;k<6;k++){const v=best(D.op,k).v;if(v>bv){bv=v;bk=k}}return bk}
-function aiCard(k,chose){const b=best(D.op,k);if(chose||b.v>=80)return b.x;return D.op.hand.slice().sort((a,b)=>power(a.c)-power(b.c))[0]}
-function startRound(){
-  D.sel=null;D.opCard=null;D.k=null;
-  if(!D.me.hand.length||!D.op.hand.length||D.me.pts>=GOAL||D.op.pts>=GOAL){D.over=true;finish();return}
-  if(D.chooser==='op'){D.k=aiStat();D.opCard=aiCard(D.k,true)}
-}
-function play(x){
-  const k=D.k,me=D.me,op=D.op;if(D.chooser==='me')D.opCard=aiCard(k,false);
-  const y=D.opCard,a=value(me,x,k,y,op),b=value(op,y,k,x,me);
-  let res=a.v>b.v?1:a.v<b.v?-1:0;
-  if(!res){const ta=x.c.fx.tie,tb=y.c.fx.tie;if(ta&&!tb){res=1;a.parts.push('égalité gagnée')}else if(tb&&!ta){res=-1;b.parts.push('égalité gagnée')}}
-  me.hand.splice(me.hand.indexOf(x),1);op.hand.splice(op.hand.indexOf(y),1);
-  const back=(s,z)=>{if(z.c.fx.revive&&!s.revived[z.c.id]){s.revived[z.c.id]=1;s.hand.push(z);return true}return false};
-  let gain=0,rev='';
-  if(res>0){gain=1;me.pts+=gain;if(back(op,y))rev=y.c.n+' revient dans la main adverse.'}
-  else if(res<0){gain=1;op.pts+=gain;if(back(me,x))rev=x.c.n+' revient dans votre main.'}
-  me.lost=res<0;op.lost=res>0;D.n++;
-  D.last={x,y,k,a,b,res,gain,rev};
-  if(res>0)D.chooser='op';else if(res<0)D.chooser='me';
-  draw(me);draw(op);if(res>0)draw(op);else if(res<0)draw(me);
-  D.phase='reveal';rDuel();
-}
-function finish(){
-  const r=D.me.pts>D.op.pts?1:D.me.pts<D.op.pts?-1:0;D.res=r;
-  if(r>0){wins++;sv('wins',wins);const g=wins===1?2:1;stock.n=Math.min(MAXS+2,stock.n+g);sv('stock',stock);D.reward=g}
-}
-function pips(n){return `<div class="pips">${Array.from({length:GOAL},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</div>`}
-function rDuel(){
-  const m=$('main');
-  if(!D){
-    const n=owned().length;
-    m.innerHTML=`<h2>Duel</h2><p class="lead">Contre la Naturaliste. Le premier à 5 points gagne.</p>
-      <div class="end"><button class="btn" id="go">Commencer un duel</button>
-      <p class="lead" style="margin-top:12px">${n>=DECK?'Vos 10 meilleures cartes forment votre paquet.':`Vous avez ${n} animaux : la Naturaliste vous prête ${DECK-n} carte${DECK-n>1?'s':''} pour compléter le paquet. Ouvrez des sachets pour jouer avec les vôtres.`}</p></div>
-      <details class="rules" open><summary>Comment jouer</summary>
-      <p>À chaque manche, une stat est choisie (Vitesse, Force, Taille, Longévité, Venin ou Défense). Chacun pose un animal, le plus fort dans cette stat gagne.</p>
-      <p>Une manche gagnée rapporte 1 point. Le premier à 5 points gagne.</p>
-      <p>Celui qui perd la manche choisit la stat suivante et pioche une carte de plus : on peut toujours revenir.</p>
-      <p>Chaque animal a une capacité tirée de la réalité. Touchez une carte pour la lire : c'est là que se gagnent les matchs, même avec un petit animal.</p></details>`;
-    $('go').addEventListener('click',()=>{newDuel();D.phase='play';rDuel()});return}
-  if(D.over){const r=D.res;
-    m.innerHTML=`<div class="end"><p class="lead" style="margin:0">Fin du duel</p><div class="big${r<0?' ko':''}">${r>0?'Victoire':r<0?'Défaite':'Match nul'}</div>
-      <p style="font-size:20px;margin:0 0 6px;font-variant-numeric:tabular-nums">${D.me.pts} – ${D.op.pts}</p>
-      <p class="lead">${r>0?`Vous gagnez ${D.reward} sachet${D.reward>1?'s':''} gratuit${D.reward>1?'s':''}.`:'Pas de sachet cette fois. Changez de stratégie : jouez vos faibles cartes quand l\'adversaire choisit une stat où il est fort.'}</p>
-      <div class="row"><button class="btn" id="again">Rejouer</button>${r>0?'<button class="btn ghost" id="toS">Ouvrir mes sachets</button>':''}</div></div>`;
-    $('again').addEventListener('click',()=>{newDuel();D.phase='play';rDuel()});
-    if($('toS'))$('toS').addEventListener('click',()=>{D=null;tab='sachets';render()});return}
-  const me=D.me,op=D.op,L=D.last,rev=D.phase==='reveal',k=rev?L.k:D.k;
-  const peek=!rev&&D.chooser==='op'&&me.hand.some(x=>x.c.fx.peek);
-  const slotOp=rev?`${card(L.y.c,true)}<div class="val ${L.res<0?'w':L.res>0?'l':''}">${L.b.v}</div><div class="parts">${esc(L.b.parts.join(' · '))}</div>`
-    :D.opCard?(peek?`${card(D.opCard.c,true)}<div class="parts">vu grâce à Déduction</div>`:'<div class="back" style="width:100%"></div><div class="parts">carte cachée</div>'):'<div class="empty">en attente</div>';
-  const slotMe=rev?`${card(L.x.c,true)}<div class="val ${L.res>0?'w':L.res<0?'l':''}">${L.a.v}</div><div class="parts">${esc(L.a.parts.join(' · '))}</div>`
-    :D.sel?`${card(D.sel.c,true)}<div class="parts">${k===null?'choisissez la stat':'touchez « Jouer »'}</div>`:'<div class="empty">votre carte</div>';
-  let msg='';
-  if(rev){msg=L.res>0?`<b>Manche gagnée</b>+${L.gain} point${L.gain>1?'s':''} pour vous.`:L.res<0?`<b class="ko">Manche perdue</b>+${L.gain} point${L.gain>1?'s':''} pour la Naturaliste.`:'<b>Égalité</b>Personne ne marque.';
-    if(L.rev)msg+=' '+esc(L.rev);msg+=L.res!==0?(L.res<0?' Vous choisirez la prochaine stat et piochez une carte de plus.':' La Naturaliste choisira la prochaine stat.'):''}
-  else msg=D.chooser==='me'?(k===null?'<b>À vous de choisir</b>Touchez une stat, puis la carte à jouer.':`<b>${STATS[k][1]}</b>Touchez la carte à jouer, puis « Jouer ».`)
-    :`<b>${STATS[k][1]}</b>La Naturaliste a choisi cette stat et posé sa carte. À vous de répondre.`;
-  m.innerHTML=`<div class="score"><div><b>Vous</b>${pips(me.pts)}</div><div class="sc">${me.pts} – ${op.pts}</div><div><b>Naturaliste</b>${pips(op.pts)}</div></div>
-    <div class="arena"><div class="slot"><span class="lab">Vous</span>${slotMe}</div><div class="vs">${k!==null?`<b>${STATS[k][0]}</b>${STATS[k][1]}`:'<b>?</b>'}</div><div class="slot"><span class="lab">Adversaire</span>${slotOp}</div></div>
-    <div class="msg">${msg}</div>
-    ${rev?'<div class="row"><button class="btn" id="next">Manche suivante</button></div>':`
-    ${D.chooser==='me'?`<div class="stats">${STATS.map((s,i)=>{const b=best(me,i);return `<button data-k="${i}" aria-pressed="${k===i}"><b>${b.v}</b>${s[1]}<br><small>votre meilleure</small></button>`}).join('')}</div>`:''}
-    <div class="hand n${me.hand.length}">${me.hand.map((x,i)=>{const v=k!==null?value(me,x,k):null;return `<button data-h="${i}" class="${D.sel===x?'sel':''}" aria-label="${esc(x.c.n)}">${card(x.c,true)}${x.loan?'<span class="loan">prêt</span>':''}${v?`<span class="hv${v.v>x.c.s[k]?' up':''}">${v.v}</span>`:''}</button>`}).join('')}</div>
-    <p class="tip">${D.sel?`<b>${esc(D.sel.c.pw)}</b> · ${esc(D.sel.c.t)}`:'Touchez une carte pour lire son pouvoir. Gardez vos stars pour les manches qui comptent.'}</p>
-    <div class="row"><button class="btn" id="playB"${D.sel&&k!==null?'':' disabled'}>Jouer${D.sel?' '+esc(D.sel.c.n):''}</button></div>`}`;
-  if($('next'))$('next').addEventListener('click',()=>{D.phase='play';startRound();rDuel()});
-  m.querySelectorAll('[data-k]').forEach(b=>b.addEventListener('click',()=>{D.k=+b.dataset.k;rDuel()}));
-  m.querySelectorAll('[data-h]').forEach(b=>b.addEventListener('click',()=>{const x=me.hand[+b.dataset.h];D.sel=D.sel===x?null:x;rDuel()}));
-  if($('playB'))$('playB').addEventListener('click',()=>{if(D.sel&&D.k!==null)play(D.sel)});
-  m.querySelectorAll('.slot .card').forEach((el,i)=>el.addEventListener('click',()=>{const c=rev?(i===0?L.x.c:L.y.c):(i===0&&D.sel?D.sel.c:D.opCard&&D.opCard.c);if(c)show(c)}));
-}
+
 render();
 setInterval(()=>{if(tab==='sachets'&&ST.hidden)render();else{refill();$('stockN').textContent=stock.n}},1000);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="jeu.js"></script>
 <script src="config.js"></script>
 <script src="cloud.js"></script>
 <script>if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script>

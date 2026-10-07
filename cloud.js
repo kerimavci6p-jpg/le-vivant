@@ -20,7 +20,7 @@
   async function push() {
     if (!user) return;
     const now = new Date().toISOString();
-    const r1 = await sb.from('collections').upsert({ user_id: user.id, data: { col, stock, wins, v: 1 }, updated_at: now });
+    const r1 = await sb.from('collections').upsert({ user_id: user.id, data: { col, stock, wins, pts: typeof pts === 'number' ? pts : 0, v: 1 }, updated_at: now });
     const r2 = await sb.from('profiles').upsert({ user_id: user.id, pseudo: getPseudo() || 'Joueur', cards: Object.keys(col).length, wins, updated_at: now });
     state = r1.error || r2.error ? 'Erreur de sauvegarde : ' + (r1.error || r2.error).message : 'Sauvegardé en ligne';
     paint();
@@ -34,6 +34,7 @@
       const d = data.data;
       for (const id in d.col || {}) col[id] = Math.max(col[id] || 0, d.col[id]);
       wins = Math.max(wins, d.wins || 0);
+      if (typeof d.pts === 'number' && window.setPts && d.pts > pts) setPts(d.pts);
       try { localStorage.setItem('hp:col', JSON.stringify(col)); localStorage.setItem('hp:wins', JSON.stringify(wins)) } catch (e) {}
       if (typeof render === 'function') render();
     }
