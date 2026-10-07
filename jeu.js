@@ -1,25 +1,10 @@
 /* Le Vivant : duel « Chaîne alimentaire » et Marché (repris de ClubDeck : enchères, achat immédiat, vente, défis du jour).
    Ce fichier se charge après le script principal et utilise ses outils : CARDS, BY, col, sv, ld, $, esc, card, show, toast, render, tab. */
 
-/* ================= classes, force et coût ================= */
-const CL={
-  pred:{n:'Prédateur',e:'🦁',bat:'proie'},
-  proie:{n:'Proie rapide',e:'🐇',bat:'colosse'},
-  colosse:{n:'Colosse',e:'🐘',bat:'venin'},
-  venin:{n:'Venimeux',e:'🐍',bat:'charo'},
-  charo:{n:'Charognard',e:'🦅',bat:'pred'},
-  carap:{n:'Carapace',e:'🐢',bat:null}
-};
-const CL_ORDER=['pred','proie','colosse','venin','charo','carap'];
-const CLASSE=/*CLASSES*/{"vaquita":"proie","calamar":"colosse","axolotl":"carap","leopardneiges":"pred","ornithorynque":"venin","komodo":"venin","guepard":"pred","faucon":"pred","baleine":"colosse","orque":"pred","cobra":"venin","mante":"pred","tardigrade":"carap","meduse":"venin","kangourou":"proie","paresseux":"carap","herisson":"carap","renard":"charo","abeille":"venin","grenouille":"proie","saola":"proie","lion":"pred","tigredesumatra":"pred","okapi":"proie","grandrequinblanc":"pred","rhinocerosdejava":"colosse","gorilledesmontagnes":"colosse","leoparddelamour":"pred","kakapo":"carap","requindugroenland":"charo","gorilledesplaines":"colosse","ourspolaire":"pred","baleinebleue":"colosse","ayeaye":"charo","pangolin":"carap","tigredubengale":"pred","jaguar":"pred","pandageant":"colosse","aigleroyal":"pred","crocodilemarin":"pred","meduseboite":"venin","oursgrizzli":"colosse","girafe":"colosse","elephantdafrique":"colosse","pygargueateteblanche":"pred","grenouilledoree":"venin","loupgris":"pred","mambanoir":"venin","bisondeurope":"colosse","hippopotame":"colosse","manchotempereur":"colosse","morse":"colosse","pieuvre":"venin","raiemanta":"colosse","dauphin":"proie","koala":"proie","anacondavert":"colosse","cameleon":"carap","martinetnoir":"proie","colibri":"proie","chouetteeffraie":"pred","scorpionempereur":"venin","mouffette":"carap","hyenetachetee":"charo","tortuegeantedesgalapagos":"carap","mygale":"venin","porcepic":"carap","poissonglobe":"venin","petitpingouin":"proie","piranha":"charo","anguilleelectrique":"venin","veuvenoire":"venin","autruche":"proie","renardpolaire":"charo","zebre":"proie","rhinocerosblanc":"colosse","macareuxmoine":"proie","loutredemer":"proie","castor":"carap","blaireau":"carap","sanglier":"charo","ecureuilroux":"proie","cerfelaphe":"proie","moineaudomestique":"charo","corbeaufreux":"charo","mesangecharbonniere":"charo","pigeonbiset":"charo","bourdon":"venin","lievre":"proie","coccinelle":"carap","libellule":"proie","papillonmonarque":"venin","fourmirousse":"venin","lombric":"charo","carpe":"charo","escargotdebourgogne":"carap","heroncendre":"charo","vipereaspic":"venin","crapaudcommun":"venin","lezarddesmurailles":"carap","goldenretriever":"proie","bergerallemand":"pred","labradorretriever":"proie","medusecommune":"venin","caniche":"proie","teckel":"proie","beagle":"proie","bouledoguefrancais":"proie","dalmatien":"proie","shibainu":"proie","corgi":"proie","bordercollie":"proie","huskysiberien":"proie","bergerbelgemalinois":"pred","levriergreyhound":"proie","schipperke":"proie","bouvierbernois":"colosse","samoyede":"proie","dogueallemand":"colosse","saintbernard":"colosse","basenji":"proie","bouvierdesflandres":"colosse","akitainu":"colosse","sphynx":"pred","chiendesainthubert":"colosse","xoloitzcuintle":"proie","lundehundnorvegien":"proie","chienlouptchecoslovaque":"pred","britishshorthair":"pred","siamois":"pred","persan":"pred","chatdegouttieretigre":"pred","bengal":"pred","ragdoll":"pred","chatdesforetsnorvegiennes":"pred","sacredebirmanie":"pred","chartreux":"pred","mauegyptien":"pred","abyssin":"pred","turcdevan":"pred","korat":"pred","chatdepallas":"pred","singapura":"pred","thylacine":"pred","dodo":"proie","serval":"pred","lynxboreal":"pred","caracal":"pred","aurochs":"colosse","quagga":"proie","rhytinedesteller":"colosse","pigeonmigrateuramericain":"proie","grandpingouin":"proie","mammouthlaineux":"colosse","tigredejava":"pred","baiji":"proie","aigledehaast":"pred","moageant":"colosse","spinosaure":"pred","paresseuxgeantmegatherium":"colosse","cerfgeantmegaceros":"colosse","rhinoceroslaineux":"colosse","smilodon":"pred","tyrannosaure":"pred","glyptodon":"carap","stegosaure":"carap","brachiosaure":"colosse","velociraptor":"pred","triceratops":"colosse","pteranodon":"proie","ankylosaure":"carap","mosasaure":"pred","paon":"proie","capybara":"proie","trilobite":"carap","archeopteryx":"proie","megalodon":"pred","titanoboa":"colosse","hippocampe":"carap","lemurcatta":"proie","fennec":"charo","flamantrose":"proie","wombat":"carap","loupacriniere":"charo","toucan":"charo","quokka":"charo","pandaroux":"proie","arahyacinthe":"proie","tapir":"colosse","harfangdesneiges":"pred","morphobleu":"proie","mantereligieuse":"pred","narval":"colosse","requinmarteau":"pred","iguanemarin":"carap","casoar":"colosse","diabledetasmanie":"charo","poulpedumbo":"proie","tarsier":"proie","baudroieabyssale":"pred","kiwi":"proie","requinbaleine":"colosse","oursesprit":"colosse","oursalunettes":"colosse"}/*FIN*/;
-const clOf=c=>CLASSE[c.id]||'proie';
-/* Force de 1 à 10 : rang de l'animal parmi tous (stats et rareté) ; coût selon la force */
+/* ================= valeur d'un animal (sert à la cote du Marché) ================= */
 const FORCE=(()=>{const sc=c=>c.s.reduce((a,b)=>a+b,0)+RAR[c.r].o*25,ord=CARDS.slice().sort((a,b)=>sc(a)-sc(b)),f={};
   ord.forEach((c,i)=>f[c.id]=1+Math.floor(i*10/ord.length));return f})();
-const COST=[0,1,1,2,2,3,3,4,5,5,6];
-const fOf=c=>FORCE[c.id],kOf=c=>COST[FORCE[c.id]];
-const beats=(a,b)=>CL[a].bat===b;
-function badge(c){const k=clOf(c);return `<span class="dbadge" title="${CL[k].n}">${CL[k].e}<b>${fOf(c)}</b><i>⚡${kOf(c)}</i></span>`}
+const fOf=c=>FORCE[c.id];
 
 /* ================= points ================= */
 let pts=ld('pts',100);
@@ -29,131 +14,167 @@ const fr=v=>v.toLocaleString('fr-FR');
 function giveOne(id){col[id]=(col[id]||0)+1;sv('col',col)}
 function takeOne(id){if(!col[id])return false;col[id]--;if(!col[id])delete col[id];sv('col',col);return true}
 
-/* ================= duel « Chaîne alimentaire » ================= */
-const TEAM=8,ENERGY=17,BONUS=3,ROUNDS=5,WIN=3,DAILY=5;
-let team=ld('team',[]),DU=null,teamEdit=false;
+/* ================= duel façon Pokémon TCG Pocket (moteur dans combat.js) ================= */
+const DAILY=5;
+let team=ld('deck',[]),DU=null,teamEdit=false,DSEL=null;
 const today=()=>{const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()};
 let dw=ld('dw',{d:0,n:0});
-function autoTeam(){
-  /* les plus efficaces (force par point de coût) d'abord, en gardant au plus 2 cartes à 5 ou 6 de coût */
-  const own=owned().slice().sort((a,b)=>(fOf(b)/kOf(b))-(fOf(a)/kOf(a))||fOf(b)-fOf(a));
-  const big=owned().filter(c=>kOf(c)>=5).sort((a,b)=>fOf(b)-fOf(a)).slice(0,2);
-  const t=big.map(c=>c.id);own.forEach(c=>{if(t.length<TEAM&&!t.includes(c.id))t.push(c.id)});
-  team=t.slice(0,TEAM);sv('team',team);
+const ownList=()=>owned().map(c=>({c,n:col[c.id]}));
+function autoTeam(){team=autoDeck(ownList()).map(c=>c.id);sv('deck',team)}
+function deckCards(){
+  /* le deck sauvegardé, sans les cartes vendues ; complété par des prêts si l'album est petit */
+  const cnt={},cs=[];team.forEach(id=>{if(BY[id]&&(cnt[id]||0)<Math.min(2,col[id]||0)){cnt[id]=(cnt[id]||0)+1;cs.push(BY[id])}});
+  const loan=shuffle(CARDS.filter(c=>c.r==='bronze'||c.r==='argent')).slice(0,Math.max(0,DECK_N-cs.length));
+  return{cs:cs.concat(loan),loans:loan.length};
 }
-function teamCards(){
-  team=team.filter(id=>col[id]&&BY[id]);
-  const cs=team.map(id=>BY[id]);
-  /* collection trop petite : la Naturaliste prête des cartes simples */
-  const loan=shuffle(CARDS.filter(c=>fOf(c)<=4&&!team.includes(c.id))).slice(0,Math.max(0,TEAM-cs.length));
-  return cs.map(c=>({c,loan:false})).concat(loan.map(c=>({c,loan:true})));
-}
-function oppTeam(mine){
-  /* même total de force que le joueur, à 3 points près */
-  const goal=mine.reduce((a,x)=>a+fOf(x.c),0);let bestT=null,bd=1e9;
-  for(let t=0;t<60;t++){const cs=shuffle(CARDS.slice()).slice(0,TEAM),d=Math.abs(cs.reduce((a,c)=>a+fOf(c),0)-goal);if(d<bd){bd=d;bestT=cs}if(d<=3)break}
-  return bestT.map(c=>({c}));
-}
+function oppDeck(){const n=Math.max(30,owned().length);return autoDeck(shuffle(CARDS.slice()).slice(0,n).map(c=>({c,n:Math.random()<.4?2:1})))}
+const typeChip=t=>`<span class="tchip" title="${TYPES[t].n}">${TYPES[t].e}</span>`;
+function ficheHTML(c){const f=fiche(c),w=TYPES[f.type].weak;
+  return `<div class="fiche"><div class="fh">${typeChip(f.type)}<b>${esc(c.n)}</b><span>PV <b>${f.hp}</b></span></div>
+    <div class="fatk"><span class="cost">${'⚡'.repeat(f.cost)}</span><b>${esc(f.atk)}</b><span class="dmg">${f.dmg}</span></div>
+    ${f.eff?`<p>${esc(f.eff.t)}</p>`:''}
+    <div class="ff"><span>Faiblesse ${TYPES[w].e} +20</span><span>Retraite ${f.retreat?'⚡'.repeat(f.retreat):'gratuite'}</span>${f.pts>1?'<span>KO : 2 points</span>':''}</div></div>`}
+function monHTML(m,cls,attr){
+  const f=m.f,left=Math.max(0,f.hp-m.dmg),pc=left/f.hp*100;
+  return `<button class="mon ${cls||''}" ${attr||''}>${card(m.c,true)}
+    <span class="hpb"><i style="width:${pc}%;background:${pc>50?'#7fc79a':pc>25?'#e3b653':'#e0606e'}"></i></span>
+    <span class="hpt">${typeChip(f.type)} ${left}/${f.hp}</span>
+    <span class="ens">${'<i></i>'.repeat(m.en)}${m.en<f.cost?'<i class="no"></i>'.repeat(f.cost-m.en):''}</span>
+    ${m.poison?'<span class="psn">☠️</span>':''}</button>`}
+const sideOf=()=>DU.G.s[0],oppOf=()=>DU.G.s[1];
+const say=t=>{DU.msg=t};
 function newDuel(){
-  const me=teamCards();
-  DU={me:{hand:me,nrg:ENERGY,pts:0},op:{hand:oppTeam(me),nrg:ENERGY,pts:0},n:0,sel:null,last:null,over:false,log:[]};
+  const d=deckCards();
+  DU={G:newGame(d.cs,oppDeck(),Math.random()<.5),phase:'setup',mode:null,msg:'Choisissez votre animal actif dans votre main, puis ajoutez-en jusqu\'à 3 sur le banc.'};
+  aiSetup(DU.G,1);const o=oppOf();o.hand.slice().sort((a,b)=>b.f.hp-a.f.hp).forEach(m=>{if(o.bench.length<2)toBench(o,m)});
 }
-/* force jouée : force de la carte, +3 si sa classe bat celle d'en face */
-function val(x,y){if(!x)return{v:0,b:0};const b=y&&beats(clOf(x.c),clOf(y.c))?BONUS:0;return{v:fOf(x.c)+b,b}}
-function aiPick(s,left){
-  const ok=s.hand.filter(x=>kOf(x.c)<=s.nrg);if(!ok.length)return null;
-  const target=s.nrg/Math.max(1,left);
-  return ok.map(x=>({x,sc:fOf(x.c)-Math.abs(kOf(x.c)-target)*1.3+Math.random()*2.5})).sort((a,b)=>b.sc-a.sc)[0].x;
+function myStart(){DU.phase='me';startTurn(DU.G);if(DU.G.n===0)say('Vous commencez. Le premier tour se joue sans énergie.');else say('À vous : posez des animaux, attachez votre énergie ⚡, puis attaquez.')}
+function afterAction(){
+  const G=DU.G;
+  if(G.over)return endDuel();
+  if(!sideOf().act){if(sideOf().bench.length){DU.mode='promote';say('Votre animal est KO : choisissez un remplaçant sur votre banc.')}
+    else{G.over=true;G.win=1;return endDuel()}}
+  rDuel();
 }
-function resolve(x,y){
-  const me=DU.me,op=DU.op,a=val(x,y),b=val(y,x);
-  let r=a.v>b.v?1:a.v<b.v?-1:0;
-  if(!r&&x&&y){const cx=clOf(x.c)==='carap',cy=clOf(y.c)==='carap';if(cx&&!cy)r=1;else if(cy&&!cx)r=-1;else r=Math.sign(kOf(y.c)-kOf(x.c));DU.tie=r?(cx||cy?'carap':'cheap'):''}else DU.tie=''
-  if(x){me.hand.splice(me.hand.indexOf(x),1);me.nrg-=kOf(x.c)}
-  if(y){op.hand.splice(op.hand.indexOf(y),1);op.nrg-=kOf(y.c)}
-  if(r>0)me.pts++;else if(r<0)op.pts++;
-  DU.n++;DU.last={x,y,a,b,r};DU.sel=null;
-  if(me.pts>=WIN||op.pts>=WIN||DU.n>=ROUNDS)endDuel();
+function lastLog(){const L=DU.G.log;return L[L.length-1]}
+function logTxt(e){
+  if(!e)return'';
+  if(e.atk)return `${e.side?'La Naturaliste':'Vous'} : ${BY[e.atk].n} utilise ${fiche(BY[e.atk]).atk}, ${e.v} dégâts à ${BY[e.to].n}.`;
+  if(e.ko)return `${BY[e.ko].n} est KO ! ${e.side?'+'+e.pts+' point'+(e.pts>1?'s':'')+' pour vous.':'+'+e.pts+' point'+(e.pts>1?'s':'')+' pour la Naturaliste.'}`;
+  if(e.poison)return `${BY[e.poison].n} souffre du poison : 10 dégâts.`;return'';
 }
-function playRound(x){
-  const left=ROUNDS-DU.n,y=aiPick(DU.op,left);
-  resolve(x,y);rDuel();
+function myEnd(){
+  const G=DU.G;if(G.over)return;
+  const before=G.log.length;endTurn(G);
+  if(G.over)return endDuel();
+  aiPhase(G.log.slice(before).map(logTxt).filter(Boolean));
+}
+function aiPhase(pre){
+  const G=DU.G;DU.phase='ai';say((pre||[]).join(' ')||'Tour de la Naturaliste…');rDuel();
+  setTimeout(()=>{if(!DU||DU.G!==G)return;
+    startTurn(G);if(!oppOf().act)aiSetup(G,1);
+    const b=G.log.length;aiTurn(G,1);const msgs=G.log.slice(b).map(logTxt).filter(Boolean);
+    if(G.over)return endDuel();
+    const b2=G.log.length;endTurn(G);msgs.push(...G.log.slice(b2).map(logTxt).filter(Boolean));
+    if(G.over)return endDuel();
+    if(!oppOf().act)aiSetup(G,1);
+    if(!oppOf().act){G.over=true;G.win=0;return endDuel()}
+    myStart();if(msgs.length)say(msgs.join(' '));
+    afterAction()},900);
 }
 function endDuel(){
-  DU.over=true;const r=DU.me.pts!==DU.op.pts?Math.sign(DU.me.pts-DU.op.pts):Math.sign(DU.me.nrg-DU.op.nrg);DU.res=r;
+  const G=DU.G;DU.phase='over';const r=G.win===0?1:G.win===1?-1:0;DU.res=r;
   if(dw.d!==today())dw={d:today(),n:0};
   let g=r>0?(dw.n<DAILY?60:10):r===0?20:10;if(r>0)dw.n++;sv('dw',dw);
   if(r>0){wins++;sv('wins',wins)}
-  DU.gain=g;setPts(pts+g);
+  DU.gain=g;setPts(pts+g);rDuel();
 }
 function rDuel(){
   const m=$('main');
   if(teamEdit)return rTeam();
   if(!DU){
-    if(team.filter(id=>col[id]).length<TEAM&&owned().length>team.length)autoTeam();
-    const me=teamCards(),loans=me.filter(x=>x.loan).length;
-    if(dw.d!==today())dw={d:today(),n:0};
-    m.innerHTML=`<h2>Duel · Chaîne alimentaire</h2><p class="lead">Contre la Naturaliste. Premier à ${WIN} manches gagnées.</p>
-      <div class="cyc">${CL_ORDER.slice(0,5).map(k=>`<span>${CL[k].e} ${CL[k].n}</span>`).join('<i>›</i>')}<i>›</i><span>${CL.pred.e}</span></div>
-      <p class="lead" style="text-align:center;margin-top:-4px">Chaque classe bat la suivante (+3). ${CL.carap.e} ${CL.carap.n} : gagne les égalités.</p>
-      <h3 class="h3">Mon équipe (${TEAM} cartes)</h3>
-      <div class="grid dgrid">${me.map(x=>`<button data-id="${x.c.id}">${card(x.c,true)}${badge(x.c)}${x.loan?'<span class="loan">prêt</span>':''}</button>`).join('')}</div>
-      ${loans?`<p class="lead" style="margin-top:10px">Il vous manque ${loans} carte${loans>1?'s':''} : la Naturaliste vous les prête. Ouvrez des sachets pour jouer avec les vôtres.</p>`:''}
-      <div class="row" style="margin-top:14px"><button class="btn" id="go">Commencer un duel</button><button class="btn ghost" id="edit">Changer mon équipe</button></div>
-      <p class="lead" style="text-align:center;margin-top:10px">Victoire : ${dw.n<DAILY?60:10} points (${Math.max(0,DAILY-dw.n)} victoire${DAILY-dw.n>1?'s':''} à plein tarif aujourd'hui). Nul : 20. Défaite : 10.</p>
-      <details class="rules"><summary>Comment jouer</summary>
-      <p>Chaque carte a une <b>classe</b>, une <b>force</b> (de 1 à 10) et un <b>coût</b> en énergie ⚡.</p>
-      <p>Vous avez ${ENERGY} ⚡ pour tout le duel. À chaque manche, chacun pose une carte en secret, puis on retourne : la plus forte gagne la manche.</p>
-      <p>Si votre classe bat celle d'en face, +3 de force. En cas d'égalité, la Carapace gagne, sinon la carte la moins chère gagne.</p><p>Après 5 manches sans vainqueur, celui à qui il reste le plus d'énergie gagne.</p>
-      <p>Les grosses cartes coûtent cher : gardez de l'énergie pour les dernières manches. Une petite carte bien placée bat une grande.</p></details>`;
-    m.querySelectorAll('.dgrid [data-id]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.id])));
+    if(team.filter(id=>col[id]).length<DECK_N&&owned().length>new Set(team).size)autoTeam();
+    const d=deckCards();if(dw.d!==today())dw={d:today(),n:0};
+    m.innerHTML=`<h2>Duel</h2><p class="lead">Contre la Naturaliste. Mettez KO ses animaux : le premier à ${GOAL_PTS} points gagne.</p>
+      <div class="row"><button class="btn" id="go">Commencer un duel</button><button class="btn ghost" id="edit">Modifier mon deck</button></div>
+      <p class="lead" style="text-align:center;margin-top:10px">Victoire : ${dw.n<DAILY?60:10} points (${Math.max(0,DAILY-dw.n)} à plein tarif aujourd'hui). Nul : 20. Défaite : 10.</p>
+      <details class="rules" open><summary>Comment jouer</summary>
+      <p>Chaque animal a des <b>PV</b>, une <b>attaque</b> qui coûte des énergies ⚡, un <b>type</b> et une <b>faiblesse</b> (+20 dégâts).</p>
+      <p>À votre tour : piochez, posez des animaux sur le banc (3 au plus), attachez <b>1 énergie</b> à un de vos animaux, puis attaquez avec votre animal actif.</p>
+      <p>Un animal KO rapporte 1 point à l'adversaire, 2 pour les géants (150 PV et plus). Premier à ${GOAL_PTS} points.</p>
+      <p>Faiblesses : ${Object.values(TYPES).map(t=>`${t.e} ${t.n} craint ${TYPES[t.weak].e}`).join(' · ')}.</p></details>
+      <h3 class="h3">Mon deck (${DECK_N} cartes)${d.loans?` · ${d.loans} prêtée${d.loans>1?'s':''}`:''}</h3>
+      <div class="grid">${d.cs.map(c=>`<button data-id="${c.id}">${card(c,true)}<span class="dbadge">${typeChip(fiche(c).type)}<b>${fiche(c).hp}</b><i>PV</i></span></button>`).join('')}</div>`;
+    m.querySelectorAll('.grid [data-id]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.id])));
     $('go').addEventListener('click',()=>{newDuel();rDuel()});
     $('edit').addEventListener('click',()=>{teamEdit=true;rDuel()});
     return;
   }
-  const me=DU.me,op=DU.op,L=DU.last;
-  if(DU.over){
+  const G=DU.G,me=sideOf(),op=oppOf();
+  if(DU.phase==='over'){
     const r=DU.res;
     m.innerHTML=`<div class="end"><p class="lead" style="margin:0">Fin du duel</p><div class="big${r<0?' ko':''}">${r>0?'Victoire':r<0?'Défaite':'Match nul'}</div>
-      <p style="font-size:20px;margin:0 0 6px">${me.pts} – ${op.pts}</p><p class="lead">+${DU.gain} points pour le Marché.</p>
-      <div class="row"><button class="btn" id="again">Rejouer</button><button class="btn ghost" id="back">Mon équipe</button></div></div>`;
+      <p style="font-size:20px;margin:0 0 6px">${me.pts} – ${op.pts}</p><p class="lead">+${DU.gain} points pour la Salle des ventes.</p>
+      <div class="row"><button class="btn" id="again">Rejouer</button><button class="btn ghost" id="back">Mon deck</button></div></div>`;
     $('again').addEventListener('click',()=>{newDuel();rDuel()});$('back').addEventListener('click',()=>{DU=null;rDuel()});return;
   }
-  const pip=n=>`<div class="pips">${Array.from({length:WIN},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</div>`;
-  const slot=(x,v,w)=>x?`${card(x.c,true)}${badge(x.c)}<div class="val ${w}">${v.v}</div><div class="parts">${v.b?'+'+v.b+' classe':'&nbsp;'}</div>`:`<div class="empty">${L?'aucune carte':'en attente'}</div><div class="val">${L?0:''}</div>`;
-  let msg='';
-  if(L){const cx=L.x&&clOf(L.x.c),cy=L.y&&clOf(L.y.c);
-    msg=L.r>0?'<b>Manche gagnée</b>':L.r<0?'<b class="ko">Manche perdue</b>':'<b>Égalité</b>';
-    if(L.a.b)msg+=`${CL[cx].n} bat ${CL[cy].n}.`;else if(L.b.b)msg+=`${CL[cy].n} bat ${CL[cx].n}.`;
-    else if(DU.tie==='carap')msg+='La Carapace gagne l\'égalité.';else if(DU.tie==='cheap')msg+='Égalité de force : la carte la moins chère gagne.';}
-  else msg='<b>Manche 1</b>Choisissez une carte, puis « Jouer ».';
-  const canAny=me.hand.some(x=>kOf(x.c)<=me.nrg);
-  m.innerHTML=`<div class="score"><div><b>Vous</b>${pip(me.pts)}</div><div class="sc">${me.pts} – ${op.pts}</div><div><b>Naturaliste</b>${pip(op.pts)}</div></div>
-    <div class="nrg"><span>Vous ⚡ <b>${me.nrg}</b>/${ENERGY}</span><span>Manche ${Math.min(DU.n+1,ROUNDS)}/${ROUNDS}</span><span>Naturaliste ⚡ <b>${op.nrg}</b></span></div>
-    <div class="arena"><div class="slot"><span class="lab">Vous</span>${L?slot(L.x,L.a,L.r>0?'w':L.r<0?'l':''):'<div class="empty">votre carte</div>'}</div>
-      <div class="vs"><b>VS</b></div>
-      <div class="slot"><span class="lab">Naturaliste</span>${L?slot(L.y,L.b,L.r<0?'w':L.r>0?'l':''):'<div class="empty">carte cachée</div>'}</div></div>
-    <div class="msg">${msg}</div>
-    <div class="grid dgrid hand8">${me.hand.map((x,i)=>{const off=kOf(x.c)>me.nrg;return `<button data-h="${i}" class="${DU.sel===x?'sel':''}"${off?' disabled':''}>${card(x.c,true)}${badge(x.c)}${off?'<span class="loan">trop cher</span>':''}</button>`}).join('')}</div>
-    <div class="row" style="margin-top:12px">${canAny?`<button class="btn" id="playB"${DU.sel?'':' disabled'}>${DU.sel?'Jouer '+esc(DU.sel.c.n):'Choisissez une carte'}</button>`:'<button class="btn" id="passB">Plus assez d\'énergie : passer</button>'}
-      <button class="btn ghost" id="quit">Abandonner</button></div>`;
-  m.querySelectorAll('[data-h]').forEach(b=>b.addEventListener('click',()=>{const x=me.hand[+b.dataset.h];DU.sel=DU.sel===x?null:x;rDuel()}));
-  if($('playB'))$('playB').addEventListener('click',()=>{if(DU.sel)playRound(DU.sel)});
-  if($('passB'))$('passB').addEventListener('click',()=>playRound(null));
-  $('quit').addEventListener('click',()=>{if($('quit').dataset.ok){DU.me.pts=0;DU.op.pts=WIN;endDuel();rDuel()}else{$('quit').dataset.ok=1;$('quit').textContent='Sûr ? Touchez encore'}});
+  const pip=n=>`<span class="pips">${Array.from({length:GOAL_PTS},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</span>`;
+  const myTurn=DU.phase==='me'&&!DU.mode,setup=DU.phase==='setup';
+  const a=me.act,d=op.act,canAtk=myTurn&&a&&d&&canAttack(a)&&!G.attacked;
+  const sel=DSEL&&[me.act,...me.bench,...me.hand].find(x=>x&&x.u===DSEL);
+  m.innerHTML=`<div class="board">
+    <div class="bside op"><div class="binfo"><b>Naturaliste</b>${pip(op.pts)}<span>🂠 ${op.hand.length} · pioche ${op.deck.length}</span></div>
+      <div class="bench">${op.bench.map(x=>monHTML(x,'sm',`data-o="${x.u}"`)).join('')}${'<span class="slot0"></span>'.repeat(BENCH-op.bench.length)}</div>
+      <div class="act">${d?monHTML(d,'big',`data-o="${d.u}"`):'<span class="slot0 big"></span>'}</div></div>
+    <div class="bmsg">${esc(DU.msg||'')}</div>
+    <div class="bside me"><div class="act">${a?monHTML(a,'big'+(DU.mode==='attach'?' tgt':''),`data-m="${a.u}"`):'<span class="slot0 big">votre actif</span>'}</div>
+      <div class="bench">${me.bench.map(x=>monHTML(x,'sm'+((DU.mode==='attach'||DU.mode==='retreat'||DU.mode==='promote')?' tgt':''),`data-m="${x.u}"`)).join('')}${'<span class="slot0"></span>'.repeat(BENCH-me.bench.length)}</div>
+      <div class="binfo"><b>Vous</b>${pip(me.pts)}<span>pioche ${me.deck.length}</span></div></div>
+    ${sel?ficheHTML(sel.c):a?ficheHTML(a.c):''}
+    <div class="bact">
+      ${setup?`<button class="btn" id="ready"${a?'':' disabled'}>${a?'Prêt : commencer':'Choisissez un actif'}</button>`:''}
+      ${myTurn?`<button class="btn${canAtk?'':' ghost'}" id="atk"${canAtk?'':' disabled'}>${a?`Attaquer : ${a.f.atk} (${d?damageOf(G,0,a,d):a.f.dmg})`:'Attaquer'}</button>
+        <button class="btn ghost" id="en"${G.energy?'':' disabled'}>${G.energy?'⚡ Attacher':'⚡ déjà utilisée'}</button>
+        <button class="btn ghost" id="ret"${a&&me.bench.length&&!G.retreated&&a.en>=a.f.retreat?'':' disabled'}>Retraite</button>
+        <button class="btn ghost" id="end">Fin du tour</button>`:''}
+      ${DU.mode&&DU.mode!=='promote'?'<button class="btn ghost" id="cancel">Annuler</button>':''}
+      ${DU.phase==='ai'?'<p class="lead">La Naturaliste réfléchit…</p>':''}
+    </div>
+    <h3 class="h3">Ma main (${me.hand.length})</h3>
+    <div class="hand2">${me.hand.map(x=>`<button data-h="${x.u}">${card(x.c,true)}<span class="dbadge">${typeChip(x.f.type)}<b>${x.f.hp}</b><i>PV</i></span></button>`).join('')||'<p class="lead">Main vide.</p>'}</div>
+    <div class="row" style="margin-top:14px"><button class="btn ghost" id="quit">Abandonner</button></div></div>`;
+  const find=u=>[me.act,...me.bench,...me.hand].find(x=>x&&x.u===+u);
+  m.querySelectorAll('[data-h]').forEach(b=>b.addEventListener('click',()=>{const x=find(b.dataset.h);DSEL=x.u;
+    if(setup||myTurn){if(!me.act){promote(me,x);say(x.c.n+' est votre animal actif.')}else if(me.bench.length<BENCH){toBench(me,x);say(x.c.n+' rejoint le banc.')}else say('Le banc est plein (3 animaux).')}
+    rDuel()}));
+  m.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const x=find(b.dataset.m);DSEL=x.u;
+    if(DU.mode==='attach'){attach(G,x);DU.mode=null;say('Énergie attachée à '+x.c.n+'.')}
+    else if(DU.mode==='retreat'&&x!==me.act){retreat(G,me,x);DU.mode=null;say(x.c.n+' passe à l\'avant.')}
+    else if(DU.mode==='promote'&&x!==me.act){promote(me,x);DU.mode=null;say(x.c.n+' entre en jeu.')}
+    rDuel()}));
+  m.querySelectorAll('[data-o]').forEach(b=>b.addEventListener('click',()=>{const x=[op.act,...op.bench].find(y=>y&&y.u===+b.dataset.o);if(x){DSEL=null;$('main').querySelector('.fiche')&&($('main').querySelector('.fiche').outerHTML=ficheHTML(x.c))}}));
+  if($('ready'))$('ready').addEventListener('click',()=>{if(G.turn===0){myStart();rDuel()}else aiPhase(['La Naturaliste commence.'])});
+  if($('atk'))$('atk').addEventListener('click',()=>{const b=G.log.length;attack(G);say(G.log.slice(b).map(logTxt).join(' '));buzz(30);
+    if(G.over)return endDuel();if(!op.act)aiSetup(G,1);if(!op.act&&!op.bench.length){G.over=true;G.win=0;return endDuel()}myEnd()});
+  if($('en'))$('en').addEventListener('click',()=>{DU.mode='attach';say('Touchez l\'animal qui reçoit l\'énergie.');rDuel()});
+  if($('ret'))$('ret').addEventListener('click',()=>{DU.mode='retreat';say('Touchez l\'animal du banc qui prend la place. Coût : '+(a.f.retreat||'aucune')+' énergie.');rDuel()});
+  if($('end'))$('end').addEventListener('click',myEnd);
+  if($('cancel'))$('cancel').addEventListener('click',()=>{DU.mode=null;say('');rDuel()});
+  $('quit').addEventListener('click',()=>{if($('quit').dataset.ok){G.over=true;G.win=1;endDuel()}else{$('quit').dataset.ok=1;$('quit').textContent='Sûr ? Touchez encore'}});
 }
 function rTeam(){
-  const m=$('main'),own=owned().slice().sort((a,b)=>fOf(b)-fOf(a)||a.n.localeCompare(b.n,'fr'));
-  m.innerHTML=`<h2>Mon équipe</h2><p class="lead">Choisissez ${TEAM} cartes (${team.length}/${TEAM}). Touchez une carte pour l'ajouter ou la retirer.</p>
-    <div class="row"><button class="btn" id="ok">Valider</button><button class="btn ghost" id="auto">Équipe automatique</button></div>
+  const m=$('main'),own=owned().slice().sort((a,b)=>fiche(b).hp+fiche(b).dmg-fiche(a).hp-fiche(a).dmg);
+  const cnt={};team.forEach(id=>cnt[id]=(cnt[id]||0)+1);
+  m.innerHTML=`<h2>Mon deck</h2><p class="lead">${team.length}/${DECK_N} cartes, 2 exemplaires au plus. Touchez une carte pour en mettre 1, 2 ou 0.</p>
+    <div class="row"><button class="btn" id="ok">Valider</button><button class="btn ghost" id="auto">Deck automatique</button></div>
     <div class="tools" style="margin-top:12px"><input class="search" id="q" type="search" placeholder="Rechercher un animal" autocomplete="off"></div>
-    <div class="grid dgrid">${own.map(c=>{const k=team.indexOf(c.id);return `<button data-id="${c.id}" data-n="${esc(norm(c.n))}" aria-pressed="${k>=0}"${k>=0?' class="pick"':''}>${card(c,true)}${badge(c)}</button>`}).join('')}</div>
+    <div class="grid">${own.map(c=>`<button data-id="${c.id}" data-n="${esc(norm(c.n))}"${cnt[c.id]?' class="pick"':''}>${card(c,true)}<span class="dbadge">${typeChip(fiche(c).type)}<b>${fiche(c).hp}</b><i>PV</i></span>${cnt[c.id]?`<span class="cnt">×${cnt[c.id]}</span>`:''}</button>`).join('')}</div>
     ${own.length?'':'<p class="lead">Votre album est vide : ouvrez des sachets.</p>'}`;
-  $('ok').addEventListener('click',()=>{teamEdit=false;sv('team',team);rDuel()});
+  $('ok').addEventListener('click',()=>{teamEdit=false;sv('deck',team);rDuel()});
   $('auto').addEventListener('click',()=>{autoTeam();rTeam()});
-  m.querySelectorAll('.grid [data-id]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.id,k=team.indexOf(id);
-    if(k>=0)team.splice(k,1);else if(team.length<TEAM)team.push(id);else{toast(TEAM+' cartes au plus');return}
-    const y=m.scrollTop;sv('team',team);rTeam();m.scrollTop=y}));
+  m.querySelectorAll('.grid [data-id]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.id,n=cnt[id]||0,max=Math.min(2,col[id]||0);
+    if(n<max&&team.length<DECK_N)team.push(id);else if(n>0)team=team.filter(x=>x!==id);else{toast(DECK_N+' cartes au plus');return}
+    const y=m.scrollTop;sv('deck',team);rTeam();m.scrollTop=y}));
   bindSearch(m,()=>{});
 }
 if(!team.length&&owned().length)autoTeam();
@@ -163,7 +184,7 @@ const defVal=c=>r5(cote(c)/10);
 function viewActs(c){
   const box=$('viewAct'),n=col[c.id]||0;
   if(!n||tab==='demo'||!ST.hidden){box.innerHTML='';return}
-  box.innerHTML=`<div class="vact"><span>${n} exemplaire${n>1?'s':''} · cote ${fr(cote(c))} · ${CL[clOf(c)].e} ${CL[clOf(c)].n}, force ${fOf(c)}, ⚡${kOf(c)}</span>
+  box.innerHTML=`<div class="vact"><span>${n} exemplaire${n>1?'s':''} · cote ${fr(cote(c))} </span>${ficheHTML(c)}
     <div class="row"><button class="btn" data-v="sell">Vendre</button><button class="btn ghost" data-v="del">Défausser : +${defVal(c)} points</button></div></div>`;
   box.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();
     if(b.dataset.v==='sell'){$('view').hidden=true;sellSel=c.id;mkTab='sell';tab='marche';render();return}
