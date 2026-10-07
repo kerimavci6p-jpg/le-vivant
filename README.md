@@ -49,3 +49,14 @@ Règle fondamentale : **une seule carte active par joueur**.
 
 Phases suivantes : 2 multijoueur (serveur qui décide de tout : Supabase Realtime ou un petit serveur Node avec Socket.IO),
 3 comptes et decks en ligne, 4 matchmaking et classement, 5 contenu.
+
+## L'Affût (onglet Duel, à côté de WILD DUEL)
+
+Duel court de bluff : 5 manches au plus, premier à 3. Moteur dans `affut.js`, écrans dans `affut-ui.js`, tests : `node tests/affut.test.js`.
+
+- **Deck de 12 cartes**, un exemplaire par animal, **budget de 50** points de coût, au plus 1 Légende, 2 Noires et 2 stars (coût 8+). 3 decks enregistrables.
+- **Instinct** : +1 à toutes les manches par tranche de 5 points de budget non dépensés.
+- **Terrain** : chaque manche double une stat ; les familles chez elles gagnent +2. Les 2 terrains suivants sont visibles.
+- **Manche** : chacun pose une carte et choisit une épreuve en secret. Même épreuve : la plus forte valeur gagne. Épreuves différentes : la plus grande avance sur l'autre animal gagne.
+- **Outsider** : la carte la moins chère gagne +1 par point de coût d'écart (+3 au plus). Égalité : la moins chère gagne.
+- Réglages dans `CFG` en haut de `affut.js`.

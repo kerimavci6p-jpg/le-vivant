@@ -644,6 +644,47 @@ img{-webkit-user-drag:none}
   .wd{max-width:1080px;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);column-gap:22px;align-items:start}
   .wd>*{grid-column:2}.wd-bar.op{grid-column:1;grid-row:1}.wd-field{grid-column:1;grid-row:2/span 9;padding:10px 0}
   .wd-slot{width:min(220px,calc(30vh * .667))}.wd-banner{left:50%}}
+/* ---------- L'Affût ---------- */
+.af-mode{display:flex;width:max-content;margin:4px auto 6px}
+.af-gauge{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0 10px}
+.af-gauge>span{background:var(--ink-2);border:1px solid var(--line);border-radius:12px;padding:6px 8px;font-size:13px;color:var(--paper-dim);display:flex;flex-direction:column}
+.af-gauge>span:first-child{grid-column:1/-1}
+.af-gauge b{font-family:"Cinzel",serif;color:var(--gold-hi);font-size:16px;font-weight:400}
+.af-gauge i{display:block;height:6px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:4px}
+.af-gauge u{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-hi))}
+.af-gauge .bad b{color:#ff9aa5}.af-gauge .bad u{background:var(--oxblood)}
+.af-strip{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}.af-strip>span{flex:0 0 78px}
+.grid>button.af-off{filter:grayscale(.85) brightness(.55)}
+.af-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 10px}
+.af-sc{display:flex;flex-direction:column;align-items:center;min-width:76px}.af-sc small,.af-rd small{font-size:12px;color:var(--paper-dim)}
+.af-sc b{font-family:"Cinzel",serif;font-size:34px;color:var(--gold-hi);line-height:1}
+.af-rd{text-align:center;font-family:"Cinzel",serif;color:var(--paper);display:flex;flex-direction:column}
+.af-ter{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:6px 10px;background:var(--ink-2)}
+.af-ter em{font-style:normal;font-size:20px}.af-ter b{font-family:"Cinzel",serif;font-weight:400;color:var(--gold-hi);display:block;font-size:14px}.af-ter span{font-size:12.5px;color:var(--paper-dim)}
+.af-ter.big{padding:10px 14px;border-color:var(--gold);background:linear-gradient(120deg,color-mix(in srgb,var(--gold) 16%,var(--ink-2)),var(--ink-2))}
+.af-ter.big em{font-size:32px}.af-ter.big b{font-size:20px}.af-ter.big span{font-size:14px}
+.af-next{display:flex;align-items:center;gap:6px;margin:8px 0;overflow-x:auto}.af-next>small{color:var(--paper-dim);font-size:12px}.af-next .af-ter{flex:1 0 auto}
+.af-info{display:flex;justify-content:space-between;gap:6px;font-size:13px;color:var(--paper-dim);margin:6px 0}.af-info b{color:var(--gold-hi)}
+.af-opp small{font-size:12.5px;color:var(--paper-dim)}.af-opp>div{display:flex;gap:6px;overflow-x:auto;padding:4px 0}.af-opp span{flex:0 0 58px;opacity:.85}
+.af-hand>button{flex-basis:clamp(92px,26vw,130px)}
+.af-home{position:absolute;left:50%;top:2px;transform:translateX(-50%);background:var(--win);color:#0d2416;font-size:11px;font-weight:700;padding:1px 7px;border-radius:99px;white-space:nowrap}
+.af-stats button small{display:inline;color:var(--gold);font-size:11px}
+.af-stats button:disabled{opacity:.5;cursor:default}
+.af-duel{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin:12px 0}
+.af-side{text-align:center}.af-side small{display:block;font-size:12.5px;color:var(--paper-dim);margin-bottom:4px}
+.af-flip{position:relative;max-width:150px;margin:auto;perspective:800px}
+.af-flip .af-face,.af-flip .af-back{backface-visibility:hidden;transition:transform .55s ease}
+.af-flip .af-face{transform:rotateY(180deg)}
+.af-flip .af-back{position:absolute;inset:0;border-radius:10px;background:url(art/dos.webp) center/cover,var(--ink-3);box-shadow:0 0 0 2px var(--gold)}
+.af-flip.on .af-face{transform:none}.af-flip.on .af-back{transform:rotateY(-180deg)}
+.af-cd{font-family:"Cinzel",serif;font-size:42px;color:var(--gold-hi);min-width:50px;text-align:center;animation:afp .65s ease infinite}
+.af-cd.w{color:var(--win);animation:none}.af-cd.l{color:#ff9aa5;animation:none}
+@keyframes afp{0%{transform:scale(1.4);opacity:.3}100%{transform:scale(1);opacity:1}}
+.af-exp{background:var(--ink-2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14.5px}
+.af-exp p{margin:4px 0}.af-exp .m{color:var(--paper-dim)}
+.af-exp .v{font-family:"Cinzel",serif;font-size:20px;text-align:center;margin-top:8px}.af-exp .v.w{color:var(--win)}.af-exp .v.l{color:#ff9aa5}
+.af-hist{text-align:left;max-width:520px;margin:10px auto}.af-hist p{font-size:14px;margin:4px 0;color:var(--paper-dim)}.af-hist p.w b{color:var(--win)}.af-hist p.l b{color:#ff9aa5}
+@media (min-width:900px){.af-gauge{grid-template-columns:repeat(6,1fr)}.af-gauge>span:first-child{grid-column:auto}.af-flip{max-width:170px}.af-duel{max-width:620px;margin:12px auto}}
 </style>
 
 </head>
@@ -1102,7 +1143,9 @@ setInterval(()=>{if(tab==='sachets'&&ST.hidden)render();else{refill();$('stockN'
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="duel.js"></script>
+<script src="affut.js"></script>
 <script src="jeu.js"></script>
+<script src="affut-ui.js"></script>
 <script src="config.js"></script>
 <script src="cloud.js"></script>
 <script>/* nouvelle version du jeu : on recharge la page une fois, tout seul */
