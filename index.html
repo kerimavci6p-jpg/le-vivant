@@ -597,6 +597,17 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
 .epr{display:flex;align-items:center;gap:12px;justify-content:center;margin:0 0 10px;padding:10px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(243,213,140,.3)}
 .epr>span{font-size:30px}.epr b{display:block;font-family:"Cinzel",serif;font-size:20px;color:var(--gold-hi)}.epr small{color:var(--paper-dim)}
 .dgrid .hv{bottom:-10px}
+/* ---------- position du concept : illustration plein cadre, titre en haut à gauche, parchemin et stats en bas ---------- */
+.vc .in{gap:1.6cqw}
+.vc-art{position:absolute;inset:2.7cqw;z-index:0;border-radius:3cqw;box-shadow:none;flex:none}
+.vc-art:after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(10,20,50,.85),rgba(10,20,50,.35) 18%,transparent 30%,transparent 55%,rgba(10,20,50,.55) 68%,rgba(10,20,50,.85))}
+.vc-head,.vc-desc,.vc-st{position:relative;z-index:2}
+.vc-head{margin-bottom:auto;align-items:flex-start}
+.vc-t{text-align:left;background:linear-gradient(90deg,rgba(10,20,50,.85),rgba(10,20,50,.55) 75%,transparent);border:0;border-bottom:.35cqw solid rgba(214,180,103,.8);border-left:.35cqw solid rgba(214,180,103,.8);border-radius:0 0 0 2cqw;padding:1cqw 2.6cqw 1.6cqw}
+.vc .nm{text-align:left}
+.vc-sub{border-top:0;padding-top:0;margin-top:.4cqw}
+.vc-desc{margin-top:auto;background:radial-gradient(120% 120% at 50% 40%,rgba(250,243,226,.96),rgba(236,221,184,.96))}
+.vc-st{background:linear-gradient(180deg,rgba(19,42,94,.95),rgba(12,24,56,.97))}
 </style>
 
 </head>
