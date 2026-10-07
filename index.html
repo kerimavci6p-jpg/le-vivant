@@ -552,6 +552,14 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
   .lv-atk{border-top:0;padding-top:0}.lv-atk b{font-size:9cqw}.lv-d{font-size:11cqw}.lv-e{width:8cqw;height:8cqw;font-size:4.5cqw}.lv-star{display:none}}
 @container (max-width:100px){.lv-low{display:none}.lv-top{left:5cqw;right:4cqw;top:5cqw}.lv-n{font-size:15cqw}.lv-hp{font-size:15cqw}.lv-ty{display:none}.lv-frame{inset:3cqw}}
 #view .lv{width:min(360px,88vw)}
+/* teinte bleu nuit commune, comme le concept « Orque Boréale » */
+.lv-art:after{content:"";position:absolute;inset:0;background:#0d1d4a;mix-blend-mode:color;opacity:.32;pointer-events:none}
+.lv-art:before{content:"";position:absolute;inset:0;z-index:1;background:radial-gradient(70% 50% at 50% 40%,rgba(255,236,190,.12),transparent 70%);pointer-events:none}
+.lv-art{overflow:hidden}
+.lv-n{font-weight:500;letter-spacing:.01em}
+.lv-sub{border-top:0;position:relative;padding-top:2.2cqw}
+.lv-sub:before{content:"";position:absolute;left:0;top:0;width:78%;height:.3cqw;background:linear-gradient(90deg,#d9b664 0 44%,transparent 44% 47%,#d9b664 47% 100%)}
+.lv-atk b,.lv-tal b{font-weight:500}
 </style>
 
 </head>
@@ -993,6 +1001,9 @@ setInterval(()=>{if(tab==='sachets'&&ST.hidden)render();else{refill();$('stockN'
 <script src="jeu.js"></script>
 <script src="config.js"></script>
 <script src="cloud.js"></script>
-<script>if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))</script>
+<script>/* nouvelle version du jeu : on recharge la page une fois, tout seul */
+if('serviceWorker' in navigator){let had=!!navigator.serviceWorker.controller,done=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!done){done=true;location.reload()}});
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}))}</script>
 </body>
 </html>
