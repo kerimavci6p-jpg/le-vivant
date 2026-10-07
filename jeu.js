@@ -191,12 +191,12 @@ function mkSync(){
   const now=Date.now();let ch=false;
   mk.bots=mk.bots.filter(l=>{
     const c=BY[l.c];if(!c)return false;
-    if(l.end<=now){if(l.me){giveOne(l.c);toast('Enchère remportée : '+c.n)}ch=true;return false}
+    if(l.end<=now){if(l.me){giveOne(l.c);track('bought');toast('Enchère remportée : '+c.n)}ch=true;return false}
     if(l.me&&Math.random()<(l.bid<cote(c)*.7?.1:.03)){setPts(pts+l.bid);l.bid=Math.min(l.price-5,l.bid+step(l.bid));l.me=false;ch=true;toast('Surenchère sur '+c.n+' : mise remboursée')}
     return true});
   while(mk.bots.length<20){mk.bots.push(genBot());ch=true}
   mk.mine=mk.mine.filter(l=>{
-    if(l.soldAt&&l.soldAt<=now){setPts(pts+l.sp);toast(BY[l.c].n+' vendu : +'+l.sp+' points');ch=true;return false}
+    if(l.soldAt&&l.soldAt<=now){setPts(pts+l.sp);track('sold');toast(BY[l.c].n+' vendu : +'+l.sp+' points');ch=true;return false}
     if(l.end<=now){giveOne(l.c);toast(BY[l.c].n+' invendu, retour dans l\'album');ch=true;return false}
     return true});
   if(ch)sv('mk',mk);return ch;
@@ -249,7 +249,7 @@ function rMarche(){
       r.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{const c=BY[l.c],a=b.dataset.a;
         if(a==='cancel'){mk.mine=mk.mine.filter(x=>x.id!==id);giveOne(l.c);toast(c.n+' retiré de la vente')}
         if(a==='bid'){const nb=l.bid+step(l.bid);if(pts<nb)return toast('Pas assez de points');setPts(pts-nb);l.bid=nb;l.me=true;toast('Vous êtes en tête sur '+c.n)}
-        if(a==='buy'){const due=l.price-(l.me?l.bid:0);if(pts<due)return toast('Pas assez de points');setPts(pts-due);giveOne(l.c);mk.bots=mk.bots.filter(x=>x.id!==id);toast(c.n+' rejoint votre album');buzz(40)}
+        if(a==='buy'){const due=l.price-(l.me?l.bid:0);if(pts<due)return toast('Pas assez de points');setPts(pts-due);giveOne(l.c);track('bought');mk.bots=mk.bots.filter(x=>x.id!==id);toast(c.n+' rejoint votre album');buzz(40)}
         sv('mk',mk);rMarche()}))});
   }else if(mkTab==='sell'){
     const own=owned().slice().sort((a,b)=>(col[b.id]-col[a.id])||fOf(b)-fOf(a));
@@ -285,7 +285,7 @@ function rMarche(){
     m.querySelectorAll('.tr').forEach(r=>{const d=ds.find(x=>x.id===r.dataset.d),b=r.querySelector('button');
       b.addEventListener('click',()=>{const dl=r.querySelector('.dl'),pk=defiPick(d);if(!pk.list)return;
         if(dl.hidden){dl.hidden=false;dl.textContent='Cartes rendues : '+pk.list.map(x=>x.c.n+(x.dup?'':' (dernière)')).join(', ');b.textContent='Valider';return}
-        pk.list.forEach(x=>takeOne(x.c.id));defis.done.push(d.id);sv('defis',defis);
+        pk.list.forEach(x=>takeOne(x.c.id));defis.done.push(d.id);track('defis');sv('defis',defis);
         if(d.gain.pts){setPts(pts+d.gain.pts);toast('Défi réussi : +'+d.gain.pts+' points')}
         else{const c=d.gain.card();giveOne(c.id);show(c);toast('Défi réussi : '+c.n)}
         buzz(40);rMarche()})});
@@ -307,7 +307,7 @@ function rSpec(){
   if(!spec.length){box.innerHTML='';return}
   box.innerHTML=`<h3 class="h3" style="text-align:center">Sachets spéciaux</h3><div class="specs">${spec.map((k,i)=>`<button class="spk spk-${k}" data-i="${i}"><b>${SPEC[k].n}</b><small>${SPEC[k].d}</small><span>Ouvrir</span></button>`).join('')}</div>`;
   box.querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>{const k=spec.splice(+b.dataset.i,1)[0];sv('spec',spec);
-    const got=shuffle(SPEC[k].draw()),P=got.map(c=>{const isNew=!col[c.id];col[c.id]=(col[c.id]||0)+1;return{c,isNew}});sv('col',col);TEST=false;openStage(P)}));
+    track('packs');const got=shuffle(SPEC[k].draw());addHist(got);const P=got.map(c=>{const isNew=!col[c.id];col[c.id]=(col[c.id]||0)+1;return{c,isNew}});sv('col',col);TEST=false;openStage(P)}));
 }
 
 /* ================= marché noir : chaque soir, des sachets rares aux enchères (idée de Ciné TCG) ================= */
@@ -361,3 +361,51 @@ function rBinders(m){
   m.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.r;rew[k]=1;sv('rew',rew);
     if(k.endsWith(':100')){setPts(pts+500);giveSpec('rare');toast('Classeur complet : +500 points et un Sachet rare')}else{setPts(pts+100);toast('Classeur à moitié : +100 points')}rBinders(m)}));
 }
+
+/* ================= tirages façon WikiMasters : sachet par extension, historique, succès ================= */
+window.packSel=(()=>{try{return localStorage.getItem('hp:packSel')||'Tous'}catch(e){return 'Tous'}})();
+if(window.packSel!=='Tous'&&!PACK[window.packSel])window.packSel='Tous';
+function drawFam(fam,minO){
+  if(fam==='Tous')return drawCard(minO);
+  const L=CARDS.filter(c=>c.p===fam);
+  for(let t=0;t<60;t++){const r=pick();if(RAR[r].o<(minO||1))continue;const P=L.filter(c=>c.r===r);if(P.length)return P[Math.random()*P.length|0]}
+  const P=L.filter(c=>RAR[c.r].o>=(minO||1));const Q=P.length?P:L;return Q[Math.random()*Q.length|0];
+}
+function packCover(fam){const L=fam==='Tous'?[BY.leopardneiges]:CARDS.filter(c=>c.p===fam).sort((a,b)=>fOf(b)-fOf(a));return(L[0]||BY.leopardneiges).art}
+let hist=ld('hist',[]);if(!Array.isArray(hist))hist=[];
+function addHist(got){got.forEach(c=>hist.unshift(c.id));hist=hist.slice(0,30);sv('hist',hist)}
+function rHist(){const box=$('hist');if(!box||!hist.length)return;
+  box.innerHTML=`<h3 class="h3">Derniers tirages</h3><div class="hist">${hist.filter(id=>BY[id]).map(id=>`<button data-id="${id}">${card(BY[id],true)}</button>`).join('')}</div>`;
+  box.querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.id])))}
+/* compteurs pour les succès */
+let stats=ld('stats',{});if(!stats||typeof stats!=='object')stats={};
+function track(k,n){stats[k]=(stats[k]||0)+(n||1);sv('stats',stats)}
+let sucGot=ld('suc',{});if(!sucGot||typeof sucGot!=='object')sucGot={};
+const famsFull=()=>Object.keys(PACK).filter(p=>CARDS.filter(c=>c.p===p).every(c=>col[c.id])).length;
+const SUC=[
+  ['packs1','🎴','Premier sachet','Ouvrir 1 sachet',()=>stats.packs||0,1,50],
+  ['packs25','🎴','Explorateur','Ouvrir 25 sachets',()=>stats.packs||0,25,150],
+  ['packs100','🎴','Grand explorateur','Ouvrir 100 sachets',()=>stats.packs||0,100,400],
+  ['own50','📗','Naturaliste','Posséder 50 animaux',()=>owned().length,50,150],
+  ['own100','📗','Savant','Posséder 100 animaux',()=>owned().length,100,400],
+  ['ownAll','🌍','Arche complète','Posséder les '+CARDS.length+' animaux',()=>owned().length,CARDS.length,2000],
+  ['fams','🧭','Tour du monde','Avoir au moins 1 animal de chaque famille',()=>Object.keys(PACK).filter(p=>CARDS.some(c=>c.p===p&&col[c.id])).length,Object.keys(PACK).length,200],
+  ['bind1','📚','Classeur complet','Compléter un classeur',famsFull,1,300],
+  ['win1','⚔️','Première victoire','Gagner 1 duel',()=>wins,1,50],
+  ['win10','⚔️','Roi de la chaîne','Gagner 10 duels',()=>wins,10,300],
+  ['sold1','🏛️','Premier vendeur','Vendre 1 carte au Marché',()=>stats.sold||0,1,50],
+  ['bought1','🏛️','Premier achat','Acheter 1 carte au Marché',()=>stats.bought||0,1,50],
+  ['defis3','🎯','Relever les défis','Réussir 3 défis du jour',()=>stats.defis||0,3,150]
+];
+function rSuc(){
+  const box=$('sucIn'),n=SUC.filter(x=>sucGot[x[0]]).length;
+  box.innerHTML=`<p class="lead">${n} succès sur ${SUC.length}. Touchez « Récupérer » pour gagner les points.</p><div class="sucl">${SUC.map(([id,ic,t,d,f,goal,g])=>{const v=Math.min(goal,f()),ok=v>=goal,got=sucGot[id];
+    return `<div class="suci${ok?' ok':''}${got?' got':''}"><i>${ic}</i><div><b>${t}</b><small>${d} · ${v}/${goal}</small><div class="prog"><i style="width:${v/goal*100}%"></i></div></div>
+      ${got?'<span>✓</span>':`<button class="buy" data-s="${id}"${ok?'':' disabled'}>+${g}</button>`}</div>`}).join('')}</div>`;
+  box.querySelectorAll('[data-s]').forEach(b=>b.addEventListener('click',()=>{const x=SUC.find(y=>y[0]===b.dataset.s);sucGot[x[0]]=1;sv('suc',sucGot);setPts(pts+x[6]);toast('Succès « '+x[2]+' » : +'+x[6]+' points');buzz(40);rSuc()}));
+}
+function sucReady(){return SUC.filter(x=>!sucGot[x[0]]&&x[4]()>=x[5]).length}
+function sucBadge(){const b=$('sucB');if(b){const n=sucReady();b.textContent=n?'🏆 '+n:'🏆';b.classList.toggle('on',!!n)}}
+$('sucB').addEventListener('click',()=>{$('suc').hidden=false;rSuc()});
+$('sucX').addEventListener('click',()=>{$('suc').hidden=true;sucBadge()});
+setInterval(sucBadge,2000);sucBadge();

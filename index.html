@@ -417,6 +417,19 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
 .bcov img{width:100%;height:100%;object-fit:cover;opacity:.85}
 .bcov span{position:absolute;left:0;right:0;bottom:0;padding:24px 8px 8px;font-family:"Cinzel",serif;font-weight:700;color:#fff;text-align:center;background:linear-gradient(transparent,rgba(0,0,0,.8))}
 .binf{display:grid;gap:6px;font-size:13px}.binf small{color:var(--paper-dim)}.binf .prog{margin:0;height:8px}
+#suc{position:fixed;inset:0;z-index:25;background:rgba(6,8,20,.95);display:grid;place-items:start center;overflow-y:auto;padding:20px 16px}
+.ahead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sucl{display:grid;gap:10px;margin-top:10px}
+.suci{display:grid;grid-template-columns:40px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.suci.ok{border-color:rgba(243,213,140,.45)}.suci.got{opacity:.6}
+.suci>i{font-style:normal;font-size:24px;text-align:center}.suci small{display:block;color:var(--paper-dim);font-size:12px}
+.suci .prog{height:6px;margin:4px 0 0}
+.hist{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}.hist>button{flex:0 0 76px;background:none;border:0;padding:0;cursor:pointer}
+.sachet img{object-fit:cover}
+.sachet{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--pc) 70%,#fff),0 0 60px color-mix(in srgb,var(--pc) 45%,transparent),0 24px 50px rgba(0,0,0,.6)}
+#acctB,#sucB{white-space:nowrap}
+@media (max-width:440px){header{padding:12px 12px 8px;gap:8px}.leaf{display:none}.logo>div{font-size:18px}.logo small{font-size:11px}
+  .hr{gap:5px}.pill{padding:4px 8px}.pill b{font-size:14px}.acb{padding:7px 9px}#acctB{font-size:0}#acctB:before{content:'👤';font-size:15px}}
 </style>
 
 </head>
@@ -424,7 +437,7 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
 <div class="app">
   <header>
     <div class="logo"><svg class="leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19l8-8"/></svg><div>Le Vivant<small id="nbA">démo</small></div></div>
-    <div class="hr"><div class="pill" title="Sachets disponibles"><i>🎴</i><b id="stockN">0</b></div><div class="pill" title="Points du Marché"><i>🪙</i><b id="ptsN">0</b></div><button class="acb" id="acctB" aria-label="Compte et amis">Compte</button></div>
+    <div class="hr"><div class="pill" title="Sachets disponibles"><i>🎴</i><b id="stockN">0</b></div><div class="pill" title="Points du Marché"><i>🪙</i><b id="ptsN">0</b></div><button class="acb" id="sucB" aria-label="Succès">🏆</button><button class="acb" id="acctB" aria-label="Compte et amis">Compte</button></div>
   </header>
   <main id="main"></main>
   <nav>
@@ -450,6 +463,7 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
   <div class="res" id="res" hidden><h2>Votre sachet</h2><p class="lead" id="sum"></p><div class="rgrid" id="rgrid"></div>
     <div class="row"><button class="btn" id="resOk">Ranger dans l'album</button><button class="btn ghost" id="resMore">Ouvrir un autre</button></div></div>
 </div>
+<div id="suc" hidden><div class="abox"><div class="ahead"><h2>Succès</h2><button class="btn ghost" id="sucX">Fermer</button></div><div id="sucIn"></div></div></div>
 <div id="acct" hidden><div class="abox" role="dialog" aria-labelledby="acctT">
   <div class="ahead"><h2 id="acctT">Compte et amis</h2><button class="btn ghost" id="acctX">Fermer</button></div>
   <div id="acctIn"></div></div></div>
@@ -689,7 +703,8 @@ function card(c,mini){
 function show(c){$('viewCard').innerHTML=card(c);if(window.viewActs)viewActs(c);else $('viewAct').innerHTML='';$('view').hidden=false}
 $('view').addEventListener('click',()=>$('view').hidden=true);
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){if(!$('view').hidden){$('view').hidden=true;return}if(!$('acct').hidden){$('acct').hidden=true;return}}
+  if(e.key==='Escape'){if(!$('view').hidden){$('view').hidden=true;return}if(!$('acct').hidden){$('acct').hidden=true;return}if(!$('suc').hidden){$('suc').hidden=true;return}}
+  if(ST.hidden&&tab==='sachets'&&e.key===' '&&!['INPUT','BUTTON','SELECT'].includes(e.target.tagName)&&$('view').hidden){e.preventDefault();$('open')&&$('open').click();return}
   if(ST.hidden||e.target.tagName==='INPUT')return;
   if(ST.classList.contains('result')){if(e.key==='Enter'||e.key==='Escape'){e.preventDefault();$('resOk').click()}return}
   if(ST.classList.contains('done')&&['Enter',' ','ArrowRight','ArrowLeft'].includes(e.key)){e.preventDefault();toss(e.key==='ArrowLeft'?-1:1);return}
@@ -711,18 +726,23 @@ function render(){
 
 /* ---------------- sachets ---------------- */
 function rSachets(){
-  const m=$('main');
+  const m=$('main'),fam=window.packSel||'Tous',cov=window.packCover?packCover(fam):'art/leopardneiges.webp';
   const left=stock.n>=MAXS?0:REFILL-((Date.now()-stock.t)%REFILL),sec=Math.ceil(left/1000);
-  m.innerHTML=`<h2>Ouvrir un sachet</h2><p class="lead">Cinq animaux par sachet.</p>
-    <button class="sachet" id="open" aria-label="Ouvrir un sachet"${stock.n?'':' disabled'}><img src="art/leopardneiges.webp" alt=""><div class="t">Le<br>Vivant<small>Première expédition</small></div><div class="five">5 cartes</div></button>
+  m.innerHTML=`<h2>Ouvrir un sachet</h2><p class="lead">Choisissez l'extension : chaque sachet contient 5 animaux de cette famille.</p>
+    <div class="packs packsel">${['Tous',...Object.keys(PACK)].map(p=>`<button class="chip" data-s="${p}" style="--pc:${PACK[p]||'var(--gold)'}" aria-pressed="${p===fam}">${p==='Tous'?'Tous les animaux':p}</button>`).join('')}</div>
+    <button class="sachet" id="open" aria-label="Ouvrir un sachet"${stock.n?'':' disabled'} style="--pc:${PACK[fam]||'#d8ab4c'}"><img src="${cov}" alt=""><div class="t">Le<br>Vivant<small>${fam==='Tous'?'Première expédition':esc(fam)}</small></div><div class="five">5 cartes</div></button>
     <p class="timer">${stock.n?`${stock.n} sachet${stock.n>1?'s':''} disponible${stock.n>1?'s':''}. `:'Plus de sachet pour l\'instant. '}${stock.n>=MAXS?'Réserve pleine.':`Prochain sachet dans ${sec} s.`}</p>
-    <p class="lead" style="margin-top:14px;text-align:center">Un sachet gratuit toutes les 2 secondes, jusqu'à 5 en réserve.</p><div id="spec"></div>`;
-  if(window.rSpec)rSpec();
+    ${stock.n>1?`<div class="row"><button class="btn ghost" id="openAll">Tout ouvrir (${stock.n} sachets)</button></div>`:''}
+    <p class="lead" style="margin-top:14px;text-align:center">Un sachet gratuit toutes les 2 secondes, jusqu'à 5 en réserve. Espace : ouvrir.</p><div id="spec"></div><div id="hist"></div>`;
+  if(window.rSpec)rSpec();if(window.rHist)rHist();
+  m.querySelectorAll('[data-s]').forEach(b=>b.addEventListener('click',()=>{window.packSel=b.dataset.s;try{localStorage.setItem('hp:packSel',b.dataset.s)}catch(e){}rSachets()}));
+  const one=()=>{const got=[0,1,2,3].map(()=>window.drawFam?drawFam(fam,1):drawCard(1)).concat([window.drawFam?drawFam(fam,2):drawCard(2)]);return shuffle(got)};
+  const take=n=>{if(stock.n>=MAXS)stock.t=Date.now();stock.n-=n;sv('stock',stock);if(window.track)track('packs',n)};
+  const add=got=>{const P=got.map(c=>{const isNew=!col[c.id];col[c.id]=(col[c.id]||0)+1;return{c,isNew}});sv('col',col);if(window.addHist)addHist(got);return P};
   $('open').addEventListener('click',()=>{if(!stock.n){toast('Plus de sachet : le prochain arrive dans 2 secondes');return}
-    if(stock.n>=MAXS)stock.t=Date.now();stock.n--;sv('stock',stock);
-    const got=[0,1,2,3].map(()=>drawCard(1)).concat([drawCard(2)]);shuffle(got);
-    const P=got.map(c=>{const isNew=!col[c.id];col[c.id]=(col[c.id]||0)+1;return{c,isNew}});sv('col',col);
-    TEST=false;openStage(P)});
+    take(1);TEST=false;openStage(add(one()))});
+  if($('openAll'))$('openAll').addEventListener('click',()=>{const n=stock.n;take(n);let got=[];for(let i=0;i<n;i++)got=got.concat(one());
+    TEST=false;openStage(add(got));showRes()});
 }
 
 /* ---------------- ouverture façon ClubDeck : déchirer, étincelles, cartes à retourner une à une ---------------- */
@@ -781,7 +801,7 @@ function toss(dir){const el=DK.children[cur];if(!el)return;el.style.setProperty(
   cur++;layout();if(cur>=SP.length)later(showRes,450);else later(reveal,350)}
 function showRes(){timers.forEach(clearTimeout);timers=[];ST.classList.add('result');$('tint').style.backgroundColor='';
   const news=SP.filter(x=>x.isNew).length;
-  $('sum').innerHTML=TEST?'Sachet test : rien n\'a été ajouté à votre album.':`${news} nouvelle${news>1?'s':''} sur 5<br>${owned().length} animaux sur ${CARDS.length} dans votre album`;
+  $('sum').innerHTML=TEST?'Sachet test : rien n\'a été ajouté à votre album.':`${news} nouvelle${news>1?'s':''} sur ${SP.length}<br>${owned().length} animaux sur ${CARDS.length} dans votre album`;
   $('rgrid').innerHTML=SP.map((x,i)=>`<button style="--i:${i}" data-id="${x.c.id}">${card(x.c,true)}${TEST?'':`<span class="new${x.isNew?'':' dup'}">${x.isNew?'Nouvelle':'Doublon'}</span>`}</button>`).join('');
   $('rgrid').querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.id])));
   $('resMore').hidden=TEST||!stock.n;$('res').hidden=false}
