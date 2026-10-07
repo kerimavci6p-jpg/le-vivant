@@ -344,25 +344,82 @@ nav button{min-height:54px}
 .tr{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
 .tr small{display:block;color:var(--paper-dim);font-size:13px;margin-top:2px}
 @media (min-width:900px){.ls{grid-template-columns:90px 1fr auto}.lsc{grid-row:auto}}
+/* ================= graphisme v2 ================= */
+body{background:#0b0e1f}
+.app{background:
+  radial-gradient(60% 40% at 15% 0%,rgba(80,110,220,.22),transparent 70%),
+  radial-gradient(50% 35% at 90% 10%,rgba(216,171,76,.14),transparent 70%),
+  radial-gradient(70% 50% at 50% 110%,rgba(60,160,140,.16),transparent 70%),
+  linear-gradient(#141936,#0c1024)}
+.app:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;
+  background-image:radial-gradient(1px 1px at 12% 18%,#fff8,transparent),radial-gradient(1px 1px at 72% 32%,#fff6,transparent),radial-gradient(1.5px 1.5px at 38% 62%,#fff5,transparent),radial-gradient(1px 1px at 85% 78%,#fff7,transparent),radial-gradient(1px 1px at 22% 88%,#fff5,transparent),radial-gradient(1.2px 1.2px at 58% 8%,#fff6,transparent)}
+header{position:relative;z-index:2}
+main{position:relative;z-index:1}
+.logo{display:flex;align-items:center;gap:10px;font-family:"Cinzel",var(--f-display);font-weight:700;letter-spacing:.06em;
+  background:linear-gradient(180deg,#fff1c7,#d8ab4c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo small{-webkit-text-fill-color:var(--paper-dim);font-family:var(--f-body);font-weight:400;letter-spacing:0}
+.logo>div{white-space:nowrap;font-size:21px;line-height:1.1}
+.logo small{white-space:nowrap}
+@media (min-width:900px){.logo>div{font-size:30px}}
+.leaf{width:30px;height:30px;flex:none;fill:none;stroke:var(--gold-hi);stroke-width:1.6;stroke-linecap:round;filter:drop-shadow(0 0 6px rgba(243,213,140,.45))}
+.hr{gap:6px}
+.pill{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:99px;background:rgba(255,255,255,.06);border:1px solid rgba(243,213,140,.25);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.pill i{font-style:normal;font-size:14px}
+.pill b{font-family:"Cinzel",serif;font-size:15px;color:var(--gold-hi);font-variant-numeric:tabular-nums}
+.acb{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18)}
+h2{font-family:"Cinzel",var(--f-display);font-weight:700;letter-spacing:.04em;font-size:21px;margin:14px 0 4px;
+  background:linear-gradient(180deg,#fff4d6,#e4bf6a);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2:after{content:"";display:block;width:46px;height:2px;margin-top:6px;border-radius:2px;background:linear-gradient(90deg,var(--gold),transparent)}
+nav{position:relative;z-index:2;background:rgba(14,18,40,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-top:1px solid rgba(243,213,140,.18)}
+nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:var(--f-body);font-size:12px;letter-spacing:.02em;position:relative}
+nav svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+nav button[aria-current="true"]{color:var(--gold-hi);box-shadow:none}
+nav button[aria-current="true"] svg{filter:drop-shadow(0 0 6px rgba(243,213,140,.6))}
+nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:28%;right:28%;height:3px;border-radius:0 0 3px 3px;background:var(--gold-hi);box-shadow:0 0 12px var(--gold)}
+.btn{background:linear-gradient(180deg,#ffe7a8,#e0b354 55%,#c8942f);border-color:#f3d58c;box-shadow:0 6px 18px rgba(216,171,76,.28),inset 0 1px 0 rgba(255,255,255,.6);letter-spacing:.02em;transition:transform .15s,box-shadow .15s}
+.btn:active{transform:translateY(1px) scale(.98)}
+.btn.ghost{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.2);box-shadow:none;color:var(--paper)}
+.chip{background:rgba(255,255,255,.04);display:inline-flex;align-items:center;gap:6px}
+.chip[style*="--pc"]:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pc);box-shadow:0 0 6px var(--pc)}
+.chip[aria-pressed="true"]{background:linear-gradient(180deg,#fff3d1,#e9cf8f);color:#20160a;border-color:transparent}
+.search{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14)}
+.prog{position:relative;height:16px;border-radius:99px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08)}
+.prog i{border-radius:99px;box-shadow:0 0 12px rgba(243,213,140,.5)}
+.prog span{position:absolute;inset:0;display:grid;place-items:center;font-size:11px;font-weight:700;color:#fff;text-shadow:0 1px 2px #000}
+.seg{display:inline-flex;padding:3px;border-radius:99px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);margin:0 0 12px}
+.seg button{border:0;background:none;color:var(--paper-dim);padding:7px 14px;border-radius:99px;font:inherit;font-size:13px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--paper);color:var(--ink);font-weight:600}
+.miss{border:1px solid rgba(255,255,255,.08);background:radial-gradient(90% 70% at 50% 35%,color-mix(in srgb,var(--pc,#555) 30%,transparent),rgba(255,255,255,.02));border-radius:12px}
+.miss b{color:rgba(255,255,255,.22)}
+.cnt{background:linear-gradient(180deg,#ffe7a8,#d8ab4c);box-shadow:0 2px 8px rgba(0,0,0,.6)}
+.sachet{box-shadow:0 0 0 1.5px rgba(243,213,140,.8),0 0 60px rgba(216,171,76,.25),0 24px 50px rgba(0,0,0,.6);animation:float 5s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-6px)}}
+.timer{font-size:14px}
+.ls,.tr{border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(255,255,255,.035);padding:10px 12px;margin-bottom:10px}
+.rules,.sellbox{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.1)}
+.arena{background:radial-gradient(80% 90% at 50% 50%,rgba(216,171,76,.16),transparent 70%),rgba(255,255,255,.04);border-color:rgba(243,213,140,.2)}
+.vact{display:grid;gap:10px;text-align:center;color:var(--paper);font-size:13.5px}
+#view{background:rgba(6,8,20,.9);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+@media (prefers-reduced-motion:reduce){.sachet{animation:none}}
 </style>
 
 </head>
 <body>
 <div class="app">
   <header>
-    <div class="logo">Le Vivant<small id="nbA">démo</small></div>
-    <div class="hr"><div class="stock"><span>Sachets</span><b id="stockN">0</b></div><div class="stock" title="Points du Marché"><span>Points</span><b id="ptsN">0</b></div><button class="acb" id="acctB" aria-label="Compte et amis">Compte</button></div>
+    <div class="logo"><svg class="leaf" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19l8-8"/></svg><div>Le Vivant<small id="nbA">démo</small></div></div>
+    <div class="hr"><div class="pill" title="Sachets disponibles"><i>🎴</i><b id="stockN">0</b></div><div class="pill" title="Points du Marché"><i>🪙</i><b id="ptsN">0</b></div><button class="acb" id="acctB" aria-label="Compte et amis">Compte</button></div>
   </header>
   <main id="main"></main>
   <nav>
-    <button data-t="sachets" aria-current="true">Sachets</button>
-    <button data-t="album">Album</button>
-    <button data-t="duel">Duel</button>
-    <button data-t="marche">Marché</button>
-    <button data-t="demo">Démo</button>
+    <button data-t="sachets" aria-current="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l-1 4H7z"/><path d="M7 7h10v13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1z"/><circle cx="12" cy="13" r="2.5"/></svg><span>Sachets</span></button>
+    <button data-t="album"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="13" height="17" rx="2"/><path d="M8 3v17M20 6v14a1 1 0 0 1-1 1H8"/></svg><span>Album</span></button>
+    <button data-t="duel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l7-7M20 20l-7-7M14 4l6 0 0 6-7 7M10 4H4v6l7 7"/></svg><span>Duel</span></button>
+    <button data-t="marche"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l2-5h14l2 5"/><path d="M3 9h18v2a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z"/><path d="M5 13v7h14v-7"/></svg><span>Marché</span></button>
+    <button data-t="demo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M10 9l5 3-5 3z"/></svg><span>Démo</span></button>
   </nav>
 </div>
-<div id="view" hidden><div class="box"><div id="viewCard"></div><p>Touchez n'importe où pour fermer</p></div></div>
+<div id="view" hidden><div class="box"><div id="viewCard"></div><div id="viewAct"></div><p>Touchez n'importe où pour fermer</p></div></div>
 <div id="stage" hidden>
   <div id="tint"></div>
   <button class="skip" id="skip">Tout révéler</button>
@@ -613,7 +670,7 @@ function card(c,mini){
   return `<div class="card${c.fa?' fa':''}${mini?' mini':''}"><div class="in">
     <div class="art" style="--pk:${PACK[c.p]}">${art}</div>
     <div class="txt"><div class="nm">${esc(c.n)}</div></div><i class="glare"></i></div></div>`}
-function show(c){$('viewCard').innerHTML=card(c);$('view').hidden=false}
+function show(c){$('viewCard').innerHTML=card(c);if(window.viewActs)viewActs(c);else $('viewAct').innerHTML='';$('view').hidden=false}
 $('view').addEventListener('click',()=>$('view').hidden=true);
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){if(!$('view').hidden){$('view').hidden=true;return}if(!$('acct').hidden){$('acct').hidden=true;return}}
@@ -627,7 +684,7 @@ function pick(){let t=Math.random()*100;for(const r in RAR){t-=RAR[r].w;if(t<=0)
 function drawCard(minO){let r;do{r=pick()}while(RAR[r].o<(minO||1));const pool=CARDS.filter(c=>c.r===r);return pool[Math.random()*pool.length|0]}
 
 /* ---------------- navigation ---------------- */
-let tab='sachets',opened=null,alb='Tous';
+let tab='sachets',opened=null,alb='Tous',albF='all';
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.t;opened=null;render()}));
 function render(){
   $('nbA').textContent=`démo · ${CARDS.length} animaux`;
@@ -729,7 +786,7 @@ function rDemo(){
     <div class="row"><button class="btn" id="dOpen">${pickD.length?`Ouvrir avec ces ${pickD.length} carte${pickD.length>1?'s':''}`:'Ouvrir un sachet test'}</button>${pickD.length?'<button class="btn ghost" id="dClr">Vider le choix</button>':''}</div>
     <p class="lead" style="margin-top:12px">Touchez des cartes pour les choisir (5 au plus) : le sachet test contiendra celles-là. Sans choix, il est tiré au hasard. Appui long pour voir une carte en grand.</p>
     <div class="tools"><input class="search" id="q" type="search" placeholder="Rechercher un animal" autocomplete="off" value="${esc(qD)}"></div>
-    <div class="packs">${['Tous',...Object.keys(PACK)].map(p=>`<button class="chip" data-p="${p}" aria-pressed="${p===dP}">${p}<small>${CARDS.filter(c=>p==='Tous'||c.p===p).length}</small></button>`).join('')}</div>
+    <div class="packs">${['Tous',...Object.keys(PACK)].map(p=>`<button class="chip" data-p="${p}" style="--pc:${PACK[p]||'var(--gold)'}" aria-pressed="${p===dP}">${p}<small>${CARDS.filter(c=>p==='Tous'||c.p===p).length}</small></button>`).join('')}</div>
     <div class="grid">${CARDS.filter(c=>dP==='Tous'||c.p===dP).map(c=>{const k=pickD.indexOf(c.id);return `<button data-id="${c.id}" data-n="${esc(norm(c.n))}" aria-label="${esc(c.n)}" aria-pressed="${k>=0}"${k>=0?' style="outline:3px solid var(--gold);outline-offset:2px;border-radius:12px"':''}>${card(c,true)}${k>=0?`<span class="cnt">${k+1}</span>`:''}</button>`}).join('')}</div>`;
   $('dOpen').addEventListener('click',()=>{
     const got=pickD.length?pickD.map(id=>BY[id]):shuffle([0,1,2,3].map(()=>drawCard(1)).concat([drawCard(2)]));
@@ -747,14 +804,20 @@ function rDemo(){
 }
 /* ---------------- album ---------------- */
 function rAlbum(){
-  const m=$('main'),n=owned().length,list=CARDS.filter(c=>alb==='Tous'||c.p===alb);
-  m.innerHTML=`<h2>Album</h2><p class="lead">${n} animaux sur ${CARDS.length}. Les doubles ne servent pas encore : la fusion viendra plus tard.</p>
-    <div class="prog"><i style="width:${Math.round(n/CARDS.length*100)}%"></i></div>
+  const m=$('main'),n=owned().length,list=CARDS.filter(c=>(alb==='Tous'||c.p===alb)&&(albF==='all'||(albF==='own'?col[c.id]:col[c.id]>1)));
+  const nd=CARDS.reduce((a,c)=>a+Math.max(0,(col[c.id]||0)-1),0),gain=CARDS.reduce((a,c)=>a+Math.max(0,(col[c.id]||0)-1)*defVal(c),0);
+  m.innerHTML=`<h2>Album</h2><p class="lead">${n} animaux sur ${CARDS.length} · ${nd} doublon${nd>1?'s':''}. Touchez une carte pour la vendre ou la défausser.</p>
+    <div class="prog"><i style="width:${Math.round(n/CARDS.length*100)}%"></i><span>${Math.round(n/CARDS.length*100)} %</span></div>
+    <div class="seg">${[['all','Toutes'],['own','Mes cartes'],['dup','Doublons']].map(x=>`<button data-f="${x[0]}" aria-pressed="${albF===x[0]}">${x[1]}</button>`).join('')}</div>
+    ${albF==='dup'&&nd?`<div class="row" style="margin:-4px 0 12px"><button class="btn ghost" id="dupAll">Défausser les ${nd} doublons : +${gain} points</button></div>`:''}
     <div class="tools"><input class="search" id="q" type="search" placeholder="Rechercher un animal" autocomplete="off" value="${esc(qA)}"></div>
-    <div class="packs">${['Tous',...Object.keys(PACK)].map(p=>{const L=CARDS.filter(c=>p==='Tous'||c.p===p);return `<button class="chip" data-p="${p}" aria-pressed="${p===alb}">${p}<small>${L.filter(c=>col[c.id]).length}/${L.length}</small></button>`}).join('')}</div>
-    <div class="grid">${list.map(c=>col[c.id]?`<button data-id="${c.id}" data-n="${esc(norm(c.n))}" aria-label="${esc(c.n)}">${card(c,true)}${col[c.id]>1?`<span class="cnt">×${col[c.id]}</span>`:''}</button>`
-      :`<button disabled aria-label="Carte manquante"><div class="miss"><b>?</b>${esc(c.p)}</div></button>`).join('')}</div>`;
+    <div class="packs">${['Tous',...Object.keys(PACK)].map(p=>{const L=CARDS.filter(c=>p==='Tous'||c.p===p);return `<button class="chip" data-p="${p}" style="--pc:${PACK[p]||'var(--gold)'}" aria-pressed="${p===alb}">${p}<small>${L.filter(c=>col[c.id]).length}/${L.length}</small></button>`}).join('')}</div>
+    ${list.length?'':'<p class="empty-q">Aucune carte ici.</p>'}<div class="grid">${list.map(c=>col[c.id]?`<button data-id="${c.id}" data-n="${esc(norm(c.n))}" aria-label="${esc(c.n)}">${card(c,true)}${col[c.id]>1?`<span class="cnt">×${col[c.id]}</span>`:''}</button>`
+      :`<button disabled aria-label="Carte manquante"><div class="miss" style="--pc:${PACK[c.p]}"><b>?</b>${esc(c.p)}</div></button>`).join('')}</div>`;
   m.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{alb=b.dataset.p;rAlbum()}));
+  m.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{albF=b.dataset.f;rAlbum()}));
+  if($('dupAll'))$('dupAll').addEventListener('click',()=>{const b=$('dupAll');if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Sûr ? Touchez encore pour défausser';return}
+    let g=0;CARDS.forEach(c=>{while((col[c.id]||0)>1){col[c.id]--;g+=defVal(c)}});sv('col',col);setPts(pts+g);toast('Doublons défaussés : +'+g+' points');rAlbum()});
   bindSearch(m,v=>qA=v);
   m.querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.id])));
 }

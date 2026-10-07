@@ -90,6 +90,7 @@ function rDuel(){
   const m=$('main');
   if(teamEdit)return rTeam();
   if(!DU){
+    if(team.filter(id=>col[id]).length<TEAM&&owned().length>team.length)autoTeam();
     const me=teamCards(),loans=me.filter(x=>x.loan).length;
     if(dw.d!==today())dw={d:today(),n:0};
     m.innerHTML=`<h2>Duel · Chaîne alimentaire</h2><p class="lead">Contre la Naturaliste. Premier à ${WIN} manches gagnées.</p>
@@ -156,6 +157,20 @@ function rTeam(){
   bindSearch(m,()=>{});
 }
 if(!team.length&&owned().length)autoTeam();
+
+/* ================= actions sur une carte (fiche en grand), comme dans ClubDeck ================= */
+const defVal=c=>r5(cote(c)/10);
+function viewActs(c){
+  const box=$('viewAct'),n=col[c.id]||0;
+  if(!n||tab==='demo'||!ST.hidden){box.innerHTML='';return}
+  box.innerHTML=`<div class="vact"><span>${n} exemplaire${n>1?'s':''} · cote ${fr(cote(c))} · ${CL[clOf(c)].e} ${CL[clOf(c)].n}, force ${fOf(c)}, ⚡${kOf(c)}</span>
+    <div class="row"><button class="btn" data-v="sell">Vendre</button><button class="btn ghost" data-v="del">Défausser : +${defVal(c)} points</button></div></div>`;
+  box.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();
+    if(b.dataset.v==='sell'){$('view').hidden=true;sellSel=c.id;mkTab='sell';tab='marche';render();return}
+    if(n===1&&!b.dataset.ok){b.dataset.ok=1;b.textContent='Dernier exemplaire : touchez encore';return}
+    takeOne(c.id);setPts(pts+defVal(c));toast(c.n+' défaussé : +'+defVal(c)+' points');
+    if(col[c.id])viewActs(c);else $('view').hidden=true;render()}));
+}
 
 /* ================= Marché (repris de ClubDeck) ================= */
 const SELLERS=['Mowgli_75','LaBuse','Kiki_Koala','Renardo','Capitaine_Croc','Lynx_B','Mika_92','Bxl_Safari','Nono','Zebrinette','Le_Gorille','Tika-Toucan'];
@@ -243,7 +258,7 @@ function rMarche(){
       <div class="sbr"><span>Départ</span>${[.6,.8,1].map(f=>`<button class="chip" data-s="${r5(co*f)}">${fr(r5(co*f))}</button>`).join('')}</div>
       <div class="sbr"><span>Achat</span>${[1,1.3,1.6].map(f=>`<button class="chip" data-b="${r5(co*f)}">${fr(r5(co*f))}</button>`).join('')}</div>
       <div class="sbr"><span>Durée</span>${DUR.map(d=>`<button class="chip" data-d="${d[0]}">${d[1]}</button>`).join('')}</div>
-      <div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn" id="put">Mettre en vente</button><button class="btn ghost" id="rec">Recycler : +${r5(co/10)} points</button></div></div></div>`}
+      <div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn" id="put">Mettre en vente</button><button class="btn ghost" id="rec">Défausser : +${r5(co/10)} points</button></div></div></div>`}
     h+=`<div class="grid">${own.map(o=>`<button data-id="${o.id}"${o.id===sellSel?' class="pick"':''}>${card(o,true)}${col[o.id]>1?`<span class="cnt">×${col[o.id]}</span>`:''}</button>`).join('')}</div>
       ${own.length?'':'<p class="lead">Votre album est vide.</p>'}`;
     m.innerHTML=h;
@@ -257,7 +272,7 @@ function rMarche(){
         if(o.b<=co*1.35&&Math.random()<.85){l.soldAt=now+Math.random()*o.d*60000*.7;l.sp=o.b}
         else if(o.s<=co&&Math.random()<.7){l.soldAt=end-1000;l.sp=r5(o.s+(co-o.s)*Math.random())}
         mk.mine.push(l);sv('mk',mk);sellSel=null;toast(c.n+' est en vente');rMarche()});
-      $('rec').addEventListener('click',()=>{if(!takeOne(c.id))return;setPts(pts+r5(co/10));toast('Recyclé : +'+r5(co/10)+' points');if(!col[c.id])sellSel=null;rMarche()});}
+      $('rec').addEventListener('click',()=>{if(!takeOne(c.id))return;setPts(pts+r5(co/10));toast('Défaussé : +'+r5(co/10)+' points');if(!col[c.id])sellSel=null;rMarche()});}
   }else{
     const ds=defisToday();
     h+=`<p class="lead">Trois défis par jour, les mêmes pour tout le monde. Rendez les cartes demandées pour gagner la récompense. Les doublons partent en premier.</p><div id="trs">${ds.map(d=>{
