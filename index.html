@@ -13,7 +13,7 @@
 <title>Le Vivant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Fira+Sans+Condensed:ital,wght@0,500;0,700;0,800;1,500&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Fira+Sans+Condensed:ital,wght@0,500;0,700;0,800;1,500&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,600;0,700;1,400&display=swap">
 <style>
 body{margin:0}[hidden]{display:none!important}img{max-width:100%}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -671,6 +671,40 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
 .vg-sub,.vg-num,.vg-desc,.vg-st b{text-shadow:0 .3cqw .6cqw #000,0 0 1.6cqw rgba(0,0,0,.95),0 0 3cqw rgba(0,0,0,.7)}
 .vg-st svg{filter:drop-shadow(0 0 1cqw #000)}
 .vg-art img{object-position:50% 45%}
+/* ================= Template FULL ART ================= */
+.card.tc{padding:0;aspect-ratio:2/3;border-radius:2.75cqw;background:#071B2B;overflow:hidden;box-shadow:0 3cqw 7cqw rgba(0,0,0,.55);
+  --g5:#DDBB72;--g3:#F3D99D;--g7:#B6873D;--cream:#F6E7C1;--ivory:#F5EFE3}
+.card.tc:after{display:none}
+.tc-in{position:absolute;inset:0;border-radius:2.75cqw;overflow:hidden}
+.tc-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
+.tc-top{position:absolute;inset:0 0 auto 0;height:22%;background:linear-gradient(rgba(5,18,29,.55),rgba(5,18,29,.2) 60%,rgba(5,18,29,0));pointer-events:none}
+.tc-grad{position:absolute;inset:auto 0 0 0;height:34%;pointer-events:none;
+  background:linear-gradient(180deg,rgba(5,18,29,0) 0%,rgba(5,18,29,.20) 20%,rgba(5,18,29,.68) 58%,rgba(4,15,25,.96) 100%)}
+.tc-b1{position:absolute;inset:2%;border:max(1px,.2cqw) solid var(--g5);border-radius:1.8cqw;pointer-events:none}
+.tc-b2{position:absolute;inset:2.7%;border:max(1px,.1cqw) solid rgba(244,222,170,.5);border-radius:1.4cqw;pointer-events:none}
+.tc-c{position:absolute;width:2.2cqw;height:2.2cqw;background:var(--g5);transform:rotate(45deg)}
+.tc-c.c1{left:calc(2% - 1.1cqw + .1cqw);top:calc(2% - 1.1cqw + .1cqw)}.tc-c.c2{right:calc(2% - 1.1cqw + .1cqw);top:calc(2% - 1.1cqw + .1cqw)}
+.tc-c.c3{left:calc(2% - 1.1cqw + .1cqw);bottom:calc(2% - 1.1cqw + .1cqw)}.tc-c.c4{right:calc(2% - 1.1cqw + .1cqw);bottom:calc(2% - 1.1cqw + .1cqw)}
+.tc-head{position:absolute;left:6%;top:3.5%;right:20%;text-align:left}
+.tc-n{display:block;font-family:"Cormorant Garamond","Cinzel",serif;font-weight:600;font-size:calc(8cqw * var(--nf,1));letter-spacing:-.1cqw;text-transform:uppercase;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  background:linear-gradient(180deg,#FFF4D2 0%,#E9C77F 52%,#C99A47 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 .3cqw 1.2cqw rgba(0,0,0,.35))}
+.tc-sub{display:flex;align-items:center;gap:1.4cqw;margin-top:1cqw;font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;font-size:2.85cqw;letter-spacing:.1cqw;color:#F1E9D7;text-shadow:0 .2cqw .8cqw rgba(0,0,0,.6);white-space:nowrap}
+.tc-sub:before{content:"";width:5cqw;height:max(1px,.12cqw);background:var(--g5);flex:none}
+.tc-cost{position:absolute;right:5%;top:3%;width:8.8cqw;height:8.8cqw;border-radius:50%;display:grid;place-items:center;background:rgba(7,27,43,.72);
+  border:max(1px,.2cqw) solid var(--g5);box-shadow:inset 0 0 0 .35cqw rgba(7,27,43,.72),inset 0 0 0 .45cqw var(--g3);font-family:"Cinzel",serif;font-weight:700;font-size:5.3cqw;color:#F6E5B4;line-height:1}
+#view .tc-desc,.tc-desc{position:absolute;left:11%;right:11%;top:76.5%;height:9%;margin:0;display:flex;align-items:center;justify-content:center;text-align:center;
+  font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;font-size:2.64cqw;line-height:1.25;color:var(--ivory);text-shadow:0 .2cqw .6cqw rgba(0,0,0,.65)}
+.tc-sep{position:absolute;left:15%;right:15%;top:86.6%;height:max(1px,.1cqw);background:rgba(221,187,114,.65)}
+.tc-sep b{position:absolute;left:50%;top:50%;transform:translate(-50%,-55%);font-size:1.8cqw;color:var(--g5);line-height:1;padding:0 1cqw;background:transparent;text-shadow:0 0 1cqw #04101a}
+.tc-st{position:absolute;left:8%;right:8%;top:88%;bottom:3.6%;display:grid;grid-template-columns:repeat(3,1fr);align-items:center}
+.tc-st span{display:grid;justify-items:center;line-height:1}
+.tc-st span+span{border-left:max(1px,.1cqw) solid rgba(221,187,114,.45)}
+.tc-st b{font-family:"Cinzel",serif;font-size:5.66cqw;font-weight:600;color:#F1D18B}
+.tc-st em{font-style:normal;font-family:"Montserrat",sans-serif;font-size:max(7px,1.66cqw);font-weight:500;letter-spacing:.5cqw;color:var(--ivory);margin-top:.6cqw;padding-left:.5cqw}
+/* petites cartes : sans description */
+@container (max-width:230px){.tc-desc,.tc-sep,.tc-c{display:none}.tc-n{font-size:calc(10.5cqw * var(--nf,1))}.tc-sub{font-size:5.4cqw}.tc-sub:before{width:3cqw}
+  .tc-cost{width:13cqw;height:13cqw;font-size:7.5cqw}.tc-grad{height:28%}.tc-st{top:82%;bottom:3%}.tc-st b{font-size:9cqw}.tc-st em{font-size:3.4cqw;letter-spacing:.2cqw}}
+#view .card.tc{width:min(380px,90vw)}
 </style>
 
 </head>
@@ -945,10 +979,11 @@ const ICO={
   V:'<svg viewBox="0 0 24 24"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h8" /></svg>',
   I:'<svg viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3h1V4zM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3h-1V4z" /></svg>'};
 const STN={P:'Puissance',V:'Vitesse',I:'Intelligence'};
-let FRAME=(()=>{try{return localStorage.getItem('hp:frame')||'2'}catch(e){return '2'}})();
+let FRAME=(()=>{try{return localStorage.getItem('hp:frame3')||'3'}catch(e){return '3'}})();
 const NUM=Object.fromEntries(CARDS.map((c,i)=>[c.id,String(i+1).padStart(3,'0')]));
 const shortD=t=>{t=t||'';if(t.length<=205)return t;const parts=t.match(/[^.!?]+[.!?]+/g)||[t];let o='';for(const p of parts){if((o+p).length>205)break;o+=p}return (o||t.slice(0,200)+'…').trim()};
 function card(c,mini){
+  if(FRAME==='3')return card3(c,mini);
   if(FRAME==='2')return card2(c,mini);
   const st=c.st||[5,5,5];
   return `<div class="card vf${mini?' mini':''}"><div class="vf-in">
@@ -959,6 +994,19 @@ function card(c,mini){
     <span class="vf-cost"><small>Coût</small><b>${c.k||1}</b></span>
     <div class="vf-desc"><p>${esc(c.d||c.f)}</p><span>${esc(c.sub||c.p)}</span></div>
     ${['P','V','I'].map((k,i)=>`<span class="vf-s s${i}"><i>${ICO[k]}</i><u>${st[i]}</u><em>${STN[k]}<b>${st[i]}/10</b></em></span>`).join('')}
+  </div></div>`}
+/* Template FULL ART (spécification de Kerim) : image sur toute la carte, interface légère par-dessus */
+function card3(c,mini){
+  const st=c.st||[5,5,5];
+  return `<div class="card tc${mini?' mini':''}"><div class="tc-in">
+    <img class="tc-art" src="${c.art}" alt="" loading="lazy" draggable="false">
+    <i class="tc-top"></i><i class="tc-grad"></i><i class="tc-b1"></i><i class="tc-b2"></i>
+    <i class="tc-c c1"></i><i class="tc-c c2"></i><i class="tc-c c3"></i><i class="tc-c c4"></i>
+    <div class="tc-head"><b class="tc-n" style="--nf:${c.n.length>18?.6:c.n.length>14?.7:c.n.length>10?.84:1}">${esc(c.n)}</b><span class="tc-sub">${esc(c.sub||c.p)}</span></div>
+    <span class="tc-cost">${c.k||1}</span>
+    <p class="tc-desc">${esc(shortD(c.d||c.f))}</p>
+    <i class="tc-sep"><b>◆</b></i>
+    <div class="tc-st">${[['PUI',0],['VIT',1],['INT',2]].map(([l,i])=>`<span><b>${st[i]}</b><em>${l}</em></span>`).join('')}</div>
   </div></div>`}
 function card2(c,mini){
   const st=c.st||[5,5,5];
@@ -1092,7 +1140,7 @@ function bindSearch(m,keep){const q=m.querySelector('#q'),g=m.querySelector('.gr
   q.addEventListener('input',run);if(q.value)run()}
 function rDemo(){
   const m=$('main');
-  m.innerHTML=`<h2>Mode démo</h2><div class="seg" id="frm">${[['1','Cadre 1'],['2','Cadre 2']].map(x=>`<button data-fr="${x[0]}" aria-pressed="${FRAME===x[0]}">${x[1]}</button>`).join('')}</div><p class="lead">Pour tester les cartes et l'ouverture des sachets. Rien ici ne compte : ni dans votre album, ni dans vos sachets, ni dans le classement.</p>
+  m.innerHTML=`<h2>Mode démo</h2><div class="seg" id="frm">${[['3','Template'],['2','Cadre 2'],['1','Cadre 1']].map(x=>`<button data-fr="${x[0]}" aria-pressed="${FRAME===x[0]}">${x[1]}</button>`).join('')}</div><p class="lead">Pour tester les cartes et l'ouverture des sachets. Rien ici ne compte : ni dans votre album, ni dans vos sachets, ni dans le classement.</p>
     <div class="row"><button class="btn" id="dOpen">${pickD.length?`Ouvrir avec ces ${pickD.length} carte${pickD.length>1?'s':''}`:'Ouvrir un sachet test'}</button>${pickD.length?'<button class="btn ghost" id="dClr">Vider le choix</button>':''}</div>
     <p class="lead" style="margin-top:12px">Touchez des cartes pour les choisir (5 au plus) : le sachet test contiendra celles-là. Sans choix, il est tiré au hasard. Appui long pour voir une carte en grand.</p>
     <div class="tools"><input class="search" id="q" type="search" placeholder="Rechercher un animal" autocomplete="off" value="${esc(qD)}"></div>
@@ -1102,7 +1150,7 @@ function rDemo(){
     const got=pickD.length?pickD.map(id=>BY[id]):shuffle([0,1,2,3].map(()=>drawCard(1)).concat([drawCard(2)]));
     TEST=true;openStage(got.map(c=>({c,isNew:false})))});
   if($('dClr'))$('dClr').addEventListener('click',()=>{pickD=[];rDemo()});
-  m.querySelectorAll('[data-fr]').forEach(b=>b.addEventListener('click',()=>{FRAME=b.dataset.fr;try{localStorage.setItem('hp:frame',FRAME)}catch(e){}rDemo()}));
+  m.querySelectorAll('[data-fr]').forEach(b=>b.addEventListener('click',()=>{FRAME=b.dataset.fr;try{localStorage.setItem('hp:frame3',FRAME)}catch(e){}rDemo()}));
   m.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{dP=b.dataset.p;rDemo()}));
   bindSearch(m,v=>qD=v);
   m.querySelectorAll('[data-id]').forEach(b=>{let lp=0,t=0;
