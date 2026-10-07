@@ -14,190 +14,125 @@ const fr=v=>v.toLocaleString('fr-FR');
 function giveOne(id){col[id]=(col[id]||0)+1;sv('col',col)}
 function takeOne(id){if(!col[id])return false;col[id]--;if(!col[id])delete col[id];sv('col',col);return true}
 
-/* ================= duel façon Pokémon TCG Pocket (moteur dans combat.js) ================= */
-const DAILY=5;
-let team=ld('deck',[]),DU=null,teamEdit=false,DSEL=null;
+/* ================= duel « Épreuves » : deck de 20 cartes avec un budget de coût ================= */
+const DECK_N=20,BUDGET=90,OUT=2,HAND=5,WIN=5,DAILY=5;
+const EP=[['P','Combat','Puissance'],['V','Course','Vitesse'],['I','Ruse','Intelligence']];
+let team=ld('deck2',[]),DU=null,teamEdit=false;
 const today=()=>{const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()};
 let dw=ld('dw',{d:0,n:0});
+const stv=(c,k)=>c.st[{P:0,V:1,I:2}[k]];
+const sum3=c=>c.st[0]+c.st[1]+c.st[2];
+const deckCost=ids=>ids.reduce((a,id)=>a+(BY[id]?BY[id].k:0),0);
+/* deck automatique : les cartes les plus efficaces (stats par point de coût) sans dépasser le budget */
+function buildDeck(pool){
+  /* pool : [{c,n}] ; renvoie une liste de cartes */
+  const slots=[];pool.forEach(x=>{for(let i=0;i<Math.min(2,x.n);i++)slots.push(x.c)});
+  slots.sort((a,b)=>(sum3(b)/b.k)-(sum3(a)/a.k)||sum3(b)-sum3(a));
+  let out=slots.slice(0,DECK_N),cost=out.reduce((a,c)=>a+c.k,0);
+  /* puis on améliore : on remplace une carte faible par une plus forte tant que le budget le permet */
+  const rest=slots.slice(DECK_N).sort((a,b)=>sum3(b)-sum3(a));
+  for(const r of rest){out.sort((a,b)=>sum3(a)-sum3(b));const w=out[0];if(sum3(r)>sum3(w)&&cost-w.k+r.k<=BUDGET){out[0]=r;cost+=r.k-w.k}}
+  while(cost>BUDGET&&out.length){out.sort((a,b)=>b.k-a.k);cost-=out.shift().k}
+  return out;
+}
 const ownList=()=>owned().map(c=>({c,n:col[c.id]}));
-function autoTeam(){team=autoDeck(ownList()).map(c=>c.id);sv('deck',team)}
+function autoTeam(){team=buildDeck(ownList()).map(c=>c.id);sv('deck2',team)}
 function deckCards(){
-  /* le deck sauvegardé, sans les cartes vendues ; complété par des prêts si l'album est petit */
   const cnt={},cs=[];team.forEach(id=>{if(BY[id]&&(cnt[id]||0)<Math.min(2,col[id]||0)){cnt[id]=(cnt[id]||0)+1;cs.push(BY[id])}});
-  const loan=shuffle(CARDS.filter(c=>c.r==='bronze'||c.r==='argent')).slice(0,Math.max(0,DECK_N-cs.length));
+  let left=BUDGET-cs.reduce((a,c)=>a+c.k,0);
+  const cheap=shuffle(CARDS.filter(c=>c.k<=3));const loan=[];
+  for(const c of cheap){if(cs.length+loan.length>=DECK_N)break;if(c.k<=left){loan.push(c);left-=c.k}}
   return{cs:cs.concat(loan),loans:loan.length};
 }
-function oppDeck(){const n=Math.max(30,owned().length);return autoDeck(shuffle(CARDS.slice()).slice(0,n).map(c=>({c,n:Math.random()<.4?2:1})))}
-const typeChip=t=>`<span class="tchip" title="${TYPES[t].n}">${TYPES[t].e}</span>`;
-function ficheHTML(c){const f=fiche(c),w=TYPES[f.type].weak;
-  return `<div class="fiche"><div class="fh">${typeChip(f.type)}<b>${esc(c.n)}</b><span>PV <b>${f.hp}</b></span></div>
-    <div class="fatk"><span class="cost">${'⚡'.repeat(f.cost)}</span><b>${esc(f.atk)}</b><span class="dmg">${f.dmg}</span></div>
-    ${f.eff?`<p>${esc(f.eff.t)}</p>`:''}
-    <div class="ff"><span>Faiblesse ${TYPES[w].e} +20</span><span>Retraite ${f.retreat?'⚡'.repeat(f.retreat):'gratuite'}</span>${f.pts>1?'<span>KO : 2 points</span>':''}</div></div>`}
-function monHTML(m,cls,attr){
-  const f=m.f,left=Math.max(0,f.hp-m.dmg),pc=left/f.hp*100;
-  return `<button class="mon ${cls||''}" ${attr||''}>${pkCard(m.c,{left})}
-    <span class="hpb"><i style="width:${pc}%;background:${pc>50?'#7fc79a':pc>25?'#e3b653':'#e0606e'}"></i></span>
-    <span class="ens">${'<i></i>'.repeat(m.en)}${m.en<f.cost?'<i class="no"></i>'.repeat(f.cost-m.en):''}</span>
-    ${m.poison?'<span class="psn">☠️</span>':''}</button>`}
-
-/* ---------- carte de duel façon TCG : nom et PV en haut, illustration, attaque, faiblesse et retraite ---------- */
-const TCOL={eau:'#3c8fd6',foret:'#4f9a4c',savane:'#d39a35',glace:'#7cc8de',ciel:'#8f9fdc',venin:'#8c52ad',insecte:'#9db53a',domestique:'#c39a74',ancien:'#8a785e'};
-const nrg=n=>'<i class="pe"></i>'.repeat(n);
-const TAL={poison:'Venin',meute:'Meute',armure:'Carapace',revanche:'Revanche',vif:'Fulgurance'};
-const ico=(t,n)=>`<i class="lv-e" title="${TYPES[t].n}">${TYPES[t].e}</i>`.repeat(n||1);
-function pkCard(c,o){
-  o=o||{};const f=fiche(c),w=TYPES[f.type].weak,hp=o.left!=null?o.left:f.hp,hurt=o.left!=null&&o.left<f.hp;
-  return `<div class="lv" style="--tc:${TCOL[f.type]}"><div class="lv-in">
-    <div class="lv-art"><img src="${c.art}" alt="" loading="lazy" draggable="false"></div>
-    <div class="lv-frame"><i class="lv-star s1">✦</i><i class="lv-star s2">✦</i></div>
-    <div class="lv-top"><div class="lv-tt"><b class="lv-n">${esc(c.n)}</b><span class="lv-sub">${esc(c.p)} · ${TYPES[f.type].n}${f.pts>1?' · géant':''}</span></div>
-      <span class="lv-hp${hurt?' hurt':''}"><small>PV</small>${hp}</span><span class="lv-ty">${TYPES[f.type].e}</span></div>
-    <div class="lv-low">
-      ${f.eff?`<div class="lv-tal"><span class="lv-tag">Talent</span><b>${TAL[f.eff.k]||'Talent'}</b><p>${esc(f.eff.t)}</p></div>`:''}
-      <div class="lv-atk"><span class="lv-c">${ico(f.type,f.cost)}</span><b>${esc(f.atk)}</b><span class="lv-d">${f.dmg}</span><p>${esc(c.f)}</p></div>
-      <div class="lv-bot"><span><small>Faiblesse</small>${ico(w)} +20</span><span><small>Résistance</small>—</span><span><small>Retraite</small>${f.retreat?'<i class="lv-r">✦</i>'.repeat(f.retreat):'—'}</span></div>
-    </div></div></div>`;
-}
-function showPk(c,left){$('viewCard').innerHTML=pkCard(c,{left});$('viewAct').innerHTML='';$('view').hidden=false}
-const sideOf=()=>DU.G.s[0],oppOf=()=>DU.G.s[1];
-const say=t=>{DU.msg=t};
+function oppDeck(){const n=Math.max(30,owned().length);return buildDeck(shuffle(CARDS.slice()).slice(0,n).map(c=>({c,n:Math.random()<.4?2:1})))}
 function newDuel(){
-  const d=deckCards();
-  DU={G:newGame(d.cs,oppDeck(),Math.random()<.5),phase:'setup',mode:null,msg:'Choisissez votre animal actif dans votre main, puis ajoutez-en jusqu\'à 3 sur le banc.'};
-  aiSetup(DU.G,1);const o=oppOf();o.hand.slice().sort((a,b)=>b.f.hp-a.f.hp).forEach(m=>{if(o.bench.length<2)toBench(o,m)});
+  const side=cs=>{const d=shuffle(cs.slice());return{deck:d,hand:d.splice(0,HAND),pts:0}};
+  DU={me:side(deckCards().cs),op:side(oppDeck()),n:0,ep:EP[Math.random()*3|0],sel:null,last:null,over:false};
 }
-function myStart(){DU.phase='me';startTurn(DU.G);if(DU.G.n===0)say('Vous commencez. Le premier tour se joue sans énergie.');else say('À vous : posez des animaux, attachez votre énergie ⚡, puis attaquez.')}
-function afterAction(){
-  const G=DU.G;
-  if(G.over)return endDuel();
-  if(!sideOf().act){if(sideOf().bench.length){DU.mode='promote';say('Votre animal est KO : choisissez un remplaçant sur votre banc.')}
-    else{G.over=true;G.win=1;return endDuel()}}
+function aiChoose(h,k){
+  const best=h.slice().sort((a,b)=>stv(b,k)-stv(a,k))[0];
+  if(stv(best,k)>=7||Math.random()<.25)return best;
+  /* sinon on sacrifie la carte la plus faible */
+  return h.slice().sort((a,b)=>sum3(a)-sum3(b))[0];
+}
+function playRound(x){
+  const me=DU.me,op=DU.op,k=DU.ep[0],y=aiChoose(op.hand,k);
+  /* Outsider : la carte la moins chère gagne +1 par point de coût d'écart, +2 au plus */
+  const ba=Math.min(OUT,Math.max(0,y.k-x.k)),bb=Math.min(OUT,Math.max(0,x.k-y.k));
+  const a=stv(x,k)+ba,b=stv(y,k)+bb;let r=Math.sign(a-b),tie='';
+  if(!r){r=Math.sign(y.k-x.k);tie=r?'cheap':'none'}
+  me.hand.splice(me.hand.indexOf(x),1);op.hand.splice(op.hand.indexOf(y),1);
+  if(r>0)me.pts++;else if(r<0)op.pts++;
+  DU.last={x,y,a,b,ba,bb,r,tie,ep:DU.ep};DU.n++;DU.sel=null;
+  [me,op].forEach(s=>{if(s.deck.length)s.hand.push(s.deck.shift())});
+  if(me.pts>=WIN||op.pts>=WIN||!me.hand.length||!op.hand.length)endDuel();
+  else DU.ep=EP[Math.random()*3|0];
   rDuel();
 }
-function lastLog(){const L=DU.G.log;return L[L.length-1]}
-function logTxt(e){
-  if(!e)return'';
-  if(e.atk)return `${e.side?'La Naturaliste':'Vous'} : ${BY[e.atk].n} utilise ${fiche(BY[e.atk]).atk}, ${e.v} dégâts à ${BY[e.to].n}.`;
-  if(e.ko)return `${BY[e.ko].n} est KO ! ${e.side?'+'+e.pts+' point'+(e.pts>1?'s':'')+' pour vous.':'+'+e.pts+' point'+(e.pts>1?'s':'')+' pour la Naturaliste.'}`;
-  if(e.poison)return `${BY[e.poison].n} souffre du poison : 10 dégâts.`;return'';
-}
-function myEnd(){
-  const G=DU.G;if(G.over)return;
-  const before=G.log.length;endTurn(G);
-  if(G.over)return endDuel();
-  aiPhase(G.log.slice(before).map(logTxt).filter(Boolean));
-}
-function aiPhase(pre){
-  const G=DU.G;DU.phase='ai';say((pre||[]).join(' ')||'Tour de la Naturaliste…');rDuel();
-  setTimeout(()=>{if(!DU||DU.G!==G)return;
-    startTurn(G);if(!oppOf().act)aiSetup(G,1);
-    const b=G.log.length;aiTurn(G,1);const msgs=G.log.slice(b).map(logTxt).filter(Boolean);
-    if(G.over)return endDuel();
-    const b2=G.log.length;endTurn(G);msgs.push(...G.log.slice(b2).map(logTxt).filter(Boolean));
-    if(G.over)return endDuel();
-    if(!oppOf().act)aiSetup(G,1);
-    if(!oppOf().act){G.over=true;G.win=0;return endDuel()}
-    myStart();if(msgs.length)say(msgs.join(' '));
-    afterAction()},900);
-}
 function endDuel(){
-  const G=DU.G;DU.phase='over';const r=G.win===0?1:G.win===1?-1:0;DU.res=r;
+  DU.over=true;const r=Math.sign(DU.me.pts-DU.op.pts);DU.res=r;
   if(dw.d!==today())dw={d:today(),n:0};
   let g=r>0?(dw.n<DAILY?60:10):r===0?20:10;if(r>0)dw.n++;sv('dw',dw);
   if(r>0){wins++;sv('wins',wins)}
-  DU.gain=g;setPts(pts+g);rDuel();
+  DU.gain=g;setPts(pts+g);
 }
 function rDuel(){
   const m=$('main');
   if(teamEdit)return rTeam();
   if(!DU){
     if(team.filter(id=>col[id]).length<DECK_N&&owned().length>new Set(team).size)autoTeam();
-    const d=deckCards();if(dw.d!==today())dw={d:today(),n:0};
-    m.innerHTML=`<h2>Duel</h2><p class="lead">Contre la Naturaliste. Mettez KO ses animaux : le premier à ${GOAL_PTS} points gagne. Appui long sur une carte pour la lire en grand.</p>
+    const d=deckCards(),cost=d.cs.reduce((a,c)=>a+c.k,0);if(dw.d!==today())dw={d:today(),n:0};
+    m.innerHTML=`<h2>Duel</h2><p class="lead">Contre la Naturaliste. À chaque manche, une épreuve : ⚔️ Combat (Puissance), 💨 Course (Vitesse) ou 🧠 Ruse (Intelligence). Chacun pose une carte, la plus forte dans cette stat gagne. Premier à ${WIN} manches.</p>
       <div class="row"><button class="btn" id="go">Commencer un duel</button><button class="btn ghost" id="edit">Modifier mon deck</button></div>
       <p class="lead" style="text-align:center;margin-top:10px">Victoire : ${dw.n<DAILY?60:10} points (${Math.max(0,DAILY-dw.n)} à plein tarif aujourd'hui). Nul : 20. Défaite : 10.</p>
-      <details class="rules" open><summary>Comment jouer</summary>
-      <p>Chaque animal a des <b>PV</b>, une <b>attaque</b> qui coûte des énergies ⚡, un <b>type</b> et une <b>faiblesse</b> (+20 dégâts).</p>
-      <p>À votre tour : piochez, posez des animaux sur le banc (3 au plus), attachez <b>1 énergie</b> à un de vos animaux, puis attaquez avec votre animal actif.</p>
-      <p>Un animal KO rapporte 1 point à l'adversaire, 2 pour les géants (150 PV et plus). Premier à ${GOAL_PTS} points.</p>
-      <p>Faiblesses : ${Object.values(TYPES).map(t=>`${t.e} ${t.n} craint ${TYPES[t.weak].e}`).join(' · ')}.</p></details>
-      <h3 class="h3">Mon deck (${DECK_N} cartes)${d.loans?` · ${d.loans} prêtée${d.loans>1?'s':''}`:''}</h3>
-      <div class="grid pkgrid">${d.cs.map(c=>`<button data-id="${c.id}">${pkCard(c)}</button>`).join('')}</div>`;
-    m.querySelectorAll('.grid [data-id]').forEach(b=>b.addEventListener('click',()=>showPk(BY[b.dataset.id])));
+      <details class="rules"><summary>Le budget de deck</summary>
+      <p>Un deck compte ${DECK_N} cartes, 2 exemplaires au plus, et la somme de leurs coûts ne peut pas dépasser <b>${BUDGET}</b>. Impossible donc de mettre seulement des animaux puissants : il faut aussi des petites cartes.</p>
+      <p><b>Outsider</b> : la carte la moins chère gagne +1 par point de coût d'écart, jusqu'à +2. Égalité : la carte la moins chère gagne. Gardez vos grosses cartes pour les épreuves où elles brillent, et sacrifiez une petite carte quand l'épreuve ne vous va pas.</p></details>
+      <h3 class="h3">Mon deck · ${d.cs.length} cartes · coût ${cost}/${BUDGET}${d.loans?` · ${d.loans} prêtée${d.loans>1?'s':''}`:''}</h3>
+      <div class="grid">${d.cs.map(c=>`<button data-id="${c.id}">${card(c,true)}</button>`).join('')}</div>`;
+    m.querySelectorAll('.grid [data-id]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.id])));
     $('go').addEventListener('click',()=>{newDuel();rDuel()});
     $('edit').addEventListener('click',()=>{teamEdit=true;rDuel()});
     return;
   }
-  const G=DU.G,me=sideOf(),op=oppOf();
-  if(DU.phase==='over'){
+  const me=DU.me,op=DU.op,L=DU.last;
+  if(DU.over){
     const r=DU.res;
     m.innerHTML=`<div class="end"><p class="lead" style="margin:0">Fin du duel</p><div class="big${r<0?' ko':''}">${r>0?'Victoire':r<0?'Défaite':'Match nul'}</div>
       <p style="font-size:20px;margin:0 0 6px">${me.pts} – ${op.pts}</p><p class="lead">+${DU.gain} points pour la Salle des ventes.</p>
       <div class="row"><button class="btn" id="again">Rejouer</button><button class="btn ghost" id="back">Mon deck</button></div></div>`;
     $('again').addEventListener('click',()=>{newDuel();rDuel()});$('back').addEventListener('click',()=>{DU=null;rDuel()});return;
   }
-  const pip=n=>`<span class="pips">${Array.from({length:GOAL_PTS},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</span>`;
-  const myTurn=DU.phase==='me'&&!DU.mode,setup=DU.phase==='setup';
-  const a=me.act,d=op.act,canAtk=myTurn&&a&&d&&canAttack(a)&&!G.attacked;
-  const sel=DSEL&&[me.act,...me.bench,...me.hand].find(x=>x&&x.u===DSEL);
-  m.innerHTML=`<div class="board">
-    <div class="bside op"><div class="binfo"><b>Naturaliste</b>${pip(op.pts)}<span>🂠 ${op.hand.length} · pioche ${op.deck.length}</span></div>
-      <div class="bench">${op.bench.map(x=>monHTML(x,'sm',`data-o="${x.u}"`)).join('')}${'<span class="slot0"></span>'.repeat(BENCH-op.bench.length)}</div>
-      <div class="act">${d?monHTML(d,'big',`data-o="${d.u}"`):'<span class="slot0 big"></span>'}</div></div>
-    <div class="bmsg">${esc(DU.msg||'')}</div>
-    <div class="bside me"><div class="act">${a?monHTML(a,'big'+(DU.mode==='attach'?' tgt':''),`data-m="${a.u}"`):'<span class="slot0 big">votre actif</span>'}</div>
-      <div class="bench">${me.bench.map(x=>monHTML(x,'sm'+((DU.mode==='attach'||DU.mode==='retreat'||DU.mode==='promote')?' tgt':''),`data-m="${x.u}"`)).join('')}${'<span class="slot0"></span>'.repeat(BENCH-me.bench.length)}</div>
-      <div class="binfo"><b>Vous</b>${pip(me.pts)}<span>pioche ${me.deck.length}</span></div></div>
-    <div class="bact">
-      ${setup?`<button class="btn" id="ready"${a?'':' disabled'}>${a?'Prêt : commencer':'Choisissez un actif'}</button>`:''}
-      ${myTurn?`<button class="btn${canAtk?'':' ghost'}" id="atk"${canAtk?'':' disabled'}>${a?`Attaquer : ${a.f.atk} (${d?damageOf(G,0,a,d):a.f.dmg})`:'Attaquer'}</button>
-        <button class="btn ghost" id="en"${G.energy?'':' disabled'}>${G.energy?'⚡ Attacher':'⚡ déjà utilisée'}</button>
-        <button class="btn ghost" id="ret"${a&&me.bench.length&&!G.retreated&&a.en>=a.f.retreat?'':' disabled'}>Retraite</button>
-        <button class="btn ghost" id="end">Fin du tour</button>`:''}
-      ${DU.mode&&DU.mode!=='promote'?'<button class="btn ghost" id="cancel">Annuler</button>':''}
-      ${DU.phase==='ai'?'<p class="lead">La Naturaliste réfléchit…</p>':''}
-    </div>
-    <h3 class="h3">Ma main (${me.hand.length})</h3>
-    <div class="hand2">${me.hand.map(x=>`<button data-h="${x.u}">${pkCard(x.c)}</button>`).join('')||'<p class="lead">Main vide.</p>'}</div>
-    <div class="row" style="margin-top:14px"><button class="btn ghost" id="quit">Abandonner</button></div></div>`;
-  const find=u=>[me.act,...me.bench,...me.hand].find(x=>x&&x.u===+u);
-  m.querySelectorAll('[data-h]').forEach(b=>b.addEventListener('click',()=>{const x=find(b.dataset.h);DSEL=x.u;
-    if(setup||myTurn){if(!me.act){promote(me,x);say(x.c.n+' est votre animal actif.')}else if(me.bench.length<BENCH){toBench(me,x);say(x.c.n+' rejoint le banc.')}else say('Le banc est plein (3 animaux).')}
-    rDuel()}));
-  m.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{const x=find(b.dataset.m);DSEL=x.u;
-    if(DU.mode==='attach'){attach(G,x);DU.mode=null;say('Énergie attachée à '+x.c.n+'.')}
-    else if(DU.mode==='retreat'&&x!==me.act){retreat(G,me,x);DU.mode=null;say(x.c.n+' passe à l\'avant.')}
-    else if(DU.mode==='promote'&&x!==me.act){promote(me,x);DU.mode=null;say(x.c.n+' entre en jeu.')}
-    rDuel()}));
-  m.querySelectorAll('[data-o]').forEach(b=>b.addEventListener('click',()=>{const x=[op.act,...op.bench].find(y=>y&&y.u===+b.dataset.o);if(x)showPk(x.c,Math.max(0,x.f.hp-x.dmg))}));
-  m.querySelectorAll('[data-m],[data-h]').forEach(b=>{let t=0;const id=b.dataset.m||b.dataset.h;
-    b.addEventListener('pointerdown',()=>{t=setTimeout(()=>{b.dataset.lp=1;const x=find(id);if(x)showPk(x.c,Math.max(0,x.f.hp-x.dmg))},450)});
-    ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>clearTimeout(t)));
-    b.addEventListener('contextmenu',e=>e.preventDefault());
-    b.addEventListener('click',e=>{if(b.dataset.lp){delete b.dataset.lp;e.stopImmediatePropagation()}},true)});
-  if($('ready'))$('ready').addEventListener('click',()=>{if(G.turn===0){myStart();rDuel()}else aiPhase(['La Naturaliste commence.'])});
-  if($('atk'))$('atk').addEventListener('click',()=>{const b=G.log.length;attack(G);say(G.log.slice(b).map(logTxt).join(' '));buzz(30);
-    if(G.over)return endDuel();if(!op.act)aiSetup(G,1);if(!op.act&&!op.bench.length){G.over=true;G.win=0;return endDuel()}myEnd()});
-  if($('en'))$('en').addEventListener('click',()=>{DU.mode='attach';say('Touchez l\'animal qui reçoit l\'énergie.');rDuel()});
-  if($('ret'))$('ret').addEventListener('click',()=>{DU.mode='retreat';say('Touchez l\'animal du banc qui prend la place. Coût : '+(a.f.retreat||'aucune')+' énergie.');rDuel()});
-  if($('end'))$('end').addEventListener('click',myEnd);
-  if($('cancel'))$('cancel').addEventListener('click',()=>{DU.mode=null;say('');rDuel()});
-  $('quit').addEventListener('click',()=>{if($('quit').dataset.ok){G.over=true;G.win=1;endDuel()}else{$('quit').dataset.ok=1;$('quit').textContent='Sûr ? Touchez encore'}});
+  const pip=n=>`<div class="pips">${Array.from({length:WIN},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</div>`;
+  const k=DU.ep[0],ic={P:'⚔️',V:'💨',I:'🧠'};
+  let msg='';
+  if(L){msg=L.r>0?'<b>Manche gagnée</b>':L.r<0?'<b class="ko">Manche perdue</b>':'<b>Égalité</b>';
+    msg+=`${esc(L.x.n)} ${L.a}${L.ba?` (dont +${L.ba} outsider)`:''} contre ${esc(L.y.n)} ${L.b}${L.bb?` (dont +${L.bb} outsider)`:''} en ${L.ep[2]}.`+(L.tie==='cheap'?' La carte la moins chère gagne.':'')}
+  m.innerHTML=`<div class="score"><div><b>Vous</b>${pip(me.pts)}</div><div class="sc">${me.pts} – ${op.pts}</div><div><b>Naturaliste</b>${pip(op.pts)}</div></div>
+    <div class="epr"><span>${ic[k]}</span><div><b>${DU.ep[1]}</b><small>épreuve de ${DU.ep[2]} · manche ${DU.n+1}</small></div></div>
+    ${L?`<div class="arena"><div class="slot"><span class="lab">Vous</span>${card(L.x,true)}<div class="val ${L.r>0?'w':L.r<0?'l':''}">${L.a}</div></div>
+      <div class="vs"><b>VS</b>${L.ep[2]}</div><div class="slot"><span class="lab">Naturaliste</span>${card(L.y,true)}<div class="val ${L.r<0?'w':L.r>0?'l':''}">${L.b}</div></div></div>`:''}
+    <div class="msg">${msg||'Choisissez la carte à jouer pour cette épreuve.'}</div>
+    <div class="grid dgrid">${me.hand.map((x,i)=>`<button data-h="${i}" class="${DU.sel===x?'sel':''}">${card(x,true)}<span class="hv">${ic[k]} ${stv(x,k)}</span></button>`).join('')}</div>
+    <div class="row" style="margin-top:14px"><button class="btn" id="playB"${DU.sel?'':' disabled'}>${DU.sel?'Jouer '+esc(DU.sel.n):'Choisissez une carte'}</button><button class="btn ghost" id="quit">Abandonner</button></div>`;
+  m.querySelectorAll('[data-h]').forEach(b=>b.addEventListener('click',()=>{const x=me.hand[+b.dataset.h];DU.sel=DU.sel===x?null:x;rDuel()}));
+  $('playB').addEventListener('click',()=>{if(DU.sel)playRound(DU.sel)});
+  $('quit').addEventListener('click',()=>{if($('quit').dataset.ok){DU.me.pts=0;DU.op.pts=WIN;endDuel();rDuel()}else{$('quit').dataset.ok=1;$('quit').textContent='Sûr ? Touchez encore'}});
 }
 function rTeam(){
-  const m=$('main'),own=owned().slice().sort((a,b)=>fiche(b).hp+fiche(b).dmg-fiche(a).hp-fiche(a).dmg);
-  const cnt={};team.forEach(id=>cnt[id]=(cnt[id]||0)+1);
-  m.innerHTML=`<h2>Mon deck</h2><p class="lead">${team.length}/${DECK_N} cartes, 2 exemplaires au plus. Touchez une carte pour en mettre 1, 2 ou 0.</p>
+  const m=$('main'),own=owned().slice().sort((a,b)=>b.k-a.k||sum3(b)-sum3(a));
+  const cnt={};team.forEach(id=>cnt[id]=(cnt[id]||0)+1);const cost=deckCost(team);
+  m.innerHTML=`<h2>Mon deck</h2><p class="lead">${team.length}/${DECK_N} cartes · coût <b style="color:${cost>BUDGET?'#ff9aa5':'var(--gold-hi)'}">${cost}/${BUDGET}</b>. Touchez une carte pour en mettre 1, 2 ou 0.</p>
     <div class="row"><button class="btn" id="ok">Valider</button><button class="btn ghost" id="auto">Deck automatique</button></div>
     <div class="tools" style="margin-top:12px"><input class="search" id="q" type="search" placeholder="Rechercher un animal" autocomplete="off"></div>
-    <div class="grid pkgrid">${own.map(c=>`<button data-id="${c.id}" data-n="${esc(norm(c.n))}"${cnt[c.id]?' class="pick"':''}>${pkCard(c)}${cnt[c.id]?`<span class="cnt">×${cnt[c.id]}</span>`:''}</button>`).join('')}</div>
+    <div class="grid">${own.map(c=>`<button data-id="${c.id}" data-n="${esc(norm(c.n))}"${cnt[c.id]?' class="pick"':''}>${card(c,true)}${cnt[c.id]?`<span class="cnt">×${cnt[c.id]}</span>`:''}</button>`).join('')}</div>
     ${own.length?'':'<p class="lead">Votre album est vide : ouvrez des sachets.</p>'}`;
-  $('ok').addEventListener('click',()=>{teamEdit=false;sv('deck',team);rDuel()});
+  $('ok').addEventListener('click',()=>{teamEdit=false;sv('deck2',team);rDuel()});
   $('auto').addEventListener('click',()=>{autoTeam();rTeam()});
   m.querySelectorAll('.grid [data-id]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.id,n=cnt[id]||0,max=Math.min(2,col[id]||0);
-    if(n<max&&team.length<DECK_N)team.push(id);else if(n>0)team=team.filter(x=>x!==id);else{toast(DECK_N+' cartes au plus');return}
-    const y=m.scrollTop;sv('deck',team);rTeam();m.scrollTop=y}));
+    if(n<max&&team.length<DECK_N){if(deckCost(team)+BY[id].k>BUDGET){toast('Budget dépassé : retirez une carte chère');return}team.push(id)}
+    else if(n>0)team=team.filter(x=>x!==id);else{toast(DECK_N+' cartes au plus');return}
+    const y=m.scrollTop;sv('deck2',team);rTeam();m.scrollTop=y}));
   bindSearch(m,()=>{});
 }
 if(!team.length&&owned().length)autoTeam();
@@ -207,7 +142,7 @@ const defVal=c=>r5(cote(c)/10);
 function viewActs(c){
   const box=$('viewAct'),n=col[c.id]||0;
   if(!n||tab==='demo'||!ST.hidden){box.innerHTML='';return}
-  box.innerHTML=`<div class="vact"><span>${n} exemplaire${n>1?'s':''} · cote ${fr(cote(c))} </span>${ficheHTML(c)}
+  box.innerHTML=`<div class="vact"><span>${n} exemplaire${n>1?'s':''} · cote ${fr(cote(c))} </span>
     <div class="row"><button class="btn" data-v="sell">Vendre</button><button class="btn ghost" data-v="del">Défausser : +${defVal(c)} points</button></div></div>`;
   box.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();
     if(b.dataset.v==='sell'){$('view').hidden=true;sellSel=c.id;mkTab='sell';tab='marche';render();return}
