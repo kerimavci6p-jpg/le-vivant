@@ -13,7 +13,7 @@
 <title>Le Vivant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Fira+Sans+Condensed:ital,wght@0,500;0,700;0,800;1,500&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,600;0,700;1,400&display=swap">
 <style>
 body{margin:0}[hidden]{display:none!important}img{max-width:100%}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -491,6 +491,27 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
 .pkgrid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
 #view .pk{width:min(340px,86vw)}
 @media (min-width:900px){.mon{max-width:130px}.mon.big{max-width:210px}.slot0{max-width:130px}.slot0.big{max-width:210px}.hand2>button{flex-basis:170px}.pkgrid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}}
+/* ---------- cartes de duel FULL ART (police libre proche des TCG) ---------- */
+.pk{padding:1.6cqw;background:linear-gradient(145deg,#f4f1ea,#b9b3a6 35%,#f7f4ee 60%,#9c968a);font-family:"Fira Sans Condensed","Arial Narrow",sans-serif}
+.pk-in{position:relative;padding:0;gap:0;background:#111;color:#fff;border-radius:3.6cqw}
+.pk-art{position:absolute;inset:0;aspect-ratio:auto;border-radius:0;box-shadow:none}
+.pk-art img{object-position:50% 35%}
+.pk-top{position:relative;z-index:2;padding:3cqw 3.4cqw 9cqw;background:linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.25) 65%,transparent)}
+.pk-n{font-family:inherit;font-weight:800;font-size:8.4cqw;letter-spacing:.01em;text-shadow:0 .4cqw 1.2cqw rgba(0,0,0,.8)}
+.pk-hp{font-family:inherit;font-weight:800;font-size:9cqw;color:#fff;text-shadow:0 .4cqw 1.2cqw rgba(0,0,0,.8)}.pk-hp small{font-weight:700;font-size:4.2cqw}
+.pk-hp.hurt{color:#ff6b7a}
+.pk-ty{box-shadow:0 0 0 .7cqw rgba(255,255,255,.9),0 .6cqw 1.6cqw rgba(0,0,0,.6);background:var(--tc);font-size:5.6cqw}
+.pk-sub{position:relative;z-index:2;margin-top:auto;font-family:inherit;font-style:italic;font-weight:500;font-size:3.6cqw;opacity:.85;text-align:right;padding:0 3.4cqw 1cqw;text-shadow:0 .3cqw 1cqw #000}
+.pk-atk,.pk-eff,.pk-bot,.pk-fl{position:relative;z-index:2}
+.pk-atk{margin:0 2.4cqw;padding:2cqw 2.6cqw;border-top:0;border-radius:2.4cqw;background:rgba(10,12,22,.62);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);box-shadow:inset 0 0 0 .3cqw rgba(255,255,255,.18)}
+.pk-atk b{font-weight:700;font-size:6.2cqw}
+.pk-d{font-family:inherit;font-weight:800;font-size:9cqw}
+.pk-eff{margin:1.4cqw 2.4cqw 0;padding:0 2.6cqw;font-size:4cqw;opacity:.95;text-shadow:0 .3cqw 1cqw #000}
+.pk-bot{margin:1.6cqw 2.4cqw 0;padding:1.4cqw 0 0;border-top:.3cqw solid rgba(255,255,255,.3);font-family:inherit;font-weight:500;font-size:3.5cqw;text-shadow:0 .3cqw 1cqw #000}
+.pk-fl{padding:1cqw 4cqw 2.6cqw;font-size:3.3cqw;opacity:.85;text-shadow:0 .3cqw 1cqw #000}
+.pk-in:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(transparent 45%,rgba(0,0,0,.35) 62%,rgba(0,0,0,.85))}
+@container (max-width:150px){.pk-bot{display:none}.pk-atk{margin-top:auto!important}.pk-top{padding-bottom:6cqw}.pk-n{font-size:10cqw}.pk-hp{font-size:11cqw}.pk-atk{margin:0 2cqw 2cqw}.pk-atk b{font-size:7.4cqw}.pk-d{font-size:11cqw}}
+@container (max-width:100px){.pk-art{flex:none}.pk-n{font-size:12cqw}.pk-hp{font-size:13cqw}}
 </style>
 
 </head>
