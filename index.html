@@ -292,6 +292,30 @@ h2{font-family:var(--f-display);font-weight:400;font-size:22px;margin:10px 0 2px
   color:#fff7e6;text-shadow:0 .5cqw 2.5cqw rgba(0,0,0,.85),0 0 5cqw rgba(0,0,0,.5)}
 .card.mini .nm{font-size:10.5cqw;letter-spacing:.02em}
 .card.fa .txt{padding:22cqw 5cqw 6cqw;background:linear-gradient(transparent,rgba(7,10,22,.45) 40%,rgba(7,10,22,.8))}
+/* ---------- ergonomie mobile et PC ---------- */
+.grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:14px 12px}
+.grid>button .card{transition:transform .18s ease,box-shadow .18s ease}
+@media (hover:hover){.grid>button:not(:disabled):hover .card{transform:translateY(-4px) scale(1.02)}}
+button:focus-visible,input:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
+nav button{min-height:54px}
+.tools{display:flex;gap:8px;align-items:center;margin:0 0 12px}
+.search{flex:1;min-width:0;height:44px;border-radius:99px;border:1px solid var(--line);background:var(--ink-2);color:var(--paper);padding:0 16px;font:inherit;font-size:16px}
+.search::placeholder{color:var(--paper-dim)}
+.chip small{opacity:.7;margin-left:4px;font-size:11px}
+.empty-q{color:var(--paper-dim);text-align:center;padding:24px 0}
+@media (min-width:900px){
+  .app{max-width:1180px}
+  header{padding:18px 28px 10px}
+  .logo{font-size:30px}
+  main{order:2}
+  nav{order:1;grid-template-columns:repeat(3,minmax(0,160px));justify-content:center;border-top:0;border-bottom:1px solid var(--line);background:none;padding:0}
+  nav button[aria-current="true"]{box-shadow:inset 0 -2px 0 var(--gold)}
+  main{padding:16px 28px 40px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px 18px}
+  .packs{flex-wrap:wrap;overflow:visible;margin:0 0 16px;padding:0}
+  .lead{font-size:15px;max-width:70ch}
+  .toast{bottom:32px}
+}
 </style>
 
 </head>
@@ -561,6 +585,13 @@ function card(c,mini){
     <div class="txt"><div class="nm">${esc(c.n)}</div></div><i class="glare"></i></div></div>`}
 function show(c){$('viewCard').innerHTML=card(c);$('view').hidden=false}
 $('view').addEventListener('click',()=>$('view').hidden=true);
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){if(!$('view').hidden){$('view').hidden=true;return}if(!$('acct').hidden){$('acct').hidden=true;return}}
+  if(ST.hidden||e.target.tagName==='INPUT')return;
+  if(ST.classList.contains('result')){if(e.key==='Enter'||e.key==='Escape'){e.preventDefault();$('resOk').click()}return}
+  if(ST.classList.contains('done')&&['Enter',' ','ArrowRight','ArrowLeft'].includes(e.key)){e.preventDefault();toss(e.key==='ArrowLeft'?-1:1);return}
+  if(e.key==='Escape'){$('skip').click();return}
+  if((e.key==='Enter'||e.key===' ')&&!ST.classList.contains('torn')&&!ST.classList.contains('opening')){e.preventDefault();openPack()}});
 const owned=()=>CARDS.filter(c=>col[c.id]);
 function pick(){let t=Math.random()*100;for(const r in RAR){t-=RAR[r].w;if(t<=0)return r}return 'bronze'}
 function drawCard(minO){let r;do{r=pick()}while(RAR[r].o<(minO||1));const pool=CARDS.filter(c=>c.r===r);return pool[Math.random()*pool.length|0]}
@@ -654,17 +685,28 @@ $('skip').addEventListener('click',()=>{if(!ST.classList.contains('torn')&&!ST.c
 $('resOk').addEventListener('click',()=>{ST.hidden=true;render()});
 $('resMore').addEventListener('click',()=>{ST.hidden=true;render();$('open')&&$('open').click()});
 /* ---------------- mode démo : tester les cartes sans toucher à la collection ---------------- */
-let TEST=false,pickD=[];
+let TEST=false,pickD=[],dP='Tous',qD='',qA='';
+const norm=t=>t.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+/* recherche : on masque les cartes sans redessiner la page, pour garder le clavier ouvert */
+function bindSearch(m,keep){const q=m.querySelector('#q'),g=m.querySelector('.grid');if(!q||!g)return;
+  const run=()=>{const v=norm(q.value.trim());keep(q.value);let n=0;
+    [...g.children].forEach(b=>{const ok=!v||(b.dataset.n||'').includes(v);b.hidden=!ok;if(ok)n++});
+    let e=m.querySelector('.empty-q');if(!n&&!e){e=document.createElement('p');e.className='empty-q';g.after(e)}if(e){e.hidden=!!n;e.textContent='Aucun animal ne correspond.'}};
+  q.addEventListener('input',run);if(q.value)run()}
 function rDemo(){
   const m=$('main');
   m.innerHTML=`<h2>Mode démo</h2><p class="lead">Pour tester les cartes et l'ouverture des sachets. Rien ici ne compte : ni dans votre album, ni dans vos sachets, ni dans le classement.</p>
     <div class="row"><button class="btn" id="dOpen">${pickD.length?`Ouvrir avec ces ${pickD.length} carte${pickD.length>1?'s':''}`:'Ouvrir un sachet test'}</button>${pickD.length?'<button class="btn ghost" id="dClr">Vider le choix</button>':''}</div>
     <p class="lead" style="margin-top:12px">Touchez des cartes pour les choisir (5 au plus) : le sachet test contiendra celles-là. Sans choix, il est tiré au hasard. Appui long pour voir une carte en grand.</p>
-    <div class="grid">${CARDS.map(c=>{const k=pickD.indexOf(c.id);return `<button data-id="${c.id}" aria-label="${esc(c.n)}" aria-pressed="${k>=0}"${k>=0?' style="outline:3px solid var(--gold);outline-offset:2px;border-radius:12px"':''}>${card(c,true)}${k>=0?`<span class="cnt">${k+1}</span>`:''}</button>`}).join('')}</div>`;
+    <div class="tools"><input class="search" id="q" type="search" placeholder="Rechercher un animal" autocomplete="off" value="${esc(qD)}"></div>
+    <div class="packs">${['Tous',...Object.keys(PACK)].map(p=>`<button class="chip" data-p="${p}" aria-pressed="${p===dP}">${p}<small>${CARDS.filter(c=>p==='Tous'||c.p===p).length}</small></button>`).join('')}</div>
+    <div class="grid">${CARDS.filter(c=>dP==='Tous'||c.p===dP).map(c=>{const k=pickD.indexOf(c.id);return `<button data-id="${c.id}" data-n="${esc(norm(c.n))}" aria-label="${esc(c.n)}" aria-pressed="${k>=0}"${k>=0?' style="outline:3px solid var(--gold);outline-offset:2px;border-radius:12px"':''}>${card(c,true)}${k>=0?`<span class="cnt">${k+1}</span>`:''}</button>`}).join('')}</div>`;
   $('dOpen').addEventListener('click',()=>{
     const got=pickD.length?pickD.map(id=>BY[id]):shuffle([0,1,2,3].map(()=>drawCard(1)).concat([drawCard(2)]));
     TEST=true;openStage(got.map(c=>({c,isNew:false})))});
   if($('dClr'))$('dClr').addEventListener('click',()=>{pickD=[];rDemo()});
+  m.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{dP=b.dataset.p;rDemo()}));
+  bindSearch(m,v=>qD=v);
   m.querySelectorAll('[data-id]').forEach(b=>{let lp=0,t=0;
     b.addEventListener('pointerdown',()=>{lp=0;t=setTimeout(()=>{lp=1;show(BY[b.dataset.id])},450)});
     ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>clearTimeout(t)));
@@ -678,10 +720,12 @@ function rAlbum(){
   const m=$('main'),n=owned().length,list=CARDS.filter(c=>alb==='Tous'||c.p===alb);
   m.innerHTML=`<h2>Album</h2><p class="lead">${n} animaux sur ${CARDS.length}. Les doubles ne servent pas encore : la fusion viendra plus tard.</p>
     <div class="prog"><i style="width:${Math.round(n/CARDS.length*100)}%"></i></div>
-    <div class="packs">${['Tous',...Object.keys(PACK)].map(p=>`<button class="chip" data-p="${p}" aria-pressed="${p===alb}">${p}</button>`).join('')}</div>
-    <div class="grid">${list.map(c=>col[c.id]?`<button data-id="${c.id}" aria-label="${esc(c.n)}">${card(c,true)}${col[c.id]>1?`<span class="cnt">×${col[c.id]}</span>`:''}</button>`
+    <div class="tools"><input class="search" id="q" type="search" placeholder="Rechercher un animal" autocomplete="off" value="${esc(qA)}"></div>
+    <div class="packs">${['Tous',...Object.keys(PACK)].map(p=>{const L=CARDS.filter(c=>p==='Tous'||c.p===p);return `<button class="chip" data-p="${p}" aria-pressed="${p===alb}">${p}<small>${L.filter(c=>col[c.id]).length}/${L.length}</small></button>`}).join('')}</div>
+    <div class="grid">${list.map(c=>col[c.id]?`<button data-id="${c.id}" data-n="${esc(norm(c.n))}" aria-label="${esc(c.n)}">${card(c,true)}${col[c.id]>1?`<span class="cnt">×${col[c.id]}</span>`:''}</button>`
       :`<button disabled aria-label="Carte manquante"><div class="miss"><b>?</b>${esc(c.p)}</div></button>`).join('')}</div>`;
   m.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{alb=b.dataset.p;rAlbum()}));
+  bindSearch(m,v=>qA=v);
   m.querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.id])));
 }
 
