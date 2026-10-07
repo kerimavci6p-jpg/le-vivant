@@ -13,7 +13,8 @@
 <title>Le Vivant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Montserrat:wght@500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Fira+Sans+Condensed:ital,wght@0,500;0,700;0,800;1,500&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Spectral:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="preload" as="image" href="art/fond.webp">
 <style>
 body{margin:0}[hidden]{display:none!important}img{max-width:100%}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -23,15 +24,15 @@ body{margin:0}[hidden]{display:none!important}img{max-width:100%}
   --ink:#11152b; --ink-2:#1b2142; --ink-3:#262d57;
   --paper:#efe4cc; --paper-dim:#b8ad94; --gold:#d8ab4c; --gold-hi:#f3d58c; --oxblood:#a3303f; --win:#7fc79a;
   --line:rgba(239,228,204,.16);
-  --f-display:"IM Fell English SC","IM Fell English",Georgia,serif;
-  --f-title:"IM Fell English",Georgia,serif;
-  --f-body:"Spectral",Georgia,"Times New Roman",serif;
+  --f-display:"Cinzel",Georgia,serif;
+  --f-title:"Cormorant Garamond",Georgia,serif;
+  --f-body:"EB Garamond",Georgia,"Times New Roman",serif;
   --r-bronze:#b9814f; --r-argent:#cfd6de; --r-or:#e3b653; --r-noire:#c23b4c; --r-legende:#f3d58c;
   color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{height:100%}
-body{background:var(--ink);color:var(--paper);font-family:var(--f-body);font-size:15px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+body{background:var(--ink);color:var(--paper);font-family:var(--f-body);font-size:16px;line-height:1.5;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit}
 button:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
 .app{max-width:480px;margin:0 auto;height:100%;display:flex;flex-direction:column;
@@ -459,117 +460,6 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
 .fiche p{margin:0;color:var(--paper-dim)}.ff{display:flex;flex-wrap:wrap;gap:6px 12px;color:var(--paper-dim);font-size:12px}
 .vact .fiche{margin-top:4px}
 @media (min-width:900px){.mon{max-width:120px}.mon.big{max-width:170px}.slot0{max-width:120px}.slot0.big{max-width:170px}}
-/* ================= carte « Le Vivant » (modèle de l'Orque) ================= */
-.card.vc{padding:0;aspect-ratio:63/92;border-radius:5cqw;background:#0c1838;box-shadow:0 3cqw 7cqw rgba(0,0,0,.55);font-family:"Cormorant Garamond",Georgia,serif}
-.card.vc:after{border:0;box-shadow:none}
-.vc .in{position:absolute;inset:0;border-radius:5cqw;overflow:hidden;color:#f3e6c4;display:flex;flex-direction:column;padding:4.6cqw 4.6cqw 3.6cqw;gap:2cqw;
-  background:radial-gradient(90% 50% at 50% 30%,#18306a,#0c1838 70%);
-  box-shadow:inset 0 0 0 1cqw #0c1838,inset 0 0 0 1.35cqw #d6b467,inset 0 0 0 2.4cqw #0c1838,inset 0 0 0 2.65cqw rgba(214,180,103,.7)}
-.vc-o{position:absolute;z-index:3;font-style:normal;color:#f1d38a;font-size:5cqw;line-height:1;text-shadow:0 0 2cqw rgba(241,211,138,.7)}
-.vc-o.o1{left:50%;top:.2cqw;transform:translateX(-50%)}.vc-o.o2{left:.4cqw;top:46%}.vc-o.o3{right:.4cqw;top:46%}
-.vc-head{position:relative;z-index:2;display:flex;align-items:flex-start;gap:2cqw}
-.vc-t{flex:1;min-width:0;padding:1cqw 2cqw 1.6cqw;border:.4cqw solid rgba(214,180,103,.75);border-radius:2cqw 2cqw 2cqw 0;background:linear-gradient(180deg,rgba(12,24,56,.9),rgba(12,24,56,.6))}
-.vc .nm{display:block;font-family:"Cormorant Garamond",Georgia,serif;font-weight:700;font-size:calc(10.5cqw * var(--nf,1));line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:none;
-  background:linear-gradient(180deg,#fff2cc,#d9b25e);-webkit-background-clip:text;background-clip:text;color:transparent}
-.vc-sub{display:block;font-style:italic;font-size:4.6cqw;color:#efe2c2;margin-top:.6cqw;padding-top:.8cqw;border-top:.3cqw solid rgba(214,180,103,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vc-cost{flex:none;width:17cqw;height:17cqw;border-radius:50%;display:grid;place-items:center;align-content:center;line-height:1;margin-top:-.6cqw;
-  background:radial-gradient(circle at 35% 30%,#4f78d6,#173a8f 55%,#0b1c4d);box-shadow:0 0 0 .7cqw #d6b467,0 0 0 1.4cqw #0c1838,0 0 0 1.7cqw rgba(214,180,103,.6),0 0 4cqw rgba(80,130,255,.45)}
-.vc-cost small{font-size:3.4cqw;color:#e9e3d2}.vc-cost b{font-size:9.5cqw;color:#fff;font-weight:700}
-.vc-art{position:relative;flex:1 1 auto;min-height:0;border-radius:2.4cqw;overflow:hidden;box-shadow:0 0 0 .45cqw #d6b467,0 0 0 1cqw #0c1838}
-.vc-art img{width:100%;height:100%;object-fit:cover;object-position:50% 35%;display:block}
-.vc-desc{position:relative;flex:none;padding:2.6cqw 3.4cqw;border-radius:2.4cqw;color:#211a10;text-align:center;
-  background:radial-gradient(120% 120% at 50% 40%,#f8f0dc,#ecdcb6);box-shadow:inset 0 0 0 .45cqw #c9a557,inset 0 0 0 1cqw #f8f0dc,inset 0 0 0 1.2cqw rgba(201,165,87,.6),0 1cqw 3cqw rgba(0,0,0,.35)}
-.vc-desc:before,.vc-desc:after{content:"✦";position:absolute;left:50%;transform:translateX(-50%);font-size:3.4cqw;color:#a8823a;line-height:1}
-.vc-desc:before{top:.2cqw}.vc-desc:after{bottom:.2cqw}
-#view .vc-desc p,.vc-desc p{margin:0;font-size:3.9cqw;line-height:1.28;font-weight:500;color:#211a10;text-align:center}
-.vc-st{flex:none;display:grid;grid-template-columns:repeat(3,1fr);gap:1cqw;padding:1.6cqw 1cqw;border-radius:2.4cqw;background:linear-gradient(180deg,#132a5e,#0c1838);box-shadow:inset 0 0 0 .4cqw rgba(214,180,103,.7)}
-.vc-st span{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;column-gap:1.4cqw;line-height:1.05}
-.vc-st i{grid-row:1/3;width:8.4cqw;height:8.4cqw;border-radius:50%;display:grid;place-items:center;box-shadow:0 0 0 .4cqw #d6b467;background:#0c1838}
-.vc-st svg{width:5.4cqw;height:5.4cqw;fill:none;stroke:#e9c97a;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.vc-st em{font-style:normal;font-size:3.3cqw;color:#e9dfc5}
-.vc-st b{font-size:5.4cqw;color:#f4d993;font-weight:700}.vc-st b small{font-size:3.4cqw;color:#cdbf9e}
-/* petites cartes (album, sachets, plateau) : pas de description, stats en chiffres */
-@container (max-width:230px){.vc-desc{display:none}.vc .nm{font-size:calc(12cqw * var(--nf,1))}.vc-sub{font-size:5.6cqw}.vc-cost{width:20cqw;height:20cqw}.vc-cost small{font-size:4cqw}.vc-cost b{font-size:11cqw}
-  .vc-st{padding:1.6cqw .6cqw}.vc-st em{display:none}.vc-st span{grid-template-columns:auto auto;justify-content:center}.vc-st i{grid-row:auto;width:9cqw;height:9cqw}.vc-st svg{width:6cqw;height:6cqw}.vc-st b{font-size:7.4cqw}.vc-st b small{display:none}}
-@container (max-width:120px){.vc-sub{display:none}.vc .nm{font-size:calc(13cqw * var(--nf,1))}.vc-t{padding:1.4cqw 2cqw}.vc-o{display:none}.vc-st i{display:none}.vc-st b{font-size:9cqw}}
-#view .card.vc{width:min(360px,88vw)}
-.epr{display:flex;align-items:center;gap:12px;justify-content:center;margin:0 0 10px;padding:10px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(243,213,140,.3)}
-.epr>span{font-size:30px}.epr b{display:block;font-family:"Cinzel",serif;font-size:20px;color:var(--gold-hi)}.epr small{color:var(--paper-dim)}
-.dgrid .hv{bottom:-10px}
-/* ---------- position du concept : illustration plein cadre, titre en haut à gauche, parchemin et stats en bas ---------- */
-.vc .in{gap:1.6cqw}
-.vc-art{position:absolute;inset:2.7cqw;z-index:0;border-radius:3cqw;box-shadow:none;flex:none}
-.vc-art:after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(10,20,50,.85),rgba(10,20,50,.35) 18%,transparent 30%,transparent 55%,rgba(10,20,50,.55) 68%,rgba(10,20,50,.85))}
-.vc-head,.vc-desc,.vc-st{position:relative;z-index:2}
-.vc-head{margin-bottom:auto;align-items:flex-start}
-.vc-t{text-align:left;background:linear-gradient(90deg,rgba(10,20,50,.85),rgba(10,20,50,.55) 75%,transparent);border:0;border-bottom:.35cqw solid rgba(214,180,103,.8);border-left:.35cqw solid rgba(214,180,103,.8);border-radius:0 0 0 2cqw;padding:1cqw 2.6cqw 1.6cqw}
-.vc .nm{text-align:left}
-.vc-sub{border-top:0;padding-top:0;margin-top:.4cqw}
-.vc-desc{margin-top:auto;background:radial-gradient(120% 120% at 50% 40%,rgba(250,243,226,.96),rgba(236,221,184,.96))}
-.vc-st{background:linear-gradient(180deg,rgba(19,42,94,.95),rgba(12,24,56,.97))}
-/* ================= carte avec le cadre doré dessiné (art/cadre.webp) ================= */
-.card.vf{padding:0;aspect-ratio:2/3;border-radius:4cqw;background:#0b1636;box-shadow:0 3cqw 7cqw rgba(0,0,0,.55);font-family:"Cormorant Garamond",Georgia,serif;overflow:hidden}
-.card.vf:after{display:none}
-.vf-in{position:absolute;inset:0;border-radius:4cqw;overflow:hidden}
-.vf-art{position:absolute;inset:2.6%;border-radius:3cqw;overflow:hidden}.vf-art img{width:100%;height:100%;object-fit:cover;object-position:50% 32%;display:block}
-.vf-art:before{content:"";position:absolute;inset:0;z-index:1;background:#0d1d4a;mix-blend-mode:color;opacity:.3}
-.vf-art:after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(rgba(9,18,46,.92),rgba(9,18,46,.78) 15%,rgba(9,18,46,0) 22%,rgba(9,18,46,0) 58%,rgba(9,18,46,.8) 66%,#09122e 84%,#09122e)}
-.vf-frame{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
-.vf-n{position:absolute;z-index:3;left:7.5%;top:4.6%;width:66%;text-align:left;font-weight:700;font-size:calc(11cqw * var(--nf,1));line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:none;
-  background:linear-gradient(180deg,#fff3d0,#d9b25e);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 .3cqw .6cqw rgba(0,0,0,.7))}
-.vf-sub{position:absolute;z-index:3;left:7.5%;top:11.1%;width:40%;font-style:italic;font-size:4.6cqw;color:#f0e4c6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 .3cqw 1cqw #000}
-.vf-cost{position:absolute;z-index:3;left:87.4%;top:10.7%;transform:translate(-50%,-50%);display:grid;justify-items:center;line-height:1;color:#fff;text-shadow:0 .4cqw 1.2cqw rgba(0,0,30,.9)}
-.vf-cost small{font-size:2.6cqw;margin-bottom:-.4cqw}.vf-cost b{font-size:10cqw;font-weight:700}
-.vf-desc{position:absolute;z-index:3;left:7.5%;right:7.5%;top:65.6%;height:18.4%;display:grid;place-items:center;text-align:center;color:#231a0e}
-#view .vf-desc p,.vf-desc p{margin:0;font-size:3.1cqw;line-height:1.2;font-weight:600;color:#231a0e;text-align:center}
-.vf-desc span{display:none;font-style:italic;font-size:6cqw;color:#5a4320}
-.vf-s{position:absolute;z-index:3;top:89.2%;transform:translateY(-50%);display:flex;align-items:center;gap:1.6cqw;line-height:1.1}
-.vf-s.s0{left:19.2%}.vf-s.s1{left:44.9%}.vf-s.s2{left:70.8%}
-.vf-s i{display:grid;place-items:center;width:9.4cqw;height:9.4cqw;border-radius:50%;background:radial-gradient(circle,#132a60,#0a1638)}
-.vf-s svg{width:5.8cqw;height:5.8cqw;fill:none;stroke:#f0cf7c;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.vf-s u{display:none}
-.vf-s em{font-style:normal;font-size:3cqw;color:#e6dbc0;display:grid}.vf-s em b{font-size:5cqw;color:#f4d993;font-weight:700}
-/* petites cartes : la valeur dans le cercle, le sous-titre sur le parchemin */
-@container (max-width:230px){.vf-desc p{display:none}.vf-desc span{display:block}.vf-sub{display:none}.vf-n{top:5.2%;font-size:calc(13cqw * var(--nf,1));width:68%}
-  .vf-s em{display:none}.vf-s i{display:none}.vf-s u{display:grid;place-items:center;width:10cqw;height:10cqw;text-decoration:none;font-size:7.6cqw;font-weight:700;color:#f4d993}
-  .vf-s.s0{left:18.8%}.vf-s.s1{left:44.6%}.vf-s.s2{left:70.5%}.vf-cost small{display:none}.vf-cost b{font-size:12cqw}}
-#view .card.vf{width:min(380px,90vw)}
-/* ================= cadre 2 (art/cadre2.webp) ================= */
-.card.vg{padding:0;aspect-ratio:2/3;border-radius:4cqw;background:#070b18;box-shadow:0 3cqw 7cqw rgba(0,0,0,.55);font-family:"Cormorant Garamond",Georgia,serif;overflow:hidden}
-.card.vg:after{display:none}
-.vg-in{position:absolute;inset:0;border-radius:4cqw;overflow:hidden;color:#f3e6c4}
-.vg-art{position:absolute;inset:0}.vg-art img{width:100%;height:100%;object-fit:cover;object-position:50% 34%;display:block}
-.vg-art:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 62%,rgba(6,10,24,.55) 74%,rgba(6,10,24,.9))}
-.vg-frame{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
-.vg-box{position:absolute;z-index:1;background:rgba(7,12,30,.78);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
-.b-name{left:4.5%;right:15%;top:3.7%;height:6.6%;clip-path:polygon(3% 0,97% 0,100% 50%,97% 100%,3% 100%,0 50%)}
-.b-cost{left:85.3%;top:3.1%;width:10.6%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3f6fd0,#14306f 60%,#0a1638)}
-.b-sub{left:4.6%;right:4.4%;top:75.4%;height:4.4%;clip-path:polygon(2% 0,98% 0,100% 50%,98% 100%,2% 100%,0 50%)}
-.b-desc{left:5.2%;right:5.2%;top:80.6%;height:9.9%}
-.b-st{left:61.2%;right:5.4%;top:89.7%;height:6.2%}
-.b-num{left:5%;width:18.4%;top:92.1%;height:3.5%;clip-path:polygon(8% 0,92% 0,100% 50%,92% 100%,8% 100%,0 50%)}
-.vg-n{position:absolute;z-index:3;left:8%;width:66%;top:3.9%;height:6.4%;display:flex;align-items:center;font-weight:700;font-size:calc(8.6cqw * var(--nf,1));white-space:nowrap;overflow:hidden;
-  background:linear-gradient(180deg,#fff3d0,#d9b25e);-webkit-background-clip:text;background-clip:text;color:transparent}
-.vg-cost{position:absolute;z-index:3;left:90.6%;top:6.7%;transform:translate(-50%,-50%);font-size:9cqw;font-weight:700;color:#fff;text-shadow:0 .4cqw 1cqw #000}
-.vg-sub{position:absolute;z-index:3;left:7%;right:7%;top:75.5%;height:4.3%;display:flex;align-items:center;justify-content:center;font-style:italic;font-size:4.6cqw;color:#f0e2bf;white-space:nowrap;overflow:hidden}
-#view .vg-desc,.vg-desc{position:absolute;z-index:3;left:8%;right:8%;top:80.9%;height:8.6%;margin:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:3.05cqw;line-height:1.18;color:#efe4cc;overflow:hidden}
-.vg-num{position:absolute;z-index:3;left:5%;width:18.4%;top:92.1%;height:3.5%;display:flex;align-items:center;justify-content:center;font-family:"Cinzel",serif;font-size:2.2cqw;letter-spacing:.06em;color:#e6d4a6;white-space:nowrap;overflow:hidden}
-.vg-st{position:absolute;z-index:3;left:62.5%;right:6.5%;top:90%;height:5.7%;display:grid;grid-template-columns:repeat(3,1fr);align-items:center}
-.vg-st span{display:flex;align-items:center;justify-content:center;gap:.8cqw}
-.vg-st svg{width:4.6cqw;height:4.6cqw;fill:none;stroke:#f0cf7c;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.vg-st b{font-size:6cqw;color:#f4d993;font-weight:700}
-@container (max-width:230px){.vg-desc,.vg-num,.b-desc,.b-num{display:none}.vg-n{font-size:calc(10cqw * var(--nf,1))}.vg-sub{font-size:5.6cqw}.vg-cost{font-size:10cqw}
-  .vg-st{left:6%;right:6%;top:84.5%;height:9%}.b-st{left:5%;right:5%;top:84%;height:10%;border-radius:2cqw}.vg-st svg{width:6.5cqw;height:6.5cqw}.vg-st b{font-size:8.5cqw}}
-#view .card.vg{width:min(380px,90vw)}
- /* l'animal occupe toute la carte : cases légères, lisibilité par l'ombre du texte */
-.vg-art:after{background:linear-gradient(transparent 70%,rgba(6,10,24,.35))}
-.vg-box{background:rgba(7,12,30,.32);-webkit-backdrop-filter:none;backdrop-filter:none}
-.b-desc{background:rgba(7,12,30,.42)}
-.b-cost{background:radial-gradient(circle at 35% 30%,rgba(63,111,208,.85),rgba(20,48,111,.85) 60%,rgba(10,22,56,.85))}
-.vg-n{filter:drop-shadow(0 .3cqw .5cqw #000) drop-shadow(0 0 1.5cqw rgba(0,0,0,.8))}
-.vg-sub,.vg-num,.vg-desc,.vg-st b{text-shadow:0 .3cqw .6cqw #000,0 0 1.6cqw rgba(0,0,0,.95),0 0 3cqw rgba(0,0,0,.7)}
-.vg-st svg{filter:drop-shadow(0 0 1cqw #000)}
-.vg-art img{object-position:50% 45%}
 /* ================= Template FULL ART ================= */
 .card.tc{padding:0;aspect-ratio:2/3;border-radius:2.75cqw;background:#071B2B;overflow:hidden;box-shadow:0 3cqw 7cqw rgba(0,0,0,.55);
   --g5:#DDBB72;--g3:#F3D99D;--g7:#B6873D;--cream:#F6E7C1;--ivory:#F5EFE3}
@@ -585,7 +475,7 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
 .tc-c.c1{left:calc(2% - 1.1cqw + .1cqw);top:calc(2% - 1.1cqw + .1cqw)}.tc-c.c2{right:calc(2% - 1.1cqw + .1cqw);top:calc(2% - 1.1cqw + .1cqw)}
 .tc-c.c3{left:calc(2% - 1.1cqw + .1cqw);bottom:calc(2% - 1.1cqw + .1cqw)}.tc-c.c4{right:calc(2% - 1.1cqw + .1cqw);bottom:calc(2% - 1.1cqw + .1cqw)}
 .tc-head{position:absolute;left:6%;top:3.5%;right:20%;text-align:left}
-.tc-n{display:block;font-family:"Cormorant Garamond","Cinzel",serif;font-weight:600;font-size:calc(8cqw * var(--nf,1));letter-spacing:-.1cqw;text-transform:uppercase;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+.tc-n{display:block;font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:calc(8cqw * var(--nf,1));letter-spacing:-.1cqw;text-transform:uppercase;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   background:linear-gradient(180deg,#FFF4D2 0%,#E9C77F 52%,#C99A47 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 .3cqw 1.2cqw rgba(0,0,0,.35))}
 .tc-sub{display:flex;align-items:center;gap:1.4cqw;margin-top:1cqw;font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:500;font-size:2.85cqw;letter-spacing:.1cqw;color:#F1E9D7;text-shadow:0 .2cqw .8cqw rgba(0,0,0,.6);white-space:nowrap}
 .tc-sub:before{content:"";width:5cqw;height:max(1px,.12cqw);background:var(--g5);flex:none}
@@ -599,7 +489,7 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
 .tc-st span{display:grid;justify-items:center;line-height:1}
 .tc-st span+span{border-left:max(1px,.1cqw) solid rgba(221,187,114,.45)}
 .tc-st b{font-family:"Cinzel",serif;font-size:5.66cqw;font-weight:600;color:#F1D18B}
-.tc-st em{font-style:normal;font-family:"Montserrat",sans-serif;font-size:max(7px,1.66cqw);font-weight:500;letter-spacing:.5cqw;color:var(--ivory);margin-top:.6cqw;padding-left:.5cqw}
+.tc-st em{font-style:normal;font-family:"Cinzel",serif;font-size:max(7px,1.66cqw);font-weight:500;letter-spacing:.5cqw;color:var(--ivory);margin-top:.6cqw;padding-left:.5cqw}
 /* petites cartes : sans description */
 @container (max-width:230px){.tc-desc,.tc-sep,.tc-c{display:none}.tc-n{font-size:calc(10.5cqw * var(--nf,1))}.tc-sub{font-size:5.4cqw}.tc-sub:before{width:3cqw}
   .tc-cost{width:13cqw;height:13cqw;font-size:7.5cqw}.tc-grad{height:28%}.tc-st{top:82%;bottom:3%}.tc-st b{font-size:9cqw}.tc-st em{font-size:3.4cqw;letter-spacing:.2cqw}}
@@ -653,6 +543,17 @@ body{background:#060b18 url(art/fond.webp) center top/cover fixed}
 .ptop{height:10%;background:url(art/sachet.webp) center top/100% auto no-repeat;transition:transform .7s cubic-bezier(.3,.7,.2,1),opacity .6s}
 .pbody{background:none}.pbody img{object-fit:cover;object-position:50% 100%;height:111.2%;top:auto;bottom:0}
 .gloss{opacity:.5}
+/* ================= finitions : typographie et confort ================= */
+h2{font-family:"Cinzel",Georgia,serif;font-weight:600;letter-spacing:.06em}
+.lead{font-size:15.5px;line-height:1.5}
+.btn{font-family:"Cinzel",Georgia,serif;font-weight:600;letter-spacing:.04em;font-size:15px}
+nav button span{font-family:"Cinzel",Georgia,serif;font-size:11.5px;letter-spacing:.06em}
+.chip,.seg button{font-family:"EB Garamond",Georgia,serif;font-size:14.5px}
+.logo>div{font-family:"Cinzel",Georgia,serif}
+.sort{flex:0 0 96px;padding:0 10px}
+.hv.up{background:linear-gradient(180deg,#ffe7a8,#d8ab4c);color:#2a1d06;box-shadow:0 0 10px rgba(243,213,140,.7)}
+img{-webkit-user-drag:none}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
 
 </head>
@@ -927,27 +828,13 @@ const ICO={
   V:'<svg viewBox="0 0 24 24"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h8" /></svg>',
   I:'<svg viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3h1V4zM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3h-1V4z" /></svg>'};
 const STN={P:'Puissance',V:'Vitesse',I:'Intelligence'};
-let FRAME=(()=>{try{return localStorage.getItem('hp:frame3')||'3'}catch(e){return '3'}})();
 const NUM=Object.fromEntries(CARDS.map((c,i)=>[c.id,String(i+1).padStart(3,'0')]));
 const shortD=t=>{t=t||'';if(t.length<=205)return t;const parts=t.match(/[^.!?]+[.!?]+/g)||[t];let o='';for(const p of parts){if((o+p).length>205)break;o+=p}return (o||t.slice(0,200)+'…').trim()};
-function card(c,mini){
-  if(FRAME==='3')return card3(c,mini);
-  if(FRAME==='2')return card2(c,mini);
-  const st=c.st||[5,5,5];
-  return `<div class="card vf${mini?' mini':''}"><div class="vf-in">
-    <div class="vf-art">${c.art?`<img src="${c.art}" alt="" loading="lazy" draggable="false">`:''}</div>
-    <img class="vf-frame" src="art/cadre.webp" alt="" draggable="false">
-    <b class="vf-n" style="--nf:${c.n.length>18?.62:c.n.length>14?.74:c.n.length>10?.87:1}">${esc(c.n)}</b>
-    <span class="vf-sub">${esc(c.sub||c.p)}</span>
-    <span class="vf-cost"><small>Coût</small><b>${c.k||1}</b></span>
-    <div class="vf-desc"><p>${esc(c.d||c.f)}</p><span>${esc(c.sub||c.p)}</span></div>
-    ${['P','V','I'].map((k,i)=>`<span class="vf-s s${i}"><i>${ICO[k]}</i><u>${st[i]}</u><em>${STN[k]}<b>${st[i]}/10</b></em></span>`).join('')}
-  </div></div>`}
-/* Template FULL ART (spécification de Kerim) : image sur toute la carte, interface légère par-dessus */
+function card(c,mini){return card3(c,mini)}
 function card3(c,mini){
   const st=c.st||[5,5,5];
   return `<div class="card tc${mini?' mini':''}"><div class="tc-in">
-    <img class="tc-art" src="${c.art}" alt="" loading="lazy" draggable="false">
+    <img class="tc-art" src="${c.art}" alt="${esc(c.n)}" loading="lazy" decoding="async" draggable="false">
     <i class="tc-top"></i><i class="tc-grad"></i><i class="tc-b1"></i><i class="tc-b2"></i>
     <i class="tc-s s1">✦</i><i class="tc-s s2">✦</i><i class="tc-s s3">✦</i><i class="tc-s s4">✦</i><i class="tc-s s5">✦</i><i class="tc-s s6">✦</i>
     <div class="tc-head"><b class="tc-n" style="--nf:${c.n.length>18?.5:c.n.length>14?.6:c.n.length>10?.74:c.n.length>7?.88:1}">${esc(c.n)}</b><i class="tc-line"><b>✦</b></i><span class="tc-sub">${esc(c.sub||c.p)}</span></div>
@@ -955,19 +842,6 @@ function card3(c,mini){
     <p class="tc-desc">${esc(shortD(c.d||c.f))}</p>
     <i class="tc-sep"><b>✦</b></i>
     <div class="tc-st">${[['PUI',0],['VIT',1],['INT',2]].map(([l,i])=>`<span><b>${st[i]}</b><em>${l}</em></span>${i<2?'<i class="tc-vd"></i>':''}`).join('')}</div>
-  </div></div>`}
-function card2(c,mini){
-  const st=c.st||[5,5,5];
-  return `<div class="card vg${mini?' mini':''}"><div class="vg-in">
-    <div class="vg-art">${c.art?`<img src="${c.art}" alt="" loading="lazy" draggable="false">`:''}</div>
-    <i class="vg-box b-name"></i><i class="vg-box b-sub"></i><i class="vg-box b-desc"></i><i class="vg-box b-st"></i><i class="vg-box b-num"></i><i class="vg-box b-cost"></i>
-    <img class="vg-frame" src="art/cadre2.webp" alt="" draggable="false">
-    <b class="vg-n" style="--nf:${c.n.length>20?.62:c.n.length>15?.74:c.n.length>11?.87:1}">${esc(c.n)}</b>
-    <b class="vg-cost">${c.k||1}</b>
-    <span class="vg-sub">${esc(c.sub||c.p)}</span>
-    <p class="vg-desc">${esc(shortD(c.d||c.f))}</p>
-    <span class="vg-num">N° ${NUM[c.id]} · ${esc(c.p)}</span>
-    <span class="vg-st">${['P','V','I'].map((k,i)=>`<span title="${STN[k]}"><i>${ICO[k]}</i><b>${st[i]}</b></span>`).join('')}</span>
   </div></div>`}
 function show(c){$('viewCard').innerHTML=card(c);if(window.viewActs)viewActs(c);else $('viewAct').innerHTML='';$('view').hidden=false}
 $('view').addEventListener('click',()=>$('view').hidden=true);
@@ -984,7 +858,7 @@ function pick(){let t=Math.random()*100;for(const r in RAR){t-=RAR[r].w;if(t<=0)
 function drawCard(minO){let r;do{r=pick()}while(RAR[r].o<(minO||1));const pool=CARDS.filter(c=>c.r===r);return pool[Math.random()*pool.length|0]}
 
 /* ---------------- navigation ---------------- */
-let tab='sachets',opened=null,alb='Tous',albF='all';
+let tab='sachets',opened=null,alb='Tous',albF='all',albS='num';
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.t;opened=null;render()}));
 function render(){
   $('nbA').textContent=`démo · ${CARDS.length} animaux`;
@@ -1088,7 +962,7 @@ function bindSearch(m,keep){const q=m.querySelector('#q'),g=m.querySelector('.gr
   q.addEventListener('input',run);if(q.value)run()}
 function rDemo(){
   const m=$('main');
-  m.innerHTML=`<h2>Mode démo</h2><div class="seg" id="frm">${[['3','Template'],['2','Cadre 2'],['1','Cadre 1']].map(x=>`<button data-fr="${x[0]}" aria-pressed="${FRAME===x[0]}">${x[1]}</button>`).join('')}</div><p class="lead">Pour tester les cartes et l'ouverture des sachets. Rien ici ne compte : ni dans votre album, ni dans vos sachets, ni dans le classement.</p>
+  m.innerHTML=`<h2>Mode démo</h2><p class="lead">Pour tester les cartes et l'ouverture des sachets. Rien ici ne compte : ni dans votre album, ni dans vos sachets, ni dans le classement.</p>
     <div class="row"><button class="btn" id="dOpen">${pickD.length?`Ouvrir avec ces ${pickD.length} carte${pickD.length>1?'s':''}`:'Ouvrir un sachet test'}</button>${pickD.length?'<button class="btn ghost" id="dClr">Vider le choix</button>':''}</div>
     <p class="lead" style="margin-top:12px">Touchez des cartes pour les choisir (5 au plus) : le sachet test contiendra celles-là. Sans choix, il est tiré au hasard. Appui long pour voir une carte en grand.</p>
     <div class="tools"><input class="search" id="q" type="search" placeholder="Rechercher un animal" autocomplete="off" value="${esc(qD)}"></div>
@@ -1098,7 +972,6 @@ function rDemo(){
     const got=pickD.length?pickD.map(id=>BY[id]):shuffle([0,1,2,3].map(()=>drawCard(1)).concat([drawCard(2)]));
     TEST=true;openStage(got.map(c=>({c,isNew:false})))});
   if($('dClr'))$('dClr').addEventListener('click',()=>{pickD=[];rDemo()});
-  m.querySelectorAll('[data-fr]').forEach(b=>b.addEventListener('click',()=>{FRAME=b.dataset.fr;try{localStorage.setItem('hp:frame3',FRAME)}catch(e){}rDemo()}));
   m.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{dP=b.dataset.p;rDemo()}));
   bindSearch(m,v=>qD=v);
   m.querySelectorAll('[data-id]').forEach(b=>{let lp=0,t=0;
@@ -1112,13 +985,13 @@ function rDemo(){
 /* ---------------- album ---------------- */
 function rAlbum(){
   if(albF==='bind')return rBinders($('main'));
-  const m=$('main'),n=owned().length,list=CARDS.filter(c=>(alb==='Tous'||c.p===alb)&&(albF==='all'||(albF==='own'?col[c.id]:col[c.id]>1)));
+  const m=$('main'),n=owned().length,list=CARDS.filter(c=>(alb==='Tous'||c.p===alb)&&(albF==='all'||(albF==='own'?col[c.id]:col[c.id]>1))).sort(albS==='cout'?(a,b)=>b.k-a.k:albS==='nom'?(a,b)=>a.n.localeCompare(b.n,'fr'):()=>0);
   const nd=CARDS.reduce((a,c)=>a+Math.max(0,(col[c.id]||0)-1),0),gain=CARDS.reduce((a,c)=>a+Math.max(0,(col[c.id]||0)-1)*defVal(c),0);
   m.innerHTML=`<h2>Album</h2><p class="lead">${n} animaux sur ${CARDS.length} · ${nd} doublon${nd>1?'s':''}. Touchez une carte pour la vendre ou la défausser.</p>
     <div class="prog"><i style="width:${Math.round(n/CARDS.length*100)}%"></i><span>${Math.round(n/CARDS.length*100)} %</span></div>
     <div class="seg">${[['all','Toutes'],['own','Mes cartes'],['dup','Doublons'],['bind','Classeurs']].map(x=>`<button data-f="${x[0]}" aria-pressed="${albF===x[0]}">${x[1]}</button>`).join('')}</div>
     ${albF==='dup'&&nd?`<div class="row" style="margin:-4px 0 12px"><button class="btn ghost" id="dupAll">Défausser les ${nd} doublons : +${gain} points</button></div>`:''}
-    <div class="tools"><input class="search" id="q" type="search" placeholder="Rechercher un animal" autocomplete="off" value="${esc(qA)}"></div>
+    <div class="tools"><input class="search" id="q" type="search" placeholder="Rechercher un animal" autocomplete="off" value="${esc(qA)}"><select class="search sort" id="srt" aria-label="Trier">${[['num','N°'],['cout','Coût'],['nom','Nom']].map(x=>`<option value="${x[0]}"${albS===x[0]?' selected':''}>${x[1]}</option>`).join('')}</select></div>
     <div class="packs">${['Tous',...Object.keys(PACK)].map(p=>{const L=CARDS.filter(c=>p==='Tous'||c.p===p);return `<button class="chip" data-p="${p}" style="--pc:${PACK[p]||'var(--gold)'}" aria-pressed="${p===alb}">${p}<small>${L.filter(c=>col[c.id]).length}/${L.length}</small></button>`}).join('')}</div>
     ${list.length?'':'<p class="empty-q">Aucune carte ici.</p>'}<div class="grid">${list.map(c=>col[c.id]?`<button data-id="${c.id}" data-n="${esc(norm(c.n))}" aria-label="${esc(c.n)}">${card(c,true)}${col[c.id]>1?`<span class="cnt">×${col[c.id]}</span>`:''}</button>`
       :`<button disabled aria-label="Carte manquante"><div class="miss" style="--pc:${PACK[c.p]}"><b>?</b>${esc(c.p)}</div></button>`).join('')}</div>`;
@@ -1126,6 +999,7 @@ function rAlbum(){
   m.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{albF=b.dataset.f;rAlbum()}));
   if($('dupAll'))$('dupAll').addEventListener('click',()=>{const b=$('dupAll');if(!b.dataset.ok){b.dataset.ok=1;b.textContent='Sûr ? Touchez encore pour défausser';return}
     let g=0;CARDS.forEach(c=>{while((col[c.id]||0)>1){col[c.id]--;g+=defVal(c)}});sv('col',col);setPts(pts+g);toast('Doublons défaussés : +'+g+' points');rAlbum()});
+  if($('srt'))$('srt').addEventListener('change',e=>{albS=e.target.value;rAlbum()});
   bindSearch(m,v=>qA=v);
   m.querySelectorAll('[data-id]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.id])));
 }

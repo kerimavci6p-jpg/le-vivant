@@ -2,9 +2,8 @@
    Ce fichier se charge après le script principal et utilise ses outils : CARDS, BY, col, sv, ld, $, esc, card, show, toast, render, tab. */
 
 /* ================= valeur d'un animal (sert à la cote du Marché) ================= */
-const FORCE=(()=>{const sc=c=>c.s.reduce((a,b)=>a+b,0)+RAR[c.r].o*25,ord=CARDS.slice().sort((a,b)=>sc(a)-sc(b)),f={};
-  ord.forEach((c,i)=>f[c.id]=1+Math.floor(i*10/ord.length));return f})();
-const fOf=c=>FORCE[c.id];
+/* force 1 à 10 = le coût de la carte (tiré de ses 3 stats) */
+const fOf=c=>c.k||1;
 
 /* ================= points ================= */
 let pts=ld('pts',100);
@@ -49,7 +48,9 @@ function newDuel(){
   const side=cs=>{const d=shuffle(cs.slice());return{deck:d,hand:d.splice(0,HAND),pts:0}};
   DU={me:side(deckCards().cs),op:side(oppDeck()),n:0,ep:EP[Math.random()*3|0],sel:null,last:null,over:false};
 }
-function aiChoose(h,k){
+function aiChoose(h,k,foe){
+  if(foe){const win=h.filter(c=>stv(c,k)+Math.min(OUT,Math.max(0,foe.k-c.k))>stv(foe,k)+Math.min(OUT,Math.max(0,c.k-foe.k)));
+    if(win.length)return win.sort((a,b)=>a.k-b.k)[0]}
   const best=h.slice().sort((a,b)=>stv(b,k)-stv(a,k))[0];
   if(stv(best,k)>=7||Math.random()<.25)return best;
   /* sinon on sacrifie la carte la plus faible */
@@ -113,7 +114,7 @@ function rDuel(){
     ${L?`<div class="arena"><div class="slot"><span class="lab">Vous</span>${card(L.x,true)}<div class="val ${L.r>0?'w':L.r<0?'l':''}">${L.a}</div></div>
       <div class="vs"><b>VS</b>${L.ep[2]}</div><div class="slot"><span class="lab">Naturaliste</span>${card(L.y,true)}<div class="val ${L.r<0?'w':L.r>0?'l':''}">${L.b}</div></div></div>`:''}
     <div class="msg">${msg||'Choisissez la carte à jouer pour cette épreuve.'}</div>
-    <div class="grid dgrid">${me.hand.map((x,i)=>`<button data-h="${i}" class="${DU.sel===x?'sel':''}">${card(x,true)}<span class="hv">${ic[k]} ${stv(x,k)}</span></button>`).join('')}</div>
+    <div class="grid dgrid">${me.hand.map((x,i)=>`<button data-h="${i}" class="${DU.sel===x?'sel':''}">${card(x,true)}<span class="hv${stv(x,k)===Math.max(...me.hand.map(z=>stv(z,k)))?' up':''}">${ic[k]} ${stv(x,k)}</span></button>`).join('')}</div>
     <div class="row" style="margin-top:14px"><button class="btn" id="playB"${DU.sel?'':' disabled'}>${DU.sel?'Jouer '+esc(DU.sel.n):'Choisissez une carte'}</button><button class="btn ghost" id="quit">Abandonner</button></div>`;
   m.querySelectorAll('[data-h]').forEach(b=>b.addEventListener('click',()=>{const x=me.hand[+b.dataset.h];DU.sel=DU.sel===x?null:x;rDuel()}));
   $('playB').addEventListener('click',()=>{if(DU.sel)playRound(DU.sel)});
