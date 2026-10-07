@@ -635,6 +635,33 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
   .vf-s em{display:none}.vf-s i{display:none}.vf-s u{display:grid;place-items:center;width:10cqw;height:10cqw;text-decoration:none;font-size:7.6cqw;font-weight:700;color:#f4d993}
   .vf-s.s0{left:18.8%}.vf-s.s1{left:44.6%}.vf-s.s2{left:70.5%}.vf-cost small{display:none}.vf-cost b{font-size:12cqw}}
 #view .card.vf{width:min(380px,90vw)}
+/* ================= cadre 2 (art/cadre2.webp) ================= */
+.card.vg{padding:0;aspect-ratio:2/3;border-radius:4cqw;background:#070b18;box-shadow:0 3cqw 7cqw rgba(0,0,0,.55);font-family:"Cormorant Garamond",Georgia,serif;overflow:hidden}
+.card.vg:after{display:none}
+.vg-in{position:absolute;inset:0;border-radius:4cqw;overflow:hidden;color:#f3e6c4}
+.vg-art{position:absolute;inset:0}.vg-art img{width:100%;height:100%;object-fit:cover;object-position:50% 34%;display:block}
+.vg-art:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 62%,rgba(6,10,24,.55) 74%,rgba(6,10,24,.9))}
+.vg-frame{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.vg-box{position:absolute;z-index:1;background:rgba(7,12,30,.78);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.b-name{left:4.5%;right:15%;top:3.7%;height:6.6%;clip-path:polygon(3% 0,97% 0,100% 50%,97% 100%,3% 100%,0 50%)}
+.b-cost{left:85.3%;top:3.1%;width:10.6%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3f6fd0,#14306f 60%,#0a1638)}
+.b-sub{left:4.6%;right:4.4%;top:75.4%;height:4.4%;clip-path:polygon(2% 0,98% 0,100% 50%,98% 100%,2% 100%,0 50%)}
+.b-desc{left:5.2%;right:5.2%;top:80.6%;height:9.9%}
+.b-st{left:61.2%;right:5.4%;top:89.7%;height:6.2%}
+.b-num{left:5%;width:18.4%;top:92.1%;height:3.5%;clip-path:polygon(8% 0,92% 0,100% 50%,92% 100%,8% 100%,0 50%)}
+.vg-n{position:absolute;z-index:3;left:8%;width:66%;top:3.9%;height:6.4%;display:flex;align-items:center;font-weight:700;font-size:calc(8.6cqw * var(--nf,1));white-space:nowrap;overflow:hidden;
+  background:linear-gradient(180deg,#fff3d0,#d9b25e);-webkit-background-clip:text;background-clip:text;color:transparent}
+.vg-cost{position:absolute;z-index:3;left:90.6%;top:6.7%;transform:translate(-50%,-50%);font-size:9cqw;font-weight:700;color:#fff;text-shadow:0 .4cqw 1cqw #000}
+.vg-sub{position:absolute;z-index:3;left:7%;right:7%;top:75.5%;height:4.3%;display:flex;align-items:center;justify-content:center;font-style:italic;font-size:4.6cqw;color:#f0e2bf;white-space:nowrap;overflow:hidden}
+#view .vg-desc,.vg-desc{position:absolute;z-index:3;left:8%;right:8%;top:80.9%;height:8.6%;margin:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:3.05cqw;line-height:1.18;color:#efe4cc;overflow:hidden}
+.vg-num{position:absolute;z-index:3;left:5%;width:18.4%;top:92.1%;height:3.5%;display:flex;align-items:center;justify-content:center;font-family:"Cinzel",serif;font-size:2.2cqw;letter-spacing:.06em;color:#e6d4a6;white-space:nowrap;overflow:hidden}
+.vg-st{position:absolute;z-index:3;left:62.5%;right:6.5%;top:90%;height:5.7%;display:grid;grid-template-columns:repeat(3,1fr);align-items:center}
+.vg-st span{display:flex;align-items:center;justify-content:center;gap:.8cqw}
+.vg-st svg{width:4.6cqw;height:4.6cqw;fill:none;stroke:#f0cf7c;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.vg-st b{font-size:6cqw;color:#f4d993;font-weight:700}
+@container (max-width:230px){.vg-desc,.vg-num,.b-desc,.b-num{display:none}.vg-n{font-size:calc(10cqw * var(--nf,1))}.vg-sub{font-size:5.6cqw}.vg-cost{font-size:10cqw}
+  .vg-st{left:6%;right:6%;top:84.5%;height:9%}.b-st{left:5%;right:5%;top:84%;height:10%;border-radius:2cqw}.vg-st svg{width:6.5cqw;height:6.5cqw}.vg-st b{font-size:8.5cqw}}
+#view .card.vg{width:min(380px,90vw)}
 </style>
 
 </head>
@@ -909,7 +936,11 @@ const ICO={
   V:'<svg viewBox="0 0 24 24"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h8" /></svg>',
   I:'<svg viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 3 3h1V4zM15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-3 3h-1V4z" /></svg>'};
 const STN={P:'Puissance',V:'Vitesse',I:'Intelligence'};
+let FRAME=(()=>{try{return localStorage.getItem('hp:frame')||'2'}catch(e){return '2'}})();
+const NUM=Object.fromEntries(CARDS.map((c,i)=>[c.id,String(i+1).padStart(3,'0')]));
+const shortD=t=>{t=t||'';if(t.length<=205)return t;const parts=t.match(/[^.!?]+[.!?]+/g)||[t];let o='';for(const p of parts){if((o+p).length>205)break;o+=p}return (o||t.slice(0,200)+'…').trim()};
 function card(c,mini){
+  if(FRAME==='2')return card2(c,mini);
   const st=c.st||[5,5,5];
   return `<div class="card vf${mini?' mini':''}"><div class="vf-in">
     <div class="vf-art">${c.art?`<img src="${c.art}" alt="" loading="lazy" draggable="false">`:''}</div>
@@ -919,6 +950,19 @@ function card(c,mini){
     <span class="vf-cost"><small>Coût</small><b>${c.k||1}</b></span>
     <div class="vf-desc"><p>${esc(c.d||c.f)}</p><span>${esc(c.sub||c.p)}</span></div>
     ${['P','V','I'].map((k,i)=>`<span class="vf-s s${i}"><i>${ICO[k]}</i><u>${st[i]}</u><em>${STN[k]}<b>${st[i]}/10</b></em></span>`).join('')}
+  </div></div>`}
+function card2(c,mini){
+  const st=c.st||[5,5,5];
+  return `<div class="card vg${mini?' mini':''}"><div class="vg-in">
+    <div class="vg-art">${c.art?`<img src="${c.art}" alt="" loading="lazy" draggable="false">`:''}</div>
+    <i class="vg-box b-name"></i><i class="vg-box b-sub"></i><i class="vg-box b-desc"></i><i class="vg-box b-st"></i><i class="vg-box b-num"></i><i class="vg-box b-cost"></i>
+    <img class="vg-frame" src="art/cadre2.webp" alt="" draggable="false">
+    <b class="vg-n" style="--nf:${c.n.length>20?.62:c.n.length>15?.74:c.n.length>11?.87:1}">${esc(c.n)}</b>
+    <b class="vg-cost">${c.k||1}</b>
+    <span class="vg-sub">${esc(c.sub||c.p)}</span>
+    <p class="vg-desc">${esc(shortD(c.d||c.f))}</p>
+    <span class="vg-num">N° ${NUM[c.id]} · ${esc(c.p)}</span>
+    <span class="vg-st">${['P','V','I'].map((k,i)=>`<span title="${STN[k]}"><i>${ICO[k]}</i><b>${st[i]}</b></span>`).join('')}</span>
   </div></div>`}
 function show(c){$('viewCard').innerHTML=card(c);if(window.viewActs)viewActs(c);else $('viewAct').innerHTML='';$('view').hidden=false}
 $('view').addEventListener('click',()=>$('view').hidden=true);
@@ -1039,7 +1083,7 @@ function bindSearch(m,keep){const q=m.querySelector('#q'),g=m.querySelector('.gr
   q.addEventListener('input',run);if(q.value)run()}
 function rDemo(){
   const m=$('main');
-  m.innerHTML=`<h2>Mode démo</h2><p class="lead">Pour tester les cartes et l'ouverture des sachets. Rien ici ne compte : ni dans votre album, ni dans vos sachets, ni dans le classement.</p>
+  m.innerHTML=`<h2>Mode démo</h2><div class="seg" id="frm">${[['1','Cadre 1'],['2','Cadre 2']].map(x=>`<button data-fr="${x[0]}" aria-pressed="${FRAME===x[0]}">${x[1]}</button>`).join('')}</div><p class="lead">Pour tester les cartes et l'ouverture des sachets. Rien ici ne compte : ni dans votre album, ni dans vos sachets, ni dans le classement.</p>
     <div class="row"><button class="btn" id="dOpen">${pickD.length?`Ouvrir avec ces ${pickD.length} carte${pickD.length>1?'s':''}`:'Ouvrir un sachet test'}</button>${pickD.length?'<button class="btn ghost" id="dClr">Vider le choix</button>':''}</div>
     <p class="lead" style="margin-top:12px">Touchez des cartes pour les choisir (5 au plus) : le sachet test contiendra celles-là. Sans choix, il est tiré au hasard. Appui long pour voir une carte en grand.</p>
     <div class="tools"><input class="search" id="q" type="search" placeholder="Rechercher un animal" autocomplete="off" value="${esc(qD)}"></div>
@@ -1049,6 +1093,7 @@ function rDemo(){
     const got=pickD.length?pickD.map(id=>BY[id]):shuffle([0,1,2,3].map(()=>drawCard(1)).concat([drawCard(2)]));
     TEST=true;openStage(got.map(c=>({c,isNew:false})))});
   if($('dClr'))$('dClr').addEventListener('click',()=>{pickD=[];rDemo()});
+  m.querySelectorAll('[data-fr]').forEach(b=>b.addEventListener('click',()=>{FRAME=b.dataset.fr;try{localStorage.setItem('hp:frame',FRAME)}catch(e){}rDemo()}));
   m.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{dP=b.dataset.p;rDemo()}));
   bindSearch(m,v=>qD=v);
   m.querySelectorAll('[data-id]').forEach(b=>{let lp=0,t=0;
