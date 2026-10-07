@@ -33,3 +33,19 @@ Après une modification, changez `VERSION` en haut de `sw.js` (par exemple `le-v
 - Les sachets restent gratuits : les sachets payants avec hasard sont interdits en Belgique.
 - La clé publiable de Supabase peut être publique : les règles de `supabase/schema.sql` empêchent chacun de lire ou modifier la collection des autres.
 - Pour un test entre amis, c'est suffisant. Avant une vraie sortie publique : mentions légales, politique de confidentialité (RGPD), et contrôle côté serveur pour empêcher la triche.
+
+## WILD DUEL (onglet Duel) — Phase 1 : prototype local contre l'IA
+
+Règle fondamentale : **une seule carte active par joueur**.
+
+- `duel.js` : moteur de partie (aucun affichage). PV 20, deck 30 (2 exemplaires au plus), main 5 (8 au plus),
+  énergie +1 par tour (10 au plus), 1 remplacement par tour, 1 duel par tour, fatigue de la stat utilisée,
+  dégâts selon l'écart (1-2 : 1, 3-4 : 2, 5-6 : 3, 7+ : 4), riposte de 1, attaque directe de 1 si l'adversaire n'a pas d'animal,
+  règle Outsider (+1 par point de coût de moins, +2 au plus), mulligan de 3 cartes, effets décrits en données
+  (`EFFECTS`, `CARD_EFFECTS`), graine de hasard sauvegardable, vue privée par joueur (`view`), IA facile / normale / expert.
+  Les réglages sont dans `CONFIG` (nom du jeu, PV, taille du deck, temps par tour…).
+- `jeu.js` (section WILD DUEL) : écrans menu, VS, tutoriel, mulligan, plateau, victoire / défaite, constructeur de deck avec courbe.
+- Tests du moteur : `node tests/duel.test.js` (17 tests).
+
+Phases suivantes : 2 multijoueur (serveur qui décide de tout : Supabase Realtime ou un petit serveur Node avec Socket.IO),
+3 comptes et decks en ligne, 4 matchmaking et classement, 5 contenu.
