@@ -1,6 +1,6 @@
 /* Le jeu fonctionne hors connexion : la page et les illustrations sont gardées en cache.
    Changer VERSION à chaque mise à jour du jeu pour que les téléphones prennent la nouvelle version. */
-const VERSION = 'le-vivant-16';
+const VERSION = 'le-vivant-17';
 const CORE = ['./', 'index.html', 'config.js', 'cloud.js', 'combat.js', 'jeu.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(CORE)).then(() => self.skipWaiting())) });
 self.addEventListener('activate', e => {
