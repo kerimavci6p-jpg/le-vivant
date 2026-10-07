@@ -401,6 +401,22 @@ nav button[aria-current="true"]:before{content:"";position:absolute;top:0;left:2
 .vact{display:grid;gap:10px;text-align:center;color:var(--paper);font-size:13.5px}
 #view{background:rgba(6,8,20,.9);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 @media (prefers-reduced-motion:reduce){.sachet{animation:none}}
+.cd.hot{color:#ff9aa5;font-weight:700}
+.specs,.noirs{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.spk,.noir{position:relative;display:grid;gap:4px;text-align:left;padding:16px;border-radius:18px;border:1px solid rgba(243,213,140,.35);color:var(--paper);cursor:pointer;font:inherit;overflow:hidden;
+  background:linear-gradient(140deg,#3a2a6b,#16183a 60%,#3b1f3a);box-shadow:0 10px 30px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.12)}
+.spk-legende{background:linear-gradient(140deg,#6b4f17,#1d1730 60%,#5a3b12)}.spk-disparus{background:linear-gradient(140deg,#3d4a3a,#14192a 60%,#4a3524)}
+.spk b,.noir>b{font-family:"Cinzel",serif;font-size:17px;color:var(--gold-hi)}
+.spk small,.noir small{color:var(--paper-dim)}
+.spk span{justify-self:start;margin-top:6px;padding:6px 14px;border-radius:99px;background:linear-gradient(180deg,#ffe7a8,#d8ab4c);color:#2a1d06;font-weight:700;font-size:13px}
+.noir{cursor:default}.noir .buy{justify-self:start;margin-top:6px}
+.noirst{text-align:center;margin:0 0 14px;padding:10px;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);font-size:14px}
+.binders{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.binder{display:grid;gap:8px;padding:10px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid color-mix(in srgb,var(--pc) 45%,transparent)}
+.bcov{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;border:0;padding:0;cursor:pointer;background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--pc) 60%,#000),#0b0e1f);box-shadow:inset 0 0 0 1px rgba(255,255,255,.2)}
+.bcov img{width:100%;height:100%;object-fit:cover;opacity:.85}
+.bcov span{position:absolute;left:0;right:0;bottom:0;padding:24px 8px 8px;font-family:"Cinzel",serif;font-weight:700;color:#fff;text-align:center;background:linear-gradient(transparent,rgba(0,0,0,.8))}
+.binf{display:grid;gap:6px;font-size:13px}.binf small{color:var(--paper-dim)}.binf .prog{margin:0;height:8px}
 </style>
 
 </head>
@@ -700,7 +716,8 @@ function rSachets(){
   m.innerHTML=`<h2>Ouvrir un sachet</h2><p class="lead">Cinq animaux par sachet.</p>
     <button class="sachet" id="open" aria-label="Ouvrir un sachet"${stock.n?'':' disabled'}><img src="art/leopardneiges.webp" alt=""><div class="t">Le<br>Vivant<small>Première expédition</small></div><div class="five">5 cartes</div></button>
     <p class="timer">${stock.n?`${stock.n} sachet${stock.n>1?'s':''} disponible${stock.n>1?'s':''}. `:'Plus de sachet pour l\'instant. '}${stock.n>=MAXS?'Réserve pleine.':`Prochain sachet dans ${sec} s.`}</p>
-    <p class="lead" style="margin-top:14px;text-align:center">Un sachet gratuit toutes les 2 secondes, jusqu'à 5 en réserve.</p>`;
+    <p class="lead" style="margin-top:14px;text-align:center">Un sachet gratuit toutes les 2 secondes, jusqu'à 5 en réserve.</p><div id="spec"></div>`;
+  if(window.rSpec)rSpec();
   $('open').addEventListener('click',()=>{if(!stock.n){toast('Plus de sachet : le prochain arrive dans 2 secondes');return}
     if(stock.n>=MAXS)stock.t=Date.now();stock.n--;sv('stock',stock);
     const got=[0,1,2,3].map(()=>drawCard(1)).concat([drawCard(2)]);shuffle(got);
@@ -804,11 +821,12 @@ function rDemo(){
 }
 /* ---------------- album ---------------- */
 function rAlbum(){
+  if(albF==='bind')return rBinders($('main'));
   const m=$('main'),n=owned().length,list=CARDS.filter(c=>(alb==='Tous'||c.p===alb)&&(albF==='all'||(albF==='own'?col[c.id]:col[c.id]>1)));
   const nd=CARDS.reduce((a,c)=>a+Math.max(0,(col[c.id]||0)-1),0),gain=CARDS.reduce((a,c)=>a+Math.max(0,(col[c.id]||0)-1)*defVal(c),0);
   m.innerHTML=`<h2>Album</h2><p class="lead">${n} animaux sur ${CARDS.length} · ${nd} doublon${nd>1?'s':''}. Touchez une carte pour la vendre ou la défausser.</p>
     <div class="prog"><i style="width:${Math.round(n/CARDS.length*100)}%"></i><span>${Math.round(n/CARDS.length*100)} %</span></div>
-    <div class="seg">${[['all','Toutes'],['own','Mes cartes'],['dup','Doublons']].map(x=>`<button data-f="${x[0]}" aria-pressed="${albF===x[0]}">${x[1]}</button>`).join('')}</div>
+    <div class="seg">${[['all','Toutes'],['own','Mes cartes'],['dup','Doublons'],['bind','Classeurs']].map(x=>`<button data-f="${x[0]}" aria-pressed="${albF===x[0]}">${x[1]}</button>`).join('')}</div>
     ${albF==='dup'&&nd?`<div class="row" style="margin:-4px 0 12px"><button class="btn ghost" id="dupAll">Défausser les ${nd} doublons : +${gain} points</button></div>`:''}
     <div class="tools"><input class="search" id="q" type="search" placeholder="Rechercher un animal" autocomplete="off" value="${esc(qA)}"></div>
     <div class="packs">${['Tous',...Object.keys(PACK)].map(p=>{const L=CARDS.filter(c=>p==='Tous'||c.p===p);return `<button class="chip" data-p="${p}" style="--pc:${PACK[p]||'var(--gold)'}" aria-pressed="${p===alb}">${p}<small>${L.filter(c=>col[c.id]).length}/${L.length}</small></button>`}).join('')}</div>

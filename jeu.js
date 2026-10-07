@@ -201,12 +201,13 @@ function mkSync(){
     return true});
   if(ch)sv('mk',mk);return ch;
 }
-function leftTxt(end){const m=Math.max(0,Math.ceil((end-Date.now())/60000));return m<60?m+' min':Math.floor(m/60)+' h'+(m%60?' '+String(m%60).padStart(2,'0'):'')}
+function leftTxt(end){const t=Math.max(0,Math.round((end-Date.now())/1000)),h=t/3600|0,m=(t%3600)/60|0,sec=t%60;return h?h+' h '+String(m).padStart(2,'0'):m?m+' min '+String(sec).padStart(2,'0'):sec+' s'}
+const cdSpan=end=>`<span class="cd${end-Date.now()<300000?' hot':''}" data-end="${end}">${leftTxt(end)}</span>`;
 function lsRow(l,mine){
   const c=BY[l.c],nb=l.bid+step(l.bid);
   return `<div class="ls" data-l="${l.id}"><button class="lsc" data-v="${c.id}">${card(c,true)}</button>
     <div class="inf"><b>${esc(c.n)}</b><span>${esc(c.p)} · ${mine?'votre annonce':esc(l.seller)}</span><span>Cote ${fr(cote(c))}</span>
-      <span>${mine?'Départ':'Enchère'} <b>${fr(mine?l.start:l.bid)}</b> · Achat <b>${fr(l.price)}</b> · ${leftTxt(l.end)}</span></div>
+      <span>${mine?'Départ':'Enchère'} <b>${fr(mine?l.start:l.bid)}</b> · Achat <b>${fr(l.price)}</b> · ⏱ ${cdSpan(l.end)}</span></div>
     <div class="acts">${mine?'<button class="buy" data-a="cancel">Retirer</button>'
       :`<button class="buy" data-a="bid"${l.me||nb>=l.price?' disabled':''}>${l.me?'Vous êtes en tête':nb>=l.price?'Enchère max':'Enchérir '+fr(nb)}</button><button class="buy" data-a="buy">Acheter ${fr(l.price)}</button>`}</div></div>`;
 }
@@ -232,14 +233,15 @@ function defiPick(d){
 }
 function rMarche(){
   mkSync();const m=$('main');
-  const tabs=[['buy','Acheter'],['sell','Vendre'],['defis','Défis']];
-  let h=`<h2>Marché</h2><p class="lead">Vous avez <b>${fr(pts)}</b> points. On en gagne en duel, en vendant des cartes et avec les défis.</p>
+  const tabs=[['buy','Enchères'],['mine','Mes enchères'],['noir','Marché noir'],['sell','Vendre'],['defis','Défis']];
+  if(mkTab==='noir')return rNoir(m,tabs);
+  let h=`<h2>Salle des ventes</h2><p class="lead">Vous avez <b>${fr(pts)}</b> points. On en gagne en duel, en vendant des cartes et avec les défis.</p>
     <div class="packs">${tabs.map(t=>`<button class="chip" data-m="${t[0]}" aria-pressed="${mkTab===t[0]}">${t[1]}</button>`).join('')}</div>`;
-  if(mkTab==='buy'){
-    const all=mk.bots.map(l=>[l,false]).concat(mk.mine.map(l=>[l,true]));
+  if(mkTab==='buy'||mkTab==='mine'){
+    const all=mkTab==='mine'?mk.bots.filter(l=>l.me).map(l=>[l,false]).concat(mk.mine.map(l=>[l,true])):mk.bots.map(l=>[l,false]);
     const rows=all.filter(x=>{const c=BY[x[0].c];return(!mkF.p||c.p===mkF.p)&&(!mkF.q||norm(c.n).includes(norm(mkF.q)))}).sort((a,b)=>a[0].end-b[0].end);
     h+=`<div class="tools"><select class="search" id="mkp" aria-label="Famille"><option value="">Toutes les familles</option>${Object.keys(PACK).map(p=>`<option${mkF.p===p?' selected':''}>${p}</option>`).join('')}</select></div>
-      <div id="lst">${rows.length?rows.map(x=>lsRow(x[0],x[1])).join(''):'<p class="lead">Aucune annonce ne correspond.</p>'}</div>`;
+      <div id="lst">${rows.length?rows.map(x=>lsRow(x[0],x[1])).join(''):(mkTab==='mine'?'<p class="lead">Vous n\'êtes en tête d\'aucune enchère et vous n\'avez rien en vente.</p>':'<p class="lead">Aucune annonce ne correspond.</p>')}</div>`;
     m.innerHTML=h;
     $('mkp').addEventListener('change',e=>{mkF.p=e.target.value;rMarche()});
     m.querySelectorAll('.ls').forEach(r=>{const id=r.dataset.l,l=mk.bots.find(x=>x.id===id)||mk.mine.find(x=>x.id===id);
@@ -291,3 +293,71 @@ function rMarche(){
   m.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{mkTab=b.dataset.m;rMarche()}));
 }
 setInterval(()=>{const ch=mkSync(),a=document.activeElement;if(ch&&tab==='marche'&&$('view').hidden&&!(a&&a.tagName==='SELECT'))rMarche()},15000);
+
+/* ================= sachets spéciaux (gagnés au marché noir et avec les classeurs) ================= */
+const SPEC={
+  rare:{n:'Sachet rare',d:'5 cartes, dont 1 très rare garantie',draw:()=>[1,1,2,3,4].map(o=>drawCard(o))},
+  legende:{n:'Sachet Légende',d:'5 cartes, dont 1 Légende garantie',draw:()=>{const L=CARDS.filter(c=>c.r==='legende');return[1,2,3,4].map(o=>drawCard(o)).concat([L[Math.random()*L.length|0]])}},
+  disparus:{n:'Sachet des Disparus',d:'5 animaux Disparus ou de la Préhistoire',draw:()=>{const L=CARDS.filter(c=>c.p==='Disparus'||c.p==='Préhistoire');return[0,1,2,3,4].map(()=>L[Math.random()*L.length|0])}}
+};
+let spec=ld('spec',[]);if(!Array.isArray(spec))spec=[];
+function giveSpec(k){spec.push(k);sv('spec',spec)}
+function rSpec(){
+  const box=$('spec');if(!box)return;
+  if(!spec.length){box.innerHTML='';return}
+  box.innerHTML=`<h3 class="h3" style="text-align:center">Sachets spéciaux</h3><div class="specs">${spec.map((k,i)=>`<button class="spk spk-${k}" data-i="${i}"><b>${SPEC[k].n}</b><small>${SPEC[k].d}</small><span>Ouvrir</span></button>`).join('')}</div>`;
+  box.querySelectorAll('[data-i]').forEach(b=>b.addEventListener('click',()=>{const k=spec.splice(+b.dataset.i,1)[0];sv('spec',spec);
+    const got=shuffle(SPEC[k].draw()),P=got.map(c=>{const isNew=!col[c.id];col[c.id]=(col[c.id]||0)+1;return{c,isNew}});sv('col',col);TEST=false;openStage(P)}));
+}
+
+/* ================= marché noir : chaque soir, des sachets rares aux enchères (idée de Ciné TCG) ================= */
+const NOIR_H=18;
+function noirState(){
+  const d=today(),now=new Date(),open=new Date(now.getFullYear(),now.getMonth(),now.getDate(),NOIR_H).getTime(),end=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59).getTime();
+  if(!mk.noir||mk.noir.d!==d){
+    const R=rng(d*7+3);
+    mk.noir={d,lots:['rare','legende','disparus'].map((k,i)=>({k,bid:r5([300,900,400][i]*(.8+R()*.4)),me:false,paid:0,who:SELLERS[R()*SELLERS.length|0]}))};sv('mk',mk);
+  }
+  return{open,end,isOpen:Date.now()>=open&&Date.now()<end};
+}
+function noirSync(){
+  if(!mk.noir)return false;const st=noirState();let ch=false;
+  mk.noir.lots.forEach(l=>{
+    if(l.done)return;
+    if(Date.now()>=st.end){l.done=1;ch=true;if(l.me){giveSpec(l.k);toast('Marché noir : vous remportez le '+SPEC[l.k].n)}return}
+    if(st.isOpen&&Math.random()<(l.me?.12:.05)){if(l.me){setPts(pts+l.paid);l.paid=0;l.me=false;toast('Marché noir : surenchère sur le '+SPEC[l.k].n+', mise remboursée')}
+      l.bid+=step(l.bid);l.who=SELLERS[Math.random()*SELLERS.length|0];ch=true}
+  });
+  if(ch)sv('mk',mk);return ch;
+}
+function rNoir(m,tabs){
+  const st=noirState();noirSync();
+  m.innerHTML=`<h2>Marché noir</h2><p class="lead">Chaque soir de ${NOIR_H} h à minuit, trois sachets rares sont mis aux enchères. Le plus offrant à minuit l'emporte. Vous avez <b>${fr(pts)}</b> points.</p>
+    <div class="packs">${tabs.map(t=>`<button class="chip" data-m="${t[0]}" aria-pressed="${mkTab===t[0]}">${t[1]}</button>`).join('')}</div>
+    <div class="noirst">${st.isOpen?`Ouvert · fermeture dans ⏱ ${cdSpan(st.end)}`:Date.now()<st.open?`Fermé · ouverture dans ⏱ ${cdSpan(st.open)}`:'Fermé pour ce soir'}</div>
+    <div class="noirs">${mk.noir.lots.map((l,i)=>{const nb=l.bid+step(l.bid);return `<div class="noir spk-${l.k}"><b>${SPEC[l.k].n}</b><small>${SPEC[l.k].d}</small>
+      <span>Enchère <b>${fr(l.bid)}</b> · ${l.done?(l.me?'gagnée':'terminée'):l.me?'vous êtes en tête':'par '+esc(l.who)}</span>
+      <button class="buy" data-n="${i}"${!st.isOpen||l.me||l.done?' disabled':''}>${l.me?'En tête':'Enchérir '+fr(nb)}</button></div>`}).join('')}</div>`;
+  m.querySelectorAll('[data-n]').forEach(b=>b.addEventListener('click',()=>{const l=mk.noir.lots[+b.dataset.n],nb=l.bid+step(l.bid);
+    if(pts<nb)return toast('Pas assez de points');setPts(pts-nb);l.bid=nb;l.paid=nb;l.me=true;l.who='vous';sv('mk',mk);toast('Vous êtes en tête : '+SPEC[l.k].n);rMarche()}));
+  m.querySelectorAll('[data-m]').forEach(b=>b.addEventListener('click',()=>{mkTab=b.dataset.m;rMarche()}));
+}
+/* chaque seconde : comptes à rebours en direct ; toutes les 15 s, le marché bouge */
+setInterval(()=>{document.querySelectorAll('.cd[data-end]').forEach(e=>{const end=+e.dataset.end;e.textContent=leftTxt(end);e.classList.toggle('hot',end-Date.now()<300000)})},1000);
+setInterval(()=>{if(noirSync()&&tab==='marche'&&mkTab==='noir'&&$('view').hidden)rMarche()},15000);
+
+/* ================= classeurs (un par famille, avec récompenses) ================= */
+let rew=ld('rew',{});if(!rew||typeof rew!=='object')rew={};
+function rBinders(m){
+  m.innerHTML=`<h2>Classeurs</h2><p class="lead">Un classeur par famille. À moitié rempli : 100 points. Complet : 500 points et un Sachet rare.</p>
+    <div class="seg">${[['all','Toutes'],['own','Mes cartes'],['dup','Doublons'],['bind','Classeurs']].map(x=>`<button data-f="${x[0]}" aria-pressed="${albF===x[0]}">${x[1]}</button>`).join('')}</div>
+    <div class="binders">${Object.keys(PACK).map(p=>{const L=CARDS.filter(c=>c.p===p),h=L.filter(c=>col[c.id]),pc=Math.round(h.length/L.length*100),cov=(h.slice().sort((a,b)=>fOf(b)-fOf(a))[0]||null);
+      const k50=p+':50',k100=p+':100',can50=pc>=50&&!rew[k50],can100=pc>=100&&!rew[k100];
+      return `<div class="binder" style="--pc:${PACK[p]}"><button class="bcov" data-b="${esc(p)}">${cov?`<img src="${cov.art}" alt="" loading="lazy">`:''}<span>${esc(p)}</span></button>
+        <div class="binf"><b>${h.length}/${L.length}</b><div class="prog"><i style="width:${pc}%"></i></div>
+        ${can50?`<button class="buy" data-r="${esc(k50)}">Récompense : 100 points</button>`:can100?`<button class="buy" data-r="${esc(k100)}">Récompense : 500 points + Sachet rare</button>`:`<small>${rew[k100]?'Complet ✓':rew[k50]?'Moitié ✓ · complet : 500 points':'Moitié : 100 points'}</small>`}</div></div>`}).join('')}</div>`;
+  m.querySelectorAll('[data-f]').forEach(b=>b.addEventListener('click',()=>{albF=b.dataset.f;rAlbum()}));
+  m.querySelectorAll('[data-b]').forEach(b=>b.addEventListener('click',()=>{alb=b.dataset.b;albF='all';rAlbum()}));
+  m.querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.r;rew[k]=1;sv('rew',rew);
+    if(k.endsWith(':100')){setPts(pts+500);giveSpec('rare');toast('Classeur complet : +500 points et un Sachet rare')}else{setPts(pts+100);toast('Classeur à moitié : +100 points')}rBinders(m)}));
+}
