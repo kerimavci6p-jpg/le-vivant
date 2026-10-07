@@ -82,7 +82,7 @@ function rDuel(){
   if(!DU){
     if(team.filter(id=>col[id]).length<DECK_N&&owned().length>new Set(team).size)autoTeam();
     const d=deckCards(),cost=d.cs.reduce((a,c)=>a+c.k,0);if(dw.d!==today())dw={d:today(),n:0};
-    m.innerHTML=`<h2>Duel</h2><p class="lead">Contre la Naturaliste. À chaque manche, une épreuve : ⚔️ Combat (Puissance), 💨 Course (Vitesse) ou 🧠 Ruse (Intelligence). Chacun pose une carte, la plus forte dans cette stat gagne. Premier à ${WIN} manches.</p>
+    m.innerHTML=`<h2>Duel</h2><div class="nat"><img src="art/naturaliste.webp" alt="La Naturaliste"><div><b>La Naturaliste</b><span>Exploratrice, carnet de croquis et jumelles. Elle vous attend pour un duel.</span></div></div><p class="lead">Contre la Naturaliste. À chaque manche, une épreuve : ⚔️ Combat (Puissance), 💨 Course (Vitesse) ou 🧠 Ruse (Intelligence). Chacun pose une carte, la plus forte dans cette stat gagne. Premier à ${WIN} manches.</p>
       <div class="row"><button class="btn" id="go">Commencer un duel</button><button class="btn ghost" id="edit">Modifier mon deck</button></div>
       <p class="lead" style="text-align:center;margin-top:10px">Victoire : ${dw.n<DAILY?60:10} points (${Math.max(0,DAILY-dw.n)} à plein tarif aujourd'hui). Nul : 20. Défaite : 10.</p>
       <details class="rules"><summary>Le budget de deck</summary>
@@ -108,7 +108,7 @@ function rDuel(){
   let msg='';
   if(L){msg=L.r>0?'<b>Manche gagnée</b>':L.r<0?'<b class="ko">Manche perdue</b>':'<b>Égalité</b>';
     msg+=`${esc(L.x.n)} ${L.a}${L.ba?` (dont +${L.ba} outsider)`:''} contre ${esc(L.y.n)} ${L.b}${L.bb?` (dont +${L.bb} outsider)`:''} en ${L.ep[2]}.`+(L.tie==='cheap'?' La carte la moins chère gagne.':'')}
-  m.innerHTML=`<div class="score"><div><b>Vous</b>${pip(me.pts)}</div><div class="sc">${me.pts} – ${op.pts}</div><div><b>Naturaliste</b>${pip(op.pts)}</div></div>
+  m.innerHTML=`<div class="score"><div><b>Vous</b>${pip(me.pts)}</div><div class="sc">${me.pts} – ${op.pts}</div><div><b>Naturaliste <img class="av" src="art/naturaliste.webp" alt=""></b>${pip(op.pts)}</div></div>
     <div class="epr"><span>${ic[k]}</span><div><b>${DU.ep[1]}</b><small>épreuve de ${DU.ep[2]} · manche ${DU.n+1}</small></div></div>
     ${L?`<div class="arena"><div class="slot"><span class="lab">Vous</span>${card(L.x,true)}<div class="val ${L.r>0?'w':L.r<0?'l':''}">${L.a}</div></div>
       <div class="vs"><b>VS</b>${L.ep[2]}</div><div class="slot"><span class="lab">Naturaliste</span>${card(L.y,true)}<div class="val ${L.r<0?'w':L.r>0?'l':''}">${L.b}</div></div></div>`:''}
