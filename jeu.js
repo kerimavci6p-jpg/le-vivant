@@ -46,8 +46,15 @@ function deckCards(){
 function oppDeck(){const n=Math.max(30,owned().length);return buildDeck(shuffle(CARDS.slice()).slice(0,n).map(c=>({c,n:Math.random()<.4?2:1})))}
 function newDuel(){
   const side=cs=>{const d=shuffle(cs.slice());return{deck:d,hand:d.splice(0,HAND),pts:0}};
-  DU={me:side(deckCards().cs),op:side(oppDeck()),n:0,ep:EP[Math.random()*3|0],sel:null,last:null,over:false};
+  DU={me:side(deckCards().cs),op:side(oppDeck()),n:0,ep:null,sel:null,last:null,over:false,coin:null,pick:null,chooser:null,opCard:null};
 }
+/* l'adversaire choisit l'épreuve où sa meilleure carte domine, et pose sa carte (cachée) */
+function aiPickStat(){
+  const h=DU.op.hand;let best=EP[0],bv=-1;
+  EP.forEach(e=>{const v=Math.max(...h.map(c=>stv(c,e[0])))+Math.random()*1.5;if(v>bv){bv=v;best=e}});
+  DU.ep=best;DU.opCard=h.slice().sort((a,b)=>stv(b,best[0])-stv(a,best[0]))[0];
+}
+function startRound(){DU.sel=null;DU.ep=null;DU.opCard=null;if(DU.chooser==='op')aiPickStat()}
 function aiChoose(h,k,foe){
   if(foe){const win=h.filter(c=>stv(c,k)+Math.min(OUT,Math.max(0,foe.k-c.k))>stv(foe,k)+Math.min(OUT,Math.max(0,c.k-foe.k)));
     if(win.length)return win.sort((a,b)=>a.k-b.k)[0]}
@@ -57,7 +64,7 @@ function aiChoose(h,k,foe){
   return h.slice().sort((a,b)=>sum3(a)-sum3(b))[0];
 }
 function playRound(x){
-  const me=DU.me,op=DU.op,k=DU.ep[0],y=aiChoose(op.hand,k);
+  const me=DU.me,op=DU.op,k=DU.ep[0],y=DU.opCard||aiChoose(op.hand,k,x);
   /* Outsider : la carte la moins chère gagne +1 par point de coût d'écart, +2 au plus */
   const ba=Math.min(OUT,Math.max(0,y.k-x.k)),bb=Math.min(OUT,Math.max(0,x.k-y.k));
   const a=stv(x,k)+ba,b=stv(y,k)+bb;let r=Math.sign(a-b),tie='';
@@ -67,7 +74,7 @@ function playRound(x){
   DU.last={x,y,a,b,ba,bb,r,tie,ep:DU.ep};DU.n++;DU.sel=null;
   [me,op].forEach(s=>{if(s.deck.length)s.hand.push(s.deck.shift())});
   if(me.pts>=WIN||op.pts>=WIN||!me.hand.length||!op.hand.length)endDuel();
-  else DU.ep=EP[Math.random()*3|0];
+  else{DU.chooser=DU.chooser==='me'?'op':'me';startRound()}
   rDuel();
 }
 function endDuel(){
@@ -83,7 +90,7 @@ function rDuel(){
   if(!DU){
     if(team.filter(id=>col[id]).length<DECK_N&&owned().length>new Set(team).size)autoTeam();
     const d=deckCards(),cost=d.cs.reduce((a,c)=>a+c.k,0);if(dw.d!==today())dw={d:today(),n:0};
-    m.innerHTML=`<h2>Duel</h2><div class="nat"><img src="art/naturaliste.webp" alt="La Naturaliste"><div><b>La Naturaliste</b><span>Exploratrice, carnet de croquis et jumelles. Elle vous attend pour un duel.</span></div></div><p class="lead">Contre la Naturaliste. À chaque manche, une épreuve : ⚔️ Combat (Puissance), 💨 Course (Vitesse) ou 🧠 Ruse (Intelligence). Chacun pose une carte, la plus forte dans cette stat gagne. Premier à ${WIN} manches.</p>
+    m.innerHTML=`<h2>Duel</h2><div class="nat"><img src="art/naturaliste.webp" alt="La Naturaliste"><div><b>La Naturaliste</b><span>Exploratrice, carnet de croquis et jumelles. Elle vous attend pour un duel.</span></div></div><p class="lead">Contre la Naturaliste. Pile ou face pour savoir qui choisit la première épreuve : ⚔️ Combat (Puissance), 💨 Course (Vitesse) ou 🧠 Ruse (Intelligence). Ensuite, chacun choisit l'épreuve à son tour. Chacun pose une carte, la plus forte dans cette stat gagne. Premier à ${WIN} manches.</p>
       <div class="row"><button class="btn" id="go">Commencer un duel</button><button class="btn ghost" id="edit">Modifier mon deck</button></div>
       <p class="lead" style="text-align:center;margin-top:10px">Victoire : ${dw.n<DAILY?60:10} points (${Math.max(0,DAILY-dw.n)} à plein tarif aujourd'hui). Nul : 20. Défaite : 10.</p>
       <details class="rules"><summary>Le budget de deck</summary>
@@ -105,15 +112,41 @@ function rDuel(){
     $('again').addEventListener('click',()=>{newDuel();rDuel()});$('back').addEventListener('click',()=>{DU=null;rDuel()});return;
   }
   const pip=n=>`<div class="pips">${Array.from({length:WIN},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</div>`;
-  const k=DU.ep[0],ic={P:'⚔️',V:'💨',I:'🧠'};
+  const ic={P:'⚔️',V:'💨',I:'🧠'};
+  /* pile ou face : le gagnant choisit la première épreuve, puis on choisit chacun son tour */
+  if(!DU.chooser){
+    m.innerHTML=`<div class="coin-w"><h2>Pile ou face</h2><p class="lead">Le gagnant choisit la première épreuve. Ensuite, chacun choisit à son tour.</p>
+      <div class="coin${DU.coin?' spin s-'+DU.coin:''}" id="coin"><i class="cf pile">🐾<small>Pile</small></i><i class="cf face">🌿<small>Face</small></i></div>
+      ${DU.coin?`<p class="msg"><b>${DU.coin===DU.pick?'Gagné !':'Perdu'}</b>${DU.coin==='pile'?'Pile':'Face'} : ${DU.coin===DU.pick?'vous choisissez la première épreuve.':'la Naturaliste choisit la première épreuve.'}</p>
+        <div class="row"><button class="btn" id="cgo">Commencer</button></div>`
+      :`<div class="row"><button class="btn" data-c="pile">Pile 🐾</button><button class="btn" data-c="face">Face 🌿</button></div>`}
+      <h3 class="h3">Votre main</h3><div class="grid dgrid">${me.hand.map(x=>`<button data-v="${x.id}">${card(x,true)}</button>`).join('')}</div></div>`;
+    m.querySelectorAll('[data-c]').forEach(b=>b.addEventListener('click',()=>{DU.pick=b.dataset.c;DU.coin=Math.random()<.5?'pile':'face';buzz(30);rDuel()}));
+    m.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.v])));
+    if($('cgo'))$('cgo').addEventListener('click',()=>{DU.chooser=DU.coin===DU.pick?'me':'op';startRound();rDuel()});
+    return;
+  }
+  /* à vous de choisir l'épreuve */
+  if(!DU.ep){
+    const best=e=>Math.max(...me.hand.map(c=>stv(c,e[0])));
+    m.innerHTML=`<div class="score"><div><b>Vous</b>${pip(me.pts)}</div><div class="sc">${me.pts} – ${op.pts}</div><div><b>Naturaliste <img class="av" src="art/naturaliste.webp" alt=""></b>${pip(op.pts)}</div></div>
+      ${L?`<div class="msg">${L.r>0?'<b>Manche gagnée</b>':L.r<0?'<b class="ko">Manche perdue</b>':'<b>Égalité</b>'}${esc(L.x.n)} ${L.a} contre ${esc(L.y.n)} ${L.b} en ${L.ep[2]}.</div>`:''}
+      <div class="msg"><b>À vous de choisir l'épreuve</b>Manche ${DU.n+1}. Regardez votre main et choisissez la stat où vous êtes fort.</div>
+      <div class="epick">${EP.map((e,i)=>`<button data-e="${i}"><span>${ic[e[0]]}</span><b>${e[1]}</b><small>${e[2]} · votre meilleure : ${best(e)}</small></button>`).join('')}</div>
+      <h3 class="h3">Votre main</h3><div class="grid dgrid">${me.hand.map(x=>`<button data-v="${x.id}">${card(x,true)}</button>`).join('')}</div>`;
+    m.querySelectorAll('[data-e]').forEach(b=>b.addEventListener('click',()=>{DU.ep=EP[+b.dataset.e];rDuel()}));
+    m.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click',()=>show(BY[b.dataset.v])));
+    return;
+  }
+  const k=DU.ep[0];
   let msg='';
   if(L){msg=L.r>0?'<b>Manche gagnée</b>':L.r<0?'<b class="ko">Manche perdue</b>':'<b>Égalité</b>';
     msg+=`${esc(L.x.n)} ${L.a}${L.ba?` (dont +${L.ba} outsider)`:''} contre ${esc(L.y.n)} ${L.b}${L.bb?` (dont +${L.bb} outsider)`:''} en ${L.ep[2]}.`+(L.tie==='cheap'?' La carte la moins chère gagne.':'')}
   m.innerHTML=`<div class="score"><div><b>Vous</b>${pip(me.pts)}</div><div class="sc">${me.pts} – ${op.pts}</div><div><b>Naturaliste <img class="av" src="art/naturaliste.webp" alt=""></b>${pip(op.pts)}</div></div>
-    <div class="epr"><span>${ic[k]}</span><div><b>${DU.ep[1]}</b><small>épreuve de ${DU.ep[2]} · manche ${DU.n+1}</small></div></div>
+    <div class="epr"><span>${ic[k]}</span><div><b>${DU.ep[1]}</b><small>épreuve de ${DU.ep[2]} · manche ${DU.n+1} · choisie par ${DU.chooser==='me'?'vous':'la Naturaliste'}</small></div></div>
     ${L?`<div class="arena"><div class="slot"><span class="lab">Vous</span>${card(L.x,true)}<div class="val ${L.r>0?'w':L.r<0?'l':''}">${L.a}</div></div>
       <div class="vs"><b>VS</b>${L.ep[2]}</div><div class="slot"><span class="lab">Naturaliste</span>${card(L.y,true)}<div class="val ${L.r<0?'w':L.r>0?'l':''}">${L.b}</div></div></div>`:''}
-    <div class="msg">${msg||'Choisissez la carte à jouer pour cette épreuve.'}</div>
+    <div class="msg">${DU.chooser==='op'?'<b>La Naturaliste a posé sa carte face cachée</b>Choisissez la vôtre pour lui répondre.':msg||'Choisissez la carte à jouer pour cette épreuve.'}</div>
     <div class="grid dgrid">${me.hand.map((x,i)=>`<button data-h="${i}" class="${DU.sel===x?'sel':''}">${card(x,true)}<span class="hv${stv(x,k)===Math.max(...me.hand.map(z=>stv(z,k)))?' up':''}">${ic[k]} ${stv(x,k)}</span></button>`).join('')}</div>
     <div class="row" style="margin-top:14px"><button class="btn" id="playB"${DU.sel?'':' disabled'}>${DU.sel?'Jouer '+esc(DU.sel.n):'Choisissez une carte'}</button><button class="btn ghost" id="quit">Abandonner</button></div>`;
   m.querySelectorAll('[data-h]').forEach(b=>b.addEventListener('click',()=>{const x=me.hand[+b.dataset.h];DU.sel=DU.sel===x?null:x;rDuel()}));
